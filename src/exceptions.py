@@ -1,0 +1,50 @@
+from fastapi import status
+
+class AuthBaseException(Exception):
+    _STATUS_CODE = status.HTTP_500_INTERNAL_SERVER_ERROR
+    _DETAIL = 'We are sorry, something went wrong'
+
+
+class BotKeyIsNotSpecified(AuthBaseException):
+    _STATUS_CODE = status.HTTP_401_UNAUTHORIZED
+    _DETAIL = 'Bot key most be specified'
+
+
+class BotKeyDoesNotExist(AuthBaseException):
+    _STATUS_CODE = status.HTTP_401_UNAUTHORIZED
+    _DETAIL = 'The bot key does not exist'
+
+
+class InvalidInitDataException(AuthBaseException):
+    _STATUS_CODE = status.HTTP_401_UNAUTHORIZED
+    _DETAIL = 'Invalid telegram initData'
+
+
+class AccountNotFoundException(AuthBaseException):
+    _STATUS_CODE = status.HTTP_401_UNAUTHORIZED
+    _DETAIL = 'Account with id from telegram initData does not find'
+
+
+class MaximumSessionsCreatedException(AuthBaseException):
+    _STATUS_CODE = status.HTTP_403_FORBIDDEN
+    _DETAIL = 'Account has maximum created sessions'
+
+
+class AccessTokenExpired(AuthBaseException):
+    _STATUS_CODE = status.HTTP_401_UNAUTHORIZED
+    _DETAIL = 'Recieved access token expired'
+
+
+class AccessTokenInvalid(AuthBaseException):
+    _STATUS_CODE = status.HTTP_401_UNAUTHORIZED
+    _DETAIL = 'Recieved access token invalid'
+
+
+class SessionDoesNotExistsException(AuthBaseException):
+    _STATUS_CODE = status.HTTP_401_UNAUTHORIZED
+    _DETAIL = 'Session with requested token hash does not exists'
+
+
+class AuthDAOBaseException(AuthBaseException): ...
+class DeleteAllRowsException(AuthDAOBaseException): ...
+class UpdateAllRowsException(AuthDAOBaseException): ...
