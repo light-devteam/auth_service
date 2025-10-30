@@ -6,6 +6,8 @@ import uvicorn
 
 from config import logger
 from src.exceptions import AuthBaseException
+from src.api import router as api_router
+from src.storages import postgres
 
 
 class App:
@@ -32,6 +34,7 @@ class App:
             lifespan=self.lifespan,
         )
         self.__api.add_exception_handler(AuthBaseException, self.exception_handler)
+        self.__api.include_router(api_router)
         self.__host = host
         self.__port = port
         self.__workers = workers
@@ -54,8 +57,10 @@ class App:
 
     @asynccontextmanager
     async def lifespan(self, api: FastAPI) -> AsyncGenerator[None, None]:
+        await postgres.connect()
         logger.info('App started')
         yield
+        await postgres.disconnect()
         logger.info('App finished')
 
     @property

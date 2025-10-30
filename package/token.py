@@ -85,7 +85,7 @@ class Token:
             options = JwtDecodeOptionsDTO()
         return jwt.decode(
             jwt=token,
-            key=settings.JWT_PRIVATE_KEY,
+            key=settings.JWT_PUBLIC_KEY,
             algorithms=[settings.JWT_ALGORITHM.value],
             options=structs.asdict(options),
         )

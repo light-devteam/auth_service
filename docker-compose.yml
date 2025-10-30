@@ -1,0 +1,51 @@
+services:
+  tm-database_auth:
+    container_name: tm-database_auth
+    image: postgres:17.4-alpine3.21
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:5441:5432
+    environment:
+      - POSTGRES_USER=${AUTH_PG_USER:-auth}
+      - POSTGRES_PASSWORD=${AUTH_PG_PASS:?database password required}
+      - POSTGRES_DB=${AUTH_PG_NAME:-auth}
+    volumes:
+      - tm-volume_auth_db:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-d", "${AUTH_PG_NAME:-auth}", "-U", "${AUTH_PG_USER:-auth}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - tm-network_auth_db
+
+  tm-service_auth:
+    container_name: tm-service_auth
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    stop_signal: SIGINT
+    restart: unless-stopped
+    ports:
+      - "4001:8000"
+    depends_on:
+      tm-database_auth:
+        condition: service_healthy
+    volumes:
+      - ./:/usr/src/auth
+    ulimits:
+      nofile:
+        soft: "65536"
+        hard: "65536"
+    networks:
+      - tm-network_auth_db
+
+
+volumes:
+  tm-volume_auth_db:
+
+
+networks:
+  tm-network_auth_db:
+    driver: bridge
