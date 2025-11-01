@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from asyncpg import UniqueViolationError
+from asyncpg import Connection, UniqueViolationError
 import msgspec
 
 from src.dao import JWKeysDAO
@@ -8,6 +8,7 @@ from src.storages import postgres
 from src.specifications import EqualSpecification
 from src.exceptions import JWKNotFoundException, JWKAlreadyExistsException
 from src.dto import JWKInfoDTO, JWKSDTO
+from src.enums import PostgresLocks
 
 
 class JWKeysRepository:
@@ -16,7 +17,7 @@ class JWKeysRepository:
         async with postgres.pool.acquire() as connection:
             keys = await JWKeysDAO.get(
                 connection,
-                ['id', 'name', 'is_active', 'created_at'],
+                ['id', 'name', 'is_active', 'is_primary', 'created_at'],
                 EqualSpecification('id', id),
             )
         if not keys:
@@ -28,7 +29,7 @@ class JWKeysRepository:
         async with postgres.pool.acquire() as connection:
             keys = await JWKeysDAO.get(
                 connection,
-                ['id', 'name', 'is_active', 'created_at'],
+                ['id', 'name', 'is_active', 'is_primary', 'created_at'],
                 page=page,
                 page_size=page_size,
             )
@@ -39,7 +40,7 @@ class JWKeysRepository:
         async with postgres.pool.acquire() as connection:
             keys = await JWKeysDAO.get(
                 connection,
-                ['id', 'name', 'is_active', 'created_at'],
+                ['id', 'name', 'is_active', 'is_primary', 'created_at'],
                 EqualSpecification('is_active', True),
                 page=page,
                 page_size=page_size,
@@ -86,3 +87,27 @@ class JWKeysRepository:
         async with postgres.pool.acquire() as connection:
             jwks = await JWKeysDAO.get_jwks(connection, page=page, page_size=page_size)
         return msgspec.json.decode(jwks, type=JWKSDTO)
+
+    @classmethod
+    async def set_primary(cls, id: UUID) -> None:
+        async with postgres.pool.acquire() as connection:
+            connection: Connection
+            async with connection.transaction():
+                jwks_records = await JWKeysDAO.get(
+                    connection,
+                    ['id'],
+                    EqualSpecification('is_primary', True),
+                    lock=PostgresLocks.FOR_NO_KEY_UPDATE,
+                )
+                if jwks_records:
+                    primary_jwk_id = jwks_records[0]['id']
+                    await JWKeysDAO.update(
+                        connection,
+                        {'is_primary': False},
+                        EqualSpecification('id', primary_jwk_id),
+                    )
+                await JWKeysDAO.update(
+                    connection,
+                    {'is_primary': True},
+                    EqualSpecification('id', id),
+                )

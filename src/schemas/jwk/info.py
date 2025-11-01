@@ -8,6 +8,7 @@ class JWKInfoSchema(BaseModel):
     id: UUID
     name: str = Field(min_length=1, max_length=255)
     is_active: bool
+    is_primary: bool
     created_at: datetime
 
     @field_serializer('created_at', when_used='json-unless-none')

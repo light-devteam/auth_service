@@ -41,3 +41,7 @@ class JWKeysService:
     @classmethod
     async def get_jwks(cls, page: int = 1, page_size: int = 100) -> JWKSDTO:
         return await JWKeysRepository.get_jwks(page, page_size)
+
+    @classmethod
+    async def set_primary(cls, id: UUID) -> None:
+        return await JWKeysRepository.set_primary(id)

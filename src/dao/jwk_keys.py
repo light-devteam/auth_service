@@ -16,7 +16,9 @@ class JWKeysDAO(BaseDAO):
         query = """with active_keys as (
             select public from "jwk"."keys"
             where is_active = true
-            order by created_at desc
+            order by
+                case when is_primary = true then 0 else 1 end,
+                created_at desc
             limit {limit} offset {offset}
         )
         select jsonb_build_object('keys', coalesce(jsonb_agg(public), '[]'::jsonb)) as jwks from active_keys
