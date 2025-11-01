@@ -40,19 +40,14 @@ class Token:
     def create_access(
         cls,
         subject: UUID,
-        key: str | dict | jwt.PyJWK,
         issued_at: datetime | None = None,
         expires_at: datetime | None = None,
         **payload: dict,
-    ) -> str:
+    ) -> AccessTokenDTO:
         if not issued_at:
             issued_at = datetime.now(tz=timezone.utc)
         if not expires_at:
             expires_at = issued_at + timedelta(minutes=cls.ACCESS_TOKEN_EXPIRE_MINUTES)
-        if isinstance(key, str):
-            key = jwt.PyJWK.from_json(key)
-        elif isinstance(key, dict):
-            key = jwt.PyJWK.from_dict(key)
         jwt_token = jwt.encode(
             payload={
                 'sub': subject,
@@ -60,7 +55,10 @@ class Token:
                 'iat': issued_at,
                 'exp': expires_at,
             },
-            key=key,
+            headers={
+                'kid': settings.JWK_PRIVATE_KEY.key_id,
+            },
+            key=settings.JWK_PRIVATE_KEY,
         )
         return AccessTokenDTO(
             token=jwt_token,
@@ -73,7 +71,7 @@ class Token:
         cls,
         issued_at: datetime | None = None,
         expires_at: datetime | None = None,
-    ) -> None:
+    ) -> RefreshTokenDTO:
         if not issued_at:
             issued_at = datetime.now(tz=timezone.utc)
         if not expires_at:
@@ -90,15 +88,14 @@ class Token:
     def decode_access(
         cls,
         token: str | bytes,
-        key: str | dict | jwt.PyJWK,
         options: JwtDecodeOptionsDTO | None = None,
     ) -> dict[str, Any]:
         if not options:
             options = JwtDecodeOptionsDTO()
-        if isinstance(key, str):
-            key = jwt.PyJWK.from_json(key)
-        elif isinstance(key, dict):
-            key = jwt.PyJWK.from_dict(key)
+        key = ''
+        if options.verify_signature:
+            unverified_token = jwt.decode_complete(token, options={'verify_signature': False})
+            key = settings.JWKS[unverified_token['header'].get('kid', '')]
         return jwt.decode(
             jwt=token,
             key=key,

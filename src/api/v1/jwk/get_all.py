@@ -2,6 +2,7 @@ from src.api.v1.jwk.router import router
 from src.schemas import JWKInfoSchema
 from src.services import JWKeysService
 from package import json_encoder
+from package import Token
 
 
 @router.get('/')

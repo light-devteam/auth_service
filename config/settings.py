@@ -8,6 +8,7 @@ class Settings(BaseSettings):
 
     JWK_ENCRYPTION_KEY: SecretStr
     JWK_PRIVATE_KEY: PyJWK | None = None
+    JWKS: dict[str, PyJWK] | None = None
 
     LOGS_FILE: str = 'logs.log'
     DEV_MODE: bool = False
@@ -19,6 +20,9 @@ class Settings(BaseSettings):
 
     def set_private_key(self, new_key: PyJWK) -> None:
         self.JWK_PRIVATE_KEY = new_key
+
+    def set_jwks(self, new_jwks: dict[str, PyJWK]) -> None:
+        self.JWKS = new_jwks
 
 
 settings = Settings()

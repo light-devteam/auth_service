@@ -9,4 +9,5 @@ from src.services import JWKeysService
 @router.post('/{key_id}/deactivate')
 async def deactivate(key_id: UUID) -> None:
     await JWKeysService.deactivate_key(key_id)
+    await JWKeysService.set_jwks_to_config()
     return Response(status_code=status.HTTP_204_NO_CONTENT)

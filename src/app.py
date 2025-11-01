@@ -61,7 +61,7 @@ class App:
     @asynccontextmanager
     async def lifespan(self, api: FastAPI) -> AsyncGenerator[None, None]:
         await postgres.connect()
-        await self.initialize_private_jwk()
+        await self.initialize_jwk()
         logger.info('App started')
         yield
         await postgres.disconnect()
@@ -71,10 +71,11 @@ class App:
     def api(self) -> FastAPI:
         return self.__api
 
-    async def initialize_private_jwk(self) -> None:
+    async def initialize_jwk(self) -> None:
         try:
-            await JWKeysService.set_primary_private_key()
+            await JWKeysService.set_private_key_to_config()
         except JWKNotFoundException:
             jwk_id = await JWKeysService.create_key('main')
             await JWKeysService.set_primary(jwk_id)
-            await JWKeysService.set_primary_private_key()
+            await JWKeysService.set_private_key_to_config()
+        await JWKeysService.set_jwks_to_config()

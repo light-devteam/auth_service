@@ -6,4 +6,5 @@ from src.services import JWKeysService
 @router.post('/create')
 async def create(creation_data: RequestCreateJWKSchema) -> ResponseCreateJWKSchema:
     key_id = await JWKeysService.create_key(creation_data.name)
+    await JWKeysService.set_jwks_to_config()
     return ResponseCreateJWKSchema(id=key_id)
