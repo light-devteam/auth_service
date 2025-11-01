@@ -1,5 +1,10 @@
 from src.schemas.healthcheck import HealthCheck, HealthReport
-from src.schemas.jwk import RequestCreateJWKSchema, ResponseCreateJWKSchema, JWKSchema
+from src.schemas.jwk import (
+    RequestCreateJWKSchema,
+    ResponseCreateJWKSchema,
+    JWKInfoSchema,
+    JWKSSchema,
+)
 
 
 __all__ = [
@@ -7,5 +12,6 @@ __all__ = [
     'HealthReport',
     'RequestCreateJWKSchema',
     'ResponseCreateJWKSchema',
-    'JWKSchema',
+    'JWKInfoSchema',
+    'JWKSSchema',
 ]

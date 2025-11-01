@@ -3,7 +3,8 @@ from src.dto.access_token import AccessTokenDTO
 from src.dto.refresh_token import RefreshTokenDTO
 from src.dto.token_pair import TokenPairDTO
 from src.dto.jwk_pair import JWKPairDTO
-from src.dto.jwk import JWKDTO
+from src.dto.jwk_info import JWKInfoDTO
+from src.dto.jwks import JWKSDTO
 
 
 __all__ = [
@@ -12,5 +13,6 @@ __all__ = [
     'RefreshTokenDTO',
     'TokenPairDTO',
     'JWKPairDTO',
-    'JWKDTO',
+    'JWKInfoDTO',
+    'JWKSDTO',
 ]

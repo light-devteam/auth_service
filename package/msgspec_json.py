@@ -1,6 +1,6 @@
 from typing import Any
 
-from msgspec.json import Encoder
+from msgspec.json import Encoder, Decoder
 
 
 def __encoder_hook(object: Any) -> Any:
@@ -8,3 +8,5 @@ def __encoder_hook(object: Any) -> Any:
 
 
 json_encoder = Encoder(enc_hook=__encoder_hook)
+
+json_decoder = Decoder()

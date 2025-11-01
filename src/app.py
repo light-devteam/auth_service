@@ -7,6 +7,7 @@ import uvicorn
 from config import logger
 from src.exceptions import AuthBaseException
 from src.api import router as api_router
+from src.well_known import router as well_known_router
 from src.storages import postgres
 
 
@@ -35,6 +36,7 @@ class App:
         )
         self.__api.add_exception_handler(AuthBaseException, self.exception_handler)
         self.__api.include_router(api_router)
+        self.__api.include_router(well_known_router)
         self.__host = host
         self.__port = port
         self.__workers = workers

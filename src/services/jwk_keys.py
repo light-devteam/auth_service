@@ -2,21 +2,21 @@ from uuid import UUID
 import json
 
 from src.repositories import JWKeysRepository
-from src.dto import JWKDTO
+from src.dto import JWKInfoDTO, JWKSDTO
 from package import JWK
 
 
 class JWKeysService:
     @classmethod
-    async def get_key(cls, id: UUID) -> JWKDTO:
+    async def get_key(cls, id: UUID) -> JWKInfoDTO:
         return await JWKeysRepository.get_key(id)
 
     @classmethod
-    async def get_keys(cls, page: int = 1, page_size: int = 100) -> list[JWKDTO]:
+    async def get_keys(cls, page: int = 1, page_size: int = 100) -> list[JWKInfoDTO]:
         return await JWKeysRepository.get_keys(page, page_size)
 
     @classmethod
-    async def get_active_keys(cls, page: int = 1, page_size: int = 100) -> list[JWKDTO]:
+    async def get_active_keys(cls, page: int = 1, page_size: int = 100) -> list[JWKInfoDTO]:
         return await JWKeysRepository.get_active_keys(page, page_size)
 
     @classmethod
@@ -37,3 +37,7 @@ class JWKeysService:
     @classmethod
     async def activate_key(cls, id: UUID) -> None:
         await JWKeysRepository.activate_key(id)
+
+    @classmethod
+    async def get_jwks(cls, page: int = 1, page_size: int = 100) -> JWKSDTO:
+        return await JWKeysRepository.get_jwks(page, page_size)

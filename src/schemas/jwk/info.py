@@ -4,7 +4,7 @@ from datetime import datetime
 from pydantic import BaseModel, Field, field_serializer
 
 
-class JWKSchema(BaseModel):
+class JWKInfoSchema(BaseModel):
     id: UUID
     name: str = Field(min_length=1, max_length=255)
     is_active: bool
