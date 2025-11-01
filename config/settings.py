@@ -1,14 +1,11 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-
-from src.enums import JwtAlgorithms
+from pydantic import SecretStr
 
 
 class Settings(BaseSettings):
     POSTGRES_URL: str
 
-    JWT_ACCESS_EXPIRE_MINUTES: int = 15
-    JWT_REFRESH_EXPIRE_DAYS: int = 30
-    JWT_ALGORITHM: JwtAlgorithms = JwtAlgorithms.RS256
+    JWK_ENCRYPTION_KEY: SecretStr
 
     LOGS_FILE: str = 'logs.log'
     DEV_MODE: bool = False

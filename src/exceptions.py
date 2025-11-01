@@ -45,6 +45,19 @@ class SessionDoesNotExistsException(AuthBaseException):
     _DETAIL = 'Session with requested token hash does not exists'
 
 
+class JWKBaseException(AuthBaseException): ...
+
+
+class JWKNotFoundException(JWKBaseException):
+    _STATUS_CODE = status.HTTP_404_NOT_FOUND
+    _DETAIL = 'Requested JWK does not exists'
+
+
+class JWKAlreadyExistsException(JWKBaseException):
+    _STATUS_CODE = status.HTTP_409_CONFLICT
+    _DETAIL = 'JWK with that name already exists'
+
+
 class AuthDAOBaseException(AuthBaseException): ...
 class DeleteAllRowsException(AuthDAOBaseException): ...
 class UpdateAllRowsException(AuthDAOBaseException): ...
