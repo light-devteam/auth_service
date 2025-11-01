@@ -7,6 +7,7 @@ from jwcrypto import jwk
 
 from config import settings
 from src.dto import JWKPairDTO
+from src.enums import JwtAlgorithms
 
 
 class JWK:
@@ -16,7 +17,7 @@ class JWK:
         key = jwk.JWK.generate(
             kty='RSA',
             size=2048,
-            alg='RSA-OAEP-256',
+            alg=JwtAlgorithms.RS256.value,
             use='sig',
             kid=str(key_id),
         )

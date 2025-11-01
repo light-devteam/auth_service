@@ -111,3 +111,15 @@ class JWKeysRepository:
                     {'is_primary': True},
                     EqualSpecification('id', id),
                 )
+
+    @classmethod
+    async def get_primary_private(cls) -> bytes:
+        async with postgres.pool.acquire() as connection:
+            jwks_records = await JWKeysDAO.get(
+                connection,
+                ['private'],
+                EqualSpecification('is_primary', True),
+            )
+            if not jwks_records:
+                raise JWKNotFoundException()
+        return jwks_records[0]['private']

@@ -5,10 +5,11 @@ from fastapi import FastAPI, Request, HTTPException
 import uvicorn
 
 from config import logger
-from src.exceptions import AuthBaseException
+from src.exceptions import AuthBaseException, JWKNotFoundException
 from src.api import router as api_router
 from src.well_known import router as well_known_router
 from src.storages import postgres
+from src.services import JWKeysService
 
 
 class App:
@@ -60,6 +61,7 @@ class App:
     @asynccontextmanager
     async def lifespan(self, api: FastAPI) -> AsyncGenerator[None, None]:
         await postgres.connect()
+        await self.initialize_private_jwk()
         logger.info('App started')
         yield
         await postgres.disconnect()
@@ -68,3 +70,11 @@ class App:
     @property
     def api(self) -> FastAPI:
         return self.__api
+
+    async def initialize_private_jwk(self) -> None:
+        try:
+            await JWKeysService.set_primary_private_key()
+        except JWKNotFoundException:
+            jwk_id = await JWKeysService.create_key('main')
+            await JWKeysService.set_primary(jwk_id)
+            await JWKeysService.set_primary_private_key()

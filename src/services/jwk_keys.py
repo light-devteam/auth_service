@@ -1,9 +1,12 @@
 from uuid import UUID
 import json
 
+from jwt import PyJWK
+
 from src.repositories import JWKeysRepository
 from src.dto import JWKInfoDTO, JWKSDTO
 from package import JWK
+from config import settings
 
 
 class JWKeysService:
@@ -45,3 +48,9 @@ class JWKeysService:
     @classmethod
     async def set_primary(cls, id: UUID) -> None:
         return await JWKeysRepository.set_primary(id)
+
+    @classmethod
+    async def set_primary_private_key(cls) -> None:
+        jwk_private_key_encoded = await JWKeysRepository.get_primary_private()
+        jwk_private_key = JWK.fernet_decrypt(jwk_private_key_encoded)
+        settings.set_private_key(PyJWK.from_dict(jwk_private_key))
