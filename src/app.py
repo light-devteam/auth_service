@@ -8,7 +8,7 @@ from config import logger
 from src.exceptions import AuthBaseException, JWKNotFoundException
 from src.api import router as api_router
 from src.well_known import router as well_known_router
-from src.storages import postgres
+from src.storages import postgres, redis
 from src.services import JWKeysService
 
 
@@ -61,10 +61,12 @@ class App:
     @asynccontextmanager
     async def lifespan(self, api: FastAPI) -> AsyncGenerator[None, None]:
         await postgres.connect()
+        await redis.connect()
         await self.initialize_jwk()
         logger.info('App started')
         yield
         await postgres.disconnect()
+        await redis.disconnect()
         logger.info('App finished')
 
     @property
