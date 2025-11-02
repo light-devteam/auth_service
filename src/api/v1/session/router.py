@@ -2,6 +2,6 @@ from fastapi import APIRouter
 
 
 router = APIRouter(
-    prefix='/token',
-    tags=['Token'],
+    prefix='/session',
+    tags=['Sessions'],
 )
