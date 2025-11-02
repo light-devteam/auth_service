@@ -5,6 +5,15 @@ from src.schemas.jwk import (
     JWKInfoSchema,
     JWKSSchema,
 )
+from src.schemas.sessions import (
+    TelegramInitDataAuthSchema,
+    TelegramAuthDataAuthSchema,
+    FingerprintSchema,
+    TelegramAuthDataSchema,
+    AccessTokenSchema,
+    RefreshTokenSchema,
+    TokenPairSchema,
+)
 
 
 __all__ = [
@@ -14,4 +23,11 @@ __all__ = [
     'ResponseCreateJWKSchema',
     'JWKInfoSchema',
     'JWKSSchema',
+    'FingerprintSchema',
+    'TelegramInitDataAuthSchema',
+    'TelegramAuthDataAuthSchema',
+    'TelegramAuthDataSchema',
+    'AccessTokenSchema',
+    'RefreshTokenSchema',
+    'TokenPairSchema',
 ]

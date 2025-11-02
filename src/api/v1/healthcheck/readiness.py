@@ -5,7 +5,7 @@ from fastapi import Request, Response, status
 from src.api.v1.healthcheck.router import router
 from src.schemas import HealthReport
 from src.enums import HealthStatus
-from src.storages import postgres
+from src.storages import postgres, redis
 from package import limiter
 
 
@@ -23,6 +23,7 @@ from package import limiter
 async def healthcheck_readiness(request: Request, response: Response) -> HealthReport:
     healthcheckers = [
         postgres.healthcheck(),
+        redis.healthcheck(),
     ]
     healthchecks = await asyncio.gather(*healthcheckers)
     if all(healthchecks):

@@ -5,6 +5,10 @@ from src.dto.token_pair import TokenPairDTO
 from src.dto.jwk_pair import JWKPairDTO
 from src.dto.jwk_info import JWKInfoDTO
 from src.dto.jwks import JWKSDTO
+from src.dto.fingerprint import FingerprintDTO
+from src.dto.device_info import DeviceInfoDTO
+from src.dto.account import AccountDTO
+from src.dto.telegram_auth_data import TelegramAuthDataDTO
 
 
 __all__ = [
@@ -15,4 +19,8 @@ __all__ = [
     'JWKPairDTO',
     'JWKInfoDTO',
     'JWKSDTO',
+    'FingerprintDTO',
+    'DeviceInfoDTO',
+    'AccountDTO',
+    'TelegramAuthDataDTO',
 ]

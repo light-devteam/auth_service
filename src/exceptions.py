@@ -5,12 +5,12 @@ class AuthBaseException(Exception):
     _DETAIL = 'We are sorry, something went wrong'
 
 
-class BotKeyIsNotSpecified(AuthBaseException):
+class BotNameIsNotSpecified(AuthBaseException):
     _STATUS_CODE = status.HTTP_401_UNAUTHORIZED
     _DETAIL = 'Bot key most be specified'
 
 
-class BotKeyDoesNotExist(AuthBaseException):
+class BotNameDoesNotExist(AuthBaseException):
     _STATUS_CODE = status.HTTP_401_UNAUTHORIZED
     _DETAIL = 'The bot key does not exist'
 
