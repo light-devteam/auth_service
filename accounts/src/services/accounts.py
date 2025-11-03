@@ -12,3 +12,7 @@ class AccountsService:
     @classmethod
     async def get_account_by_telegram_id(cls, telegram_id: int) -> AccountDTO:
         return await AccountsRepository.get_account_by_telegram_id(telegram_id)
+
+    @classmethod
+    async def create_account(cls, telegram_id: int) -> UUID:
+        return await AccountsRepository.create_account(telegram_id)

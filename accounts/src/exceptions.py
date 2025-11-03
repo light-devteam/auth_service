@@ -10,6 +10,11 @@ class AccountNotFoundException(AccountsBaseException):
     _DETAIL = 'Account not found'
 
 
+class AccountAlreadyExistsException(AccountsBaseException):
+    _STATUS_CODE = status.HTTP_409_CONFLICT
+    _DETAIL = 'Account already exists'
+
+
 class AuthDAOBaseException(AccountsBaseException): ...
 class DeleteAllRowsException(AuthDAOBaseException): ...
 class UpdateAllRowsException(AuthDAOBaseException): ...

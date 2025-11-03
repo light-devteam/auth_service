@@ -1,10 +1,12 @@
 from uuid import UUID
 
+from asyncpg import UniqueViolationError
+
 from src.dao import AccountsDAO
 from src.storages import postgres
 from src.specifications import EqualSpecification
 from src.dto import AccountDTO
-from src.exceptions import AccountNotFoundException
+from src.exceptions import AccountNotFoundException, AccountAlreadyExistsException
 
 
 class AccountsRepository:
@@ -33,3 +35,16 @@ class AccountsRepository:
             raise AccountNotFoundException()
         account_record = account_records[0]
         return AccountDTO(**account_record)
+
+    @classmethod
+    async def create_account(cls, telegram_id: int) -> UUID:
+        async with postgres.pool.acquire() as connection:
+            try:
+                accounts_data = await AccountsDAO.create(
+                    connection,
+                    {'telegram_id': telegram_id},
+                    ['id'],
+                )
+            except UniqueViolationError:
+                raise AccountAlreadyExistsException()
+        return UUID(str(accounts_data[0]['id']))
