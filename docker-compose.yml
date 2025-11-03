@@ -1,6 +1,6 @@
 services:
-  tm-database_auth:
-    container_name: tm-database_auth
+  tm-database_postgres_auth:
+    container_name: tm-database_postgres_auth
     image: postgres:17.4-alpine3.21
     restart: unless-stopped
     ports:
@@ -20,7 +20,7 @@ services:
     networks:
       - tm-network_auth_db
 
-  gw-database_redis_auth:
+  tm-database_redis_auth:
     container_name: tm-database_redis_auth
     image: redis:8.2.2-alpine3.22
     restart: unless-stopped
@@ -41,38 +41,40 @@ services:
     container_name: tm-migrations_auth
     image: migrate/migrate:v4.15.1
     depends_on:
-      tm-database_auth:
+      tm-database_postgres_auth:
         condition: service_healthy
     environment:
       - POSTGRES_USER=${AUTH_PG_USER:-auth}
       - POSTGRES_PASSWORD=${AUTH_PG_PASS:?database password required}
       - POSTGRES_DB=${AUTH_PG_NAME:-auth}
     volumes:
-      - ./migrations:/migrations
+      - ./auth/migrations:/migrations
     networks:
       - tm-network_auth_db
     command: [
       "-path", "/migrations",
-      "-database", "postgres://${AUTH_PG_USER}:${AUTH_PG_PASS}@tm-database_auth:5432/${AUTH_PG_NAME}?sslmode=disable",
+      "-database", "postgres://${AUTH_PG_USER}:${AUTH_PG_PASS}@tm-database_postgres_auth:5432/${AUTH_PG_NAME}?sslmode=disable",
       "up"
     ]
 
   tm-service_auth:
     container_name: tm-service_auth
     build:
-      context: ./
+      context: ./auth
       dockerfile: Dockerfile
     stop_signal: SIGINT
     restart: unless-stopped
     ports:
       - "4001:8000"
     depends_on:
-      tm-database_auth:
+      tm-database_postgres_auth:
+        condition: service_healthy
+      tm-database_redis_auth:
         condition: service_healthy
       tm-migrations_auth:
         condition: service_completed_successfully
     volumes:
-      - ./:/usr/src/auth
+      - ./auth:/usr/src/auth
     ulimits:
       nofile:
         soft: "65536"
