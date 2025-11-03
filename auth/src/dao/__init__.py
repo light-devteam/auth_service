@@ -6,4 +6,5 @@ from src.dao.redis import SessionsRedisDAO
 __all__ = [
     'BaseDAO',
     'JWKeysDAO',
+    'SessionsRedisDAO',
 ]
