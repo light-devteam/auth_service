@@ -98,8 +98,8 @@ services:
       "up"
     ]
 
-  tm-service_accoutns:
-    container_name: tm-service_accoutns
+  tm-service_accounts:
+    container_name: tm-service_accounts
     build:
       context: ./accounts
       dockerfile: Dockerfile
@@ -138,7 +138,7 @@ services:
         condition: service_healthy
       tm-migrations_auth:
         condition: service_completed_successfully
-      tm-service_accoutns:
+      tm-service_accounts:
         condition: service_healthy
     volumes:
       - ./auth:/usr/src/auth
