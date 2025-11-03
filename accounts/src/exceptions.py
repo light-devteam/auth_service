@@ -5,6 +5,11 @@ class AccountsBaseException(Exception):
     _DETAIL = 'We are sorry, something went wrong'
 
 
+class AccountNotFoundException(AccountsBaseException):
+    _STATUS_CODE = status.HTTP_404_NOT_FOUND
+    _DETAIL = 'Account not found'
+
+
 class AuthDAOBaseException(AccountsBaseException): ...
 class DeleteAllRowsException(AuthDAOBaseException): ...
 class UpdateAllRowsException(AuthDAOBaseException): ...
