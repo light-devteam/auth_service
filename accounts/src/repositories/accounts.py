@@ -37,6 +37,17 @@ class AccountsRepository:
         return AccountDTO(**account_record)
 
     @classmethod
+    async def get_all(cls, page: int = 1, page_size: int = 100) -> list[AccountDTO]:
+        async with postgres.pool.acquire() as connection:
+            account_records = await AccountsDAO.get(
+                connection,
+                ['id, telegram_id'],
+                page=page,
+                page_size=page_size,
+            )
+        return [AccountDTO(**account_record) for account_record in account_records]
+
+    @classmethod
     async def create_account(cls, telegram_id: int) -> UUID:
         async with postgres.pool.acquire() as connection:
             try:
@@ -47,4 +58,4 @@ class AccountsRepository:
                 )
             except UniqueViolationError:
                 raise AccountAlreadyExistsException()
-        return UUID(str(accounts_data[0]['id']))
+        return UUID(str(accounts_data['id']))

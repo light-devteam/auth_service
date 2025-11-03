@@ -7,4 +7,4 @@ from src.schemas import CreateAccountSchema
 
 @router.post('/')
 async def create_account(creation_data: CreateAccountSchema) -> UUID:
-    return AccountsService.create_account(creation_data.telegram_id)
+    return await AccountsService.create_account(creation_data.telegram_id)
