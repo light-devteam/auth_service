@@ -2,9 +2,10 @@ from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 from fastapi import FastAPI, Request, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
-from config import logger
+from config import logger, settings
 from src.exceptions import AuthBaseException, JWKNotFoundException
 from src.api import router as api_router
 from src.well_known import router as well_known_router
@@ -85,4 +86,11 @@ class App:
         await JWKeysService.set_jwks_to_config()
 
     def __include_middlewares(self) -> None:
+        self.__api.add_middleware(
+            CORSMiddleware,
+            allow_origins=[settings.CORS_ALLOW_ORIGINS],
+            allow_credentials=True,
+            allow_methods=['*'],
+            allow_headers=['*'],
+        )
         self.__api.add_middleware(IPMiddleware)

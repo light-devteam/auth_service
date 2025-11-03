@@ -31,11 +31,11 @@ async def auth(
         )
     else:
         create_session_method = SessionsService.create_session_from_auth_data(
-            TelegramAuthDataDTO(**auth_data.model_dump()),
+            TelegramAuthDataDTO(**auth_data.telegram_auth_data.model_dump()),
             device_info,
         )
     token_pair = await create_session_method
-    await set_auth_cookie_to_response(
+    set_auth_cookie_to_response(
         response,
         access_token=token_pair.access.token,
         token_type=token_pair.token_type,

@@ -19,6 +19,8 @@ class Settings(BaseSettings):
 
     VERIFY_INIT_DATA_URLS: str | dict[str, str]
 
+    CORS_ALLOW_ORIGINS: str | list[str] = '*'
+
     LOGS_FILE: str = 'logs.log'
     DEV_MODE: bool = False
 
@@ -41,6 +43,20 @@ class Settings(BaseSettings):
                     continue
                 pairs[bot_name.strip()] = url.strip()
             return pairs
+        return value
+
+    @field_validator('CORS_ALLOW_ORIGINS', mode='before')
+    def validate_cors_allow_origins(cls, value: Any) -> Any | dict[str, str]:
+        if isinstance(value, str):
+            if value == '*':
+                return value
+            urls = []
+            for url in value.split('\n'):
+                url = url.strip()
+                if not url:
+                    continue
+                urls.append(url)
+            return urls
         return value
 
     def set_private_key(self, new_key: PyJWK) -> None:

@@ -29,7 +29,7 @@ class Telegram:
             try:
                 check_data_result = await client.post(
                     verify_data_url,
-                    json=json_encoder.encode(auth_data),
+                    json=json_encoder.encode(auth_data).decode('utf-8'),
                 )
             except httpx.HTTPError as exception:
                 logger.error(exception)

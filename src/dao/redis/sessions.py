@@ -5,12 +5,13 @@ from typing import Any
 import msgspec
 
 from src.storages import redis
-from config import settings
 from src.exceptions import MaximumSessionsCreatedException, SessionDoesNotExistsException
 from src.dto import FingerprintDTO, DeviceInfoDTO
 
 
 class SessionsRedisDAO:
+    MAX_SESSIONS_PER_ACCOUNT = 10
+
     @classmethod
     async def remove_expired_sessions(
         cls,
@@ -176,7 +177,7 @@ class SessionsRedisDAO:
             if check_limit:
                 await cls.remove_expired_sessions(account_id)
                 current_sessions = await cls.get_sessions(account_id)
-                if len(current_sessions) >= settings.MAX_SESSIONS_PER_ACCOUNT:
+                if len(current_sessions) >= cls.MAX_SESSIONS_PER_ACCOUNT:
                     raise MaximumSessionsCreatedException()
             async with redis.connection.pipeline(transaction=True) as pipe:
                 if old_token_hash:
