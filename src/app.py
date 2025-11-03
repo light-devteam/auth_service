@@ -88,7 +88,7 @@ class App:
     def __include_middlewares(self) -> None:
         self.__api.add_middleware(
             CORSMiddleware,
-            allow_origins=[settings.CORS_ALLOW_ORIGINS],
+            allow_origins=settings.CORS_ALLOW_ORIGINS,
             allow_credentials=True,
             allow_methods=['*'],
             allow_headers=['*'],
