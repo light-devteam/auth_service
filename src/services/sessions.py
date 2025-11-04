@@ -1,10 +1,13 @@
 from aiogram.utils.web_app import WebAppInitData
 
+import jwt
+
 from package import Token, Telegram
 from src.dto import DeviceInfoDTO, TokenPairDTO, TelegramAuthDataDTO
-from src.exceptions import AuthBaseException
+from src.exceptions import AuthBaseException, AccessTokenInvalid, AccessTokenExpired
 from src.repositories import SessionsRepository
 from src.services.accounts import AccountsService
+from src.enums import TokenTypes
 
 
 class SessionsService:
@@ -68,3 +71,22 @@ class SessionsService:
             issued_at=token_pair.refresh.issued_at,
         )
         return token_pair
+
+    @classmethod
+    def check_access_type(cls, access_type: TokenTypes | str) -> None:
+        if not access_type in TokenTypes:
+            raise AccessTokenInvalid()
+
+    @classmethod
+    async def validate_access_token(
+        cls,
+        access_type: TokenTypes | str,
+        token: str | bytes,
+    ) -> None:
+        cls.check_access_type(access_type)
+        try:
+            Token.decode_access(token)
+        except jwt.ExpiredSignatureError:
+            raise AccessTokenExpired()
+        except (jwt.DecodeError, jwt.InvalidTokenError):
+            raise AccessTokenInvalid()

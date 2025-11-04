@@ -35,7 +35,6 @@ async def auth(
     set_auth_cookie_to_response(
         response,
         access_token=token_pair.access.token,
-        token_type=token_pair.token_type,
         refresh_token=token_pair.refresh.token,
         expires_at=token_pair.refresh.expires_at,
     )
