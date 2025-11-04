@@ -9,6 +9,8 @@ from src.dto.fingerprint import FingerprintDTO
 from src.dto.device_info import DeviceInfoDTO
 from src.dto.account import AccountDTO
 from src.dto.telegram_auth_data import TelegramAuthDataDTO
+from src.dto.redis_token_data import RedisTokenDataDTO
+from src.dto.redis_session import RedisSessionDTO
 
 
 __all__ = [
@@ -23,4 +25,6 @@ __all__ = [
     'DeviceInfoDTO',
     'AccountDTO',
     'TelegramAuthDataDTO',
+    'RedisTokenDataDTO',
+    'RedisSessionDTO',
 ]
