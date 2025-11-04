@@ -5,5 +5,4 @@ from src.schemas.sessions.fingerprint import FingerprintSchema
 
 
 class TelegramAuthDataAuthSchema(BaseModel):
-    telegram_auth_data: TelegramAuthDataSchema = None
-    fingerprint: FingerprintSchema
+    telegram_auth_data: TelegramAuthDataSchema

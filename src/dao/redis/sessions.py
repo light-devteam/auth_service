@@ -2,11 +2,9 @@ from datetime import datetime, timezone
 from uuid import UUID
 from typing import Any
 
-import msgspec
-
 from src.storages import redis
 from src.exceptions import MaximumSessionsCreatedException, SessionDoesNotExistsException
-from src.dto import FingerprintDTO, DeviceInfoDTO
+from src.dto import DeviceInfoDTO
 
 
 class SessionsRedisDAO:
@@ -25,13 +23,6 @@ class SessionsRedisDAO:
     async def get_session(cls, account_id: UUID, token_hash: str) -> dict[str, Any]:
         token_key = cls.__get_token_key(account_id, token_hash)
         return await redis.connection.hgetall(token_key)
-
-    @classmethod
-    async def get_fingerprint(cls, account_id: UUID, token_hash: str) -> FingerprintDTO:
-        session = await cls.get_session(account_id, token_hash)
-        if not session:
-            raise SessionDoesNotExistsException()
-        return msgspec.json.decode(session.get('fingerprint', '{}'), type=FingerprintDTO)
 
     @classmethod
     async def get_ip(cls, account_id: UUID, token_hash: str) -> str:
@@ -167,7 +158,6 @@ class SessionsRedisDAO:
         session_data = {
             'token_hash': token_hash,
             'ip': device_info.ip,
-            'fingerprint': msgspec.json.encode(device_info.fingerprint),
             'expires_at': expires_timestamp,
             'issued_at': issued_timestamp,
         }
