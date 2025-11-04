@@ -20,13 +20,32 @@ class SessionsRedisDAO:
         await redis.connection.zremrangebyscore(account_key, 0, current_ts)
 
     @classmethod
-    async def get_session(cls, account_id: UUID, token_hash: str) -> dict[str, Any]:
+    async def get_session_account_id(
+        cls,
+        token_hash: str,
+    ) -> UUID:
+        token_pattern = cls.__get_token_key('*', token_hash)
+        keys = await redis.connection.keys(token_pattern)
+        if not keys:
+            raise SessionDoesNotExistsException()
+        token_key = keys[0]
+        account_id: bytes = token_key.split(b':')[1]
+        return UUID(account_id.decode('utf-8'))
+
+    @classmethod
+    async def get_session(
+        cls,
+        token_hash: str,
+        account_id: UUID | None = None,
+    ) -> dict[str, Any]:
+        if account_id is None:
+            account_id = await cls.get_session_account_id(token_hash)
         token_key = cls.__get_token_key(account_id, token_hash)
         return await redis.connection.hgetall(token_key)
 
     @classmethod
     async def get_ip(cls, account_id: UUID, token_hash: str) -> str:
-        session = await cls.get_session(account_id, token_hash)
+        session = await cls.get_session(token_hash, account_id)
         if not session:
             raise SessionDoesNotExistsException()
         return session.get('ip')
@@ -40,7 +59,7 @@ class SessionsRedisDAO:
         token_hashes = await redis.connection.zrange(account_key, 0, -1)
         sessions = []
         for token_hash in token_hashes:
-            session = await cls.get_session(account_id, token_hash)
+            session = await cls.get_session(token_hash, account_id)
             if session:
                 sessions.append(session)
         return sessions
@@ -134,7 +153,7 @@ class SessionsRedisDAO:
         account_id: UUID,
         token_hash: str,
     ) -> None:
-        session = await cls.get_session(account_id, token_hash)
+        session = await cls.get_session(token_hash, account_id)
         if not session:
             raise SessionDoesNotExistsException()
         await cls.delete_session(account_id, token_hash)
@@ -192,13 +211,13 @@ class SessionsRedisDAO:
             await redis.connection.expire(account_key, session_ttl)
 
     @classmethod
-    def __get_account_key(cls, account_id: UUID) -> str:
+    def __get_account_key(cls, account_id: UUID | str) -> str:
         return f'refresh:{account_id}:tokens'
 
     @classmethod
-    def __get_token_key(cls, account_id: UUID, token_hash: str) -> str:
+    def __get_token_key(cls, account_id: UUID | str, token_hash: str) -> str:
         return f'refresh:{account_id}:token:{token_hash}'
 
     @classmethod
-    def __get_lock_key(cls, account_id: UUID) -> str:
+    def __get_lock_key(cls, account_id: UUID | str) -> str:
         return f'lock:refresh:{account_id}'

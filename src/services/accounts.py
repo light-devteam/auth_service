@@ -1,3 +1,5 @@
+from uuid import UUID
+
 import httpx
 from fastapi import status
 
@@ -22,6 +24,6 @@ class AccountsService:
             if account_data.status_code == status.HTTP_404_NOT_FOUND:
                 raise AccountNotFoundException()
         try:
-            return AccountDTO(id=account_data.json()['id'])
+            return AccountDTO(id=UUID(account_data.json()['id']))
         except Exception:
             raise AuthBaseException()

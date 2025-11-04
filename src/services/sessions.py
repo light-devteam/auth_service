@@ -36,11 +36,33 @@ class SessionsService:
         account = await AccountsService.get_account_from_telegram_id(telegram_id)
         try:
             token_pair = Token.create_pair(account.id)
-        except Exception as exception:
+        except Exception:
             raise AuthBaseException()
         await SessionsRepository.add_session(
             account_id=account.id,
             token_hash=token_pair.refresh.hash,
+            device_info=device_info,
+            expires_at=token_pair.refresh.expires_at,
+            issued_at=token_pair.refresh.issued_at,
+        )
+        return token_pair
+
+    @classmethod
+    async def refresh_session(
+        cls,
+        refresh_token: str,
+        device_info: DeviceInfoDTO,
+    ) -> TokenPairDTO:
+        token_hash = Token.hash(refresh_token)
+        account_id = await SessionsRepository.get_session_account_id(token_hash)
+        try:
+            token_pair = Token.create_pair(account_id)
+        except Exception:
+            raise AuthBaseException()
+        await SessionsRepository.refresh_session(
+            account_id=account_id,
+            old_token_hash=token_hash,
+            new_token_hash=token_pair.refresh.hash,
             device_info=device_info,
             expires_at=token_pair.refresh.expires_at,
             issued_at=token_pair.refresh.issued_at,

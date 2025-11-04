@@ -5,6 +5,7 @@ from src.schemas.sessions.fingerprint import FingerprintSchema
 from src.schemas.sessions.access_token import AccessTokenSchema
 from src.schemas.sessions.refresh_token import RefreshTokenSchema
 from src.schemas.sessions.token_pair import TokenPairSchema
+from src.schemas.sessions.refresh import RefreshSessionSchema
 
 
 __all__ = [
@@ -15,4 +16,5 @@ __all__ = [
     'AccessTokenSchema',
     'RefreshTokenSchema',
     'TokenPairSchema',
+    'RefreshSessionSchema',
 ]

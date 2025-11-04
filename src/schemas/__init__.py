@@ -13,6 +13,7 @@ from src.schemas.sessions import (
     AccessTokenSchema,
     RefreshTokenSchema,
     TokenPairSchema,
+    RefreshSessionSchema,
 )
 
 
@@ -30,4 +31,5 @@ __all__ = [
     'AccessTokenSchema',
     'RefreshTokenSchema',
     'TokenPairSchema',
+    'RefreshSessionSchema',
 ]

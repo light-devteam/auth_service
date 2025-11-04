@@ -18,7 +18,7 @@ class Token:
     @classmethod
     def create_pair(
         cls,
-        subject: UUID,
+        subject: UUID | str,
         issued_at: datetime | None = None,
         **payload: dict,
     ) -> TokenPairDTO:
@@ -39,11 +39,13 @@ class Token:
     @classmethod
     def create_access(
         cls,
-        subject: UUID,
+        subject: UUID | str,
         issued_at: datetime | None = None,
         expires_at: datetime | None = None,
         **payload: dict,
     ) -> AccessTokenDTO:
+        if isinstance(subject, UUID):
+            subject = str(subject)
         if not issued_at:
             issued_at = datetime.now(tz=timezone.utc)
         if not expires_at:
