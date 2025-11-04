@@ -10,7 +10,7 @@ from src.utils import set_auth_cookie_to_response
 from package import json_encoder
 
 
-@router.post('/auth')
+@router.post('')
 async def auth(
     request: Request,
     auth_data: Union[
