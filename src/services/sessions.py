@@ -87,6 +87,18 @@ class SessionsService:
         return token_pair, new_session_id
 
     @classmethod
+    async def revoke(cls, session_id: UUID) -> None:
+        return await SessionsRepository.revoke(session_id)
+
+    @classmethod
+    async def revoke_all(cls, account_id: UUID) -> None:
+        return await SessionsRepository.revoke_all(account_id)
+
+    @classmethod
+    async def revoke_other(cls, account_id: UUID, keep_session_id: UUID) -> None:
+        return await SessionsRepository.revoke_other(account_id, keep_session_id)
+
+    @classmethod
     def check_access_type(cls, access_type: TokenTypes | str) -> None:
         if not access_type in TokenTypes:
             raise AccessTokenInvalid()

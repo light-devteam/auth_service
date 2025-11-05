@@ -87,6 +87,59 @@ class SessionsRedisDAO:
         )
 
     @classmethod
+    async def revoke(cls, session_id: UUID) -> None:
+        session = await cls.get_session(session_id)
+        account_id = session.account_id
+        account_sessions_key = cls.__get_account_sessions_key(account_id)
+        session_key = cls.__get_session_key(session_id)
+        session_token_key = cls.__get_session_token_key(session_id)
+        session_ips_key = cls.__get_session_ips_key(session_id)
+        async with redis.connection.pipeline(transaction=True) as pipe:
+            await pipe.zrem(account_sessions_key, str(session_id))
+            await pipe.delete(session_key)
+            await pipe.delete(session_token_key)
+            await pipe.delete(session_ips_key)
+            await pipe.execute()
+
+    @classmethod
+    async def revoke_all(cls, account_id: UUID) -> None:
+        account_sessions_key = cls.__get_account_sessions_key(account_id)
+        sessions_ids: list[bytes] = await redis.connection.zrange(account_sessions_key, 0, -1)
+        if not sessions_ids:
+            return
+        async with redis.connection.pipeline(transaction=True) as pipe:
+            for session_id_bytes in sessions_ids:
+                session_id = session_id_bytes.decode('utf-8')
+                session_key = cls.__get_session_key(session_id)
+                session_token_key = cls.__get_session_token_key(session_id)
+                session_ips_key = cls.__get_session_ips_key(session_id)
+                await pipe.delete(session_key)
+                await pipe.delete(session_token_key)
+                await pipe.delete(session_ips_key)
+            await pipe.delete(account_sessions_key)
+            await pipe.execute()
+
+    @classmethod
+    async def revoke_other(cls, account_id: UUID, keep_session_id: UUID) -> None:
+        account_sessions_key = cls.__get_account_sessions_key(account_id)
+        sessions_ids: list[bytes] = await redis.connection.zrange(account_sessions_key, 0, -1)
+        if not sessions_ids:
+            return
+        async with redis.connection.pipeline(transaction=True) as pipe:
+            for session_id_bytes in sessions_ids:
+                session_id_str = session_id_bytes.decode('utf-8')
+                if session_id_str == str(keep_session_id):
+                    continue
+                session_key = cls.__get_session_key(session_id_str)
+                session_token_key = cls.__get_session_token_key(session_id_str)
+                session_ips_key = cls.__get_session_ips_key(session_id_str)
+                await pipe.zrem(account_sessions_key, session_id_str)
+                await pipe.delete(session_key)
+                await pipe.delete(session_token_key)
+                await pipe.delete(session_ips_key)
+            await pipe.execute()
+
+    @classmethod
     async def __save_session(
         cls,
         session_id: UUID,

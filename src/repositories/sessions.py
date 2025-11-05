@@ -29,3 +29,15 @@ class SessionsRepository:
             account_id=account_id,
             token_data=token_data,
         )
+
+    @classmethod
+    async def revoke(cls, session_id: UUID) -> None:
+        return await SessionsRedisDAO.revoke(session_id)
+
+    @classmethod
+    async def revoke_all(cls, account_id: UUID) -> None:
+        return await SessionsRedisDAO.revoke_all(account_id)
+
+    @classmethod
+    async def revoke_other(cls, account_id: UUID, keep_session_id: UUID) -> None:
+        return await SessionsRedisDAO.revoke_other(account_id, keep_session_id)

@@ -7,6 +7,7 @@ from src.schemas.sessions.refresh_token import RefreshTokenSchema
 from src.schemas.sessions.token_pair import TokenPairSchema
 from src.schemas.sessions.refresh import RefreshSessionSchema
 from src.schemas.sessions.session import SessionSchema
+from src.schemas.sessions.revoke import RevokeSessionSchema, RevokeOtherSessionsSchema
 
 
 __all__ = [
@@ -19,4 +20,6 @@ __all__ = [
     'TokenPairSchema',
     'RefreshSessionSchema',
     'SessionSchema',
+    'RevokeSessionSchema',
+    'RevokeOtherSessionsSchema',
 ]
