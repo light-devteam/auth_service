@@ -31,8 +31,8 @@ class SessionsRepository:
         )
 
     @classmethod
-    async def revoke(cls, session_id: UUID) -> None:
-        return await SessionsRedisDAO.revoke(session_id)
+    async def revoke(cls, account_id: UUID, session_id: UUID) -> None:
+        return await SessionsRedisDAO.revoke(account_id, session_id)
 
     @classmethod
     async def revoke_all(cls, account_id: UUID) -> None:

@@ -87,9 +87,7 @@ class SessionsRedisDAO:
         )
 
     @classmethod
-    async def revoke(cls, session_id: UUID) -> None:
-        session = await cls.get_session(session_id)
-        account_id = session.account_id
+    async def revoke(cls, account_id: UUID, session_id: UUID) -> None:
         account_sessions_key = cls.__get_account_sessions_key(account_id)
         session_key = cls.__get_session_key(session_id)
         session_token_key = cls.__get_session_token_key(session_id)

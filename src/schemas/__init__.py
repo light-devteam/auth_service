@@ -17,6 +17,7 @@ from src.schemas.sessions import (
     SessionSchema,
     RevokeSessionSchema,
     RevokeOtherSessionsSchema,
+    RevokeAllSessionsSchema,
 )
 
 
@@ -38,4 +39,5 @@ __all__ = [
     'SessionSchema',
     'RevokeSessionSchema',
     'RevokeOtherSessionsSchema',
+    'RevokeAllSessionsSchema',
 ]

@@ -11,6 +11,7 @@ from src.dto.account import AccountDTO
 from src.dto.telegram_auth_data import TelegramAuthDataDTO
 from src.dto.redis_token_data import RedisTokenDataDTO
 from src.dto.redis_session import RedisSessionDTO
+from src.dto.token_payload import TokenPayloadDTO
 
 
 __all__ = [
@@ -27,4 +28,5 @@ __all__ = [
     'TelegramAuthDataDTO',
     'RedisTokenDataDTO',
     'RedisSessionDTO',
+    'TokenPayloadDTO',
 ]

@@ -4,7 +4,13 @@ from aiogram.utils.web_app import WebAppInitData
 import jwt
 
 from package import Token, Telegram
-from src.dto import DeviceInfoDTO, TokenPairDTO, TelegramAuthDataDTO, RedisTokenDataDTO
+from src.dto import (
+    DeviceInfoDTO,
+    TokenPairDTO,
+    TelegramAuthDataDTO,
+    RedisTokenDataDTO,
+    TokenPayloadDTO,
+)
 from src.exceptions import (
     AuthBaseException,
     AccessTokenInvalid,
@@ -87,8 +93,8 @@ class SessionsService:
         return token_pair, new_session_id
 
     @classmethod
-    async def revoke(cls, session_id: UUID) -> None:
-        return await SessionsRepository.revoke(session_id)
+    async def revoke(cls, account_id: UUID, session_id: UUID) -> None:
+        return await SessionsRepository.revoke(account_id, session_id)
 
     @classmethod
     async def revoke_all(cls, account_id: UUID) -> None:
@@ -108,10 +114,10 @@ class SessionsService:
         cls,
         access_type: TokenTypes | str,
         token: str | bytes,
-    ) -> None:
+    ) -> TokenPayloadDTO:
         cls.check_access_type(access_type)
         try:
-            Token.decode_access(token)
+            return Token.decode_access(token)
         except jwt.ExpiredSignatureError:
             raise AccessTokenExpired()
         except (jwt.DecodeError, jwt.InvalidTokenError):

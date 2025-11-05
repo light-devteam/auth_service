@@ -6,7 +6,13 @@ from hashlib import sha256
 import jwt
 from msgspec import structs
 
-from src.dto import JwtDecodeOptionsDTO, AccessTokenDTO, RefreshTokenDTO, TokenPairDTO
+from src.dto import (
+    JwtDecodeOptionsDTO,
+    AccessTokenDTO,
+    RefreshTokenDTO,
+    TokenPairDTO,
+    TokenPayloadDTO,
+)
 from src.enums import TokenTypes
 from config import settings
 
@@ -91,18 +97,19 @@ class Token:
         cls,
         token: str | bytes,
         options: JwtDecodeOptionsDTO | None = None,
-    ) -> dict[str, Any]:
+    ) -> TokenPayloadDTO:
         if not options:
             options = JwtDecodeOptionsDTO()
         key = ''
         if options.verify_signature:
             unverified_token = jwt.decode_complete(token, options={'verify_signature': False})
             key = settings.JWKS[unverified_token['header'].get('kid', '')]
-        return jwt.decode(
+        token_payload = jwt.decode(
             jwt=token,
             key=key,
             options=structs.asdict(options),
         )
+        return TokenPayloadDTO(**token_payload)
 
     @classmethod
     def hash(cls, token: str) -> str:
