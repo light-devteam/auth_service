@@ -1,6 +1,5 @@
 from datetime import datetime, timezone
 from uuid import UUID, uuid4
-from typing import Any
 
 from src.storages import redis
 from src.exceptions import MaximumSessionsCreatedException, SessionDoesNotExistsException
@@ -45,10 +44,7 @@ class SessionsRedisDAO:
         )
 
     @classmethod
-    async def get_sessions(
-        cls,
-        account_id: UUID,
-    ) -> list[RedisSessionDTO]:
+    async def get_sessions(cls, account_id: UUID) -> list[RedisSessionDTO]:
         account_sessions_key = cls.__get_account_sessions_key(account_id)
         sessions_ids: list[bytes] = await redis.connection.zrange(account_sessions_key, 0, -1)
         sessions = []
@@ -57,6 +53,11 @@ class SessionsRedisDAO:
             if session:
                 sessions.append(session)
         return sessions
+
+    @classmethod
+    async def get_sessions_count(cls, account_id: UUID) -> int:
+        account_sessions_key = cls.__get_account_sessions_key(account_id)
+        return await redis.connection.zcard(account_sessions_key)
 
     @classmethod
     async def add_session(
@@ -128,8 +129,7 @@ class SessionsRedisDAO:
     @classmethod
     async def __check_sessions_limit(cls, account_id: UUID) -> None:
         await cls.remove_expired_sessions(account_id)
-        current_sessions = await cls.get_sessions(account_id)
-        if len(current_sessions) >= cls.MAX_SESSIONS_PER_ACCOUNT:
+        if await cls.get_sessions_count(account_id) >= cls.MAX_SESSIONS_PER_ACCOUNT:
             raise MaximumSessionsCreatedException()
 
     @classmethod
