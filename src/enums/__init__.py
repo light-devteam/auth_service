@@ -8,6 +8,7 @@ from src.enums.postgres import (
     PostgresLocks,
 )
 from src.enums.app_types import AppTypes
+from src.enums.prinicipal_types import PrincipalTypes
 
 
 __all__ = [
@@ -19,4 +20,5 @@ __all__ = [
     'PostgresUnaryLogicOperators',
     'PostgresLocks',
     'AppTypes',
+    'PrincipalTypes',
 ]

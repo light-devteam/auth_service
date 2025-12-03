@@ -76,6 +76,11 @@ class AppNotExistsException(AppBaseException):
     _DETAIL = 'App not exists'
 
 
+class AppTokenInvalidException(AppBaseException):
+    _STATUS_CODE = status.HTTP_401_UNAUTHORIZED
+    _DETAIL = 'Recieved app token invalid'
+
+
 class AuthDAOBaseException(AuthBaseException): ...
 class DeleteAllRowsException(AuthDAOBaseException): ...
 class UpdateAllRowsException(AuthDAOBaseException): ...

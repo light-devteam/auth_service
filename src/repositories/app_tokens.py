@@ -4,7 +4,11 @@ from asyncpg import Connection, UniqueViolationError
 
 from src.storages import postgres
 from src.dao import AppTokensDAO, AppsDAO
-from src.exceptions import TokenAlreadyExistsException, AppNotExistsException
+from src.exceptions import (
+    TokenAlreadyExistsException,
+    AppNotExistsException,
+    AppTokenInvalidException,
+)
 from src.specifications import EqualSpecification
 from src.dto import AppTokenMetaDTO
 
@@ -56,6 +60,18 @@ class AppTokensRepository:
                 tokens = await AppTokensDAO.get(
                     connection,
                     ['id', 'app_id', 'name', 'created_at'],
-                    EqualSpecification('app_id', app_id)
+                    EqualSpecification('app_id', app_id),
                 )
                 return (AppTokenMetaDTO(**token) for token in tokens)
+
+    @classmethod
+    async def get_app_and_hash_by_id(cls, token_id: UUID) -> tuple[UUID, str]:
+        async with postgres.pool.acquire() as connection:
+            tokens = await AppTokensDAO.get(
+                connection,
+                ['app_id', 'hash'],
+                EqualSpecification('id', token_id),
+            )
+            if len(tokens) != 1:
+                raise AppTokenInvalidException()
+            return UUID(str(tokens[0]['app_id'])), tokens[0]['hash']

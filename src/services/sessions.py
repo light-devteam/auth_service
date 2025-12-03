@@ -9,7 +9,7 @@ from src.dto import (
     TokenPairDTO,
     TelegramAuthDataDTO,
     RedisTokenDataDTO,
-    TokenPayloadDTO,
+    PrincipalDTO,
 )
 from src.exceptions import (
     AuthBaseException,
@@ -19,7 +19,7 @@ from src.exceptions import (
 )
 from src.repositories import SessionsRepository
 from src.services.accounts import AccountsService
-from src.enums import TokenTypes
+from src.enums import TokenTypes, PrincipalTypes
 
 
 class SessionsService:
@@ -114,11 +114,15 @@ class SessionsService:
         cls,
         access_type: TokenTypes | str,
         token: str | bytes,
-    ) -> TokenPayloadDTO:
+    ) -> PrincipalDTO:
         cls.check_access_type(access_type)
         try:
-            return Token.decode_access(token)
+            token_payload = Token.decode_access(token)
         except jwt.ExpiredSignatureError:
             raise AccessTokenExpired()
         except (jwt.DecodeError, jwt.InvalidTokenError):
             raise AccessTokenInvalid()
+        return PrincipalDTO(
+            id=UUID(token_payload.sub),
+            type=PrincipalTypes.ACCOUNT,
+        )

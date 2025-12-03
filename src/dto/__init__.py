@@ -15,6 +15,7 @@ from src.dto.token_payload import TokenPayloadDTO
 from src.dto.app_token import AppTokenDTO
 from src.dto.app import AppDTO
 from src.dto.app_token_meta import AppTokenMetaDTO
+from src.dto.principal import PrincipalDTO
 
 
 __all__ = [
@@ -35,4 +36,5 @@ __all__ = [
     'AppTokenDTO',
     'AppDTO',
     'AppTokenMetaDTO',
+    'PrincipalDTO',
 ]

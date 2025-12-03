@@ -121,3 +121,7 @@ class Token:
     def hash_bcrypt(cls, token: str) -> str:
         salt = bcrypt.gensalt()
         return bcrypt.hashpw(token.encode(), salt).decode()
+
+    @classmethod
+    def validate_bcrypt(cls, token: str, hashed_token: str) -> bool:
+        return bcrypt.checkpw(token.encode(), hashed_token.encode())

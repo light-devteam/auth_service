@@ -1,19 +1,22 @@
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
 
 from src.api.v1.app.router import router
 from src.services import AppsService
 from src.schemas import CreateAppRequestSchema, CreateAppResponseSchema
-from src.dto import TokenPayloadDTO
-from src.dependencies import get_validated_token
+from src.dto import PrincipalDTO
+from src.dependencies import get_principal
+from src.enums import PrincipalTypes
 
 
 @router.post('')
 async def create(
     creation_data: CreateAppRequestSchema,
-    token: TokenPayloadDTO = Depends(get_validated_token),
+    token: PrincipalDTO = Depends(get_principal),
 ) -> CreateAppResponseSchema:
+    if token.type == PrincipalTypes.APP:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
     app_id = await AppsService.create_app(
-        account_id=token.sub,
+        account_id=token.id,
         name=creation_data.name,
         type=creation_data.type,
         description=creation_data.description,
