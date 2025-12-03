@@ -58,6 +58,19 @@ class JWKAlreadyExistsException(JWKBaseException):
     _DETAIL = 'JWK with that name already exists'
 
 
+class AppBaseException(AuthBaseException): ...
+
+
+class AppAlreadyExistsException(AppBaseException):
+    _STATUS_CODE = status.HTTP_409_CONFLICT
+    _DETAIL = 'App with that name and account_id already exists'
+
+
+class TokenAlreadyExistsException(AppBaseException):
+    _STATUS_CODE = status.HTTP_409_CONFLICT
+    _DETAIL = 'Token with that name and app_id already exists'
+
+
 class AuthDAOBaseException(AuthBaseException): ...
 class DeleteAllRowsException(AuthDAOBaseException): ...
 class UpdateAllRowsException(AuthDAOBaseException): ...

@@ -1,18 +1,14 @@
 from uuid import UUID, uuid4
 from datetime import datetime, timedelta, timezone
-from typing import Any
 from hashlib import sha256
+import secrets
+import base64
 
 import jwt
 from msgspec import structs
+import bcrypt
 
-from src.dto import (
-    JwtDecodeOptionsDTO,
-    AccessTokenDTO,
-    RefreshTokenDTO,
-    TokenPairDTO,
-    TokenPayloadDTO,
-)
+from src import dto
 from src.enums import TokenTypes
 from config import settings
 
@@ -27,7 +23,7 @@ class Token:
         subject: UUID | str,
         issued_at: datetime | None = None,
         **payload: dict,
-    ) -> TokenPairDTO:
+    ) -> dto.TokenPairDTO:
         if not issued_at:
             issued_at = datetime.now(tz=timezone.utc)
         access = cls.create_access(
@@ -36,7 +32,7 @@ class Token:
             **payload,
         )
         refresh = Token.create_refresh(issued_at=issued_at)
-        return TokenPairDTO(
+        return dto.TokenPairDTO(
             access=access,
             refresh=refresh,
             token_type=TokenTypes.BEARER,
@@ -49,7 +45,7 @@ class Token:
         issued_at: datetime | None = None,
         expires_at: datetime | None = None,
         **payload: dict,
-    ) -> AccessTokenDTO:
+    ) -> dto.AccessTokenDTO:
         if isinstance(subject, UUID):
             subject = str(subject)
         if not issued_at:
@@ -68,7 +64,7 @@ class Token:
             },
             key=settings.JWK_PRIVATE_KEY,
         )
-        return AccessTokenDTO(
+        return dto.AccessTokenDTO(
             token=jwt_token,
             issued_at=issued_at,
             expires_at=expires_at,
@@ -79,27 +75,32 @@ class Token:
         cls,
         issued_at: datetime | None = None,
         expires_at: datetime | None = None,
-    ) -> RefreshTokenDTO:
+    ) -> dto.RefreshTokenDTO:
         if not issued_at:
             issued_at = datetime.now(tz=timezone.utc)
         if not expires_at:
             expires_at = issued_at + timedelta(minutes=cls.REFRESH_TOKEN_EXPIRE_DAYS)
         refresh = uuid4().hex
-        return RefreshTokenDTO(
+        return dto.RefreshTokenDTO(
             token=refresh,
             issued_at=issued_at,
             expires_at=expires_at,
-            hash=Token.hash(refresh),
+            hash=Token.hash_sha256(refresh),
         )
+
+    def create_app() -> dto.AppTokenDTO:
+        token_bytes = secrets.token_bytes(32)
+        token = base64.urlsafe_b64encode(token_bytes).decode()
+        return dto.AppTokenDTO(token=token)
 
     @classmethod
     def decode_access(
         cls,
         token: str | bytes,
-        options: JwtDecodeOptionsDTO | None = None,
-    ) -> TokenPayloadDTO:
+        options: dto.JwtDecodeOptionsDTO | None = None,
+    ) -> dto.TokenPayloadDTO:
         if not options:
-            options = JwtDecodeOptionsDTO()
+            options = dto.JwtDecodeOptionsDTO()
         key = ''
         if options.verify_signature:
             unverified_token = jwt.decode_complete(token, options={'verify_signature': False})
@@ -109,8 +110,13 @@ class Token:
             key=key,
             options=structs.asdict(options),
         )
-        return TokenPayloadDTO(**token_payload)
+        return dto.TokenPayloadDTO(**token_payload)
 
     @classmethod
-    def hash(cls, token: str) -> str:
+    def hash_sha256(cls, token: str) -> str:
         return sha256(token.encode()).hexdigest()
+
+    @classmethod
+    def hash_bcrypt(cls, token: str) -> str:
+        salt = bcrypt.gensalt()
+        return bcrypt.hashpw(token.encode(), salt).decode()

@@ -19,6 +19,11 @@ from src.schemas.sessions import (
     RevokeOtherSessionsSchema,
     RevokeAllSessionsSchema,
 )
+from src.schemas.apps import (
+    CreateAppRequestSchema,
+    CreateAppResponseSchema,
+    AppSchema,
+)
 
 
 __all__ = [
@@ -40,4 +45,7 @@ __all__ = [
     'RevokeSessionSchema',
     'RevokeOtherSessionsSchema',
     'RevokeAllSessionsSchema',
+    'CreateAppRequestSchema',
+    'CreateAppResponseSchema',
+    'AppSchema',
 ]

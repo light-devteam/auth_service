@@ -12,6 +12,8 @@ from src.dto.telegram_auth_data import TelegramAuthDataDTO
 from src.dto.redis_token_data import RedisTokenDataDTO
 from src.dto.redis_session import RedisSessionDTO
 from src.dto.token_payload import TokenPayloadDTO
+from src.dto.app_token import AppTokenDTO
+from src.dto.app import AppDTO
 
 
 __all__ = [
@@ -29,4 +31,6 @@ __all__ = [
     'RedisTokenDataDTO',
     'RedisSessionDTO',
     'TokenPayloadDTO',
+    'AppTokenDTO',
+    'AppDTO',
 ]

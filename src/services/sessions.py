@@ -71,7 +71,7 @@ class SessionsService:
         refresh_token: str,
         device_info: DeviceInfoDTO,
     ) -> tuple[TokenPairDTO, UUID]:
-        token_hash = Token.hash(refresh_token)
+        token_hash = Token.hash_sha256(refresh_token)
         session_data = await SessionsRepository.get_session(session_id)
         if session_data.token.hash != token_hash:
             raise SessionDoesNotExistsException()
