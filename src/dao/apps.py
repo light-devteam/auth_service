@@ -90,5 +90,5 @@ class AppsDAO(BaseDAO):
         offset = page_size * (page - 1)
         statement = f'{statement} limit {page_size} offset {offset}'
         if lock:
-            statement = f'{statement} {lock.value}'
+            statement = f'{statement} {lock.value} of a'
         return await connection.fetch(statement, *statement_parameters)

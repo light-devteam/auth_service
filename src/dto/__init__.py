@@ -14,6 +14,7 @@ from src.dto.redis_session import RedisSessionDTO
 from src.dto.token_payload import TokenPayloadDTO
 from src.dto.app_token import AppTokenDTO
 from src.dto.app import AppDTO
+from src.dto.app_token_meta import AppTokenMetaDTO
 
 
 __all__ = [
@@ -33,4 +34,5 @@ __all__ = [
     'TokenPayloadDTO',
     'AppTokenDTO',
     'AppDTO',
+    'AppTokenMetaDTO',
 ]

@@ -71,6 +71,11 @@ class TokenAlreadyExistsException(AppBaseException):
     _DETAIL = 'Token with that name and app_id already exists'
 
 
+class AppNotExistsException(AppBaseException):
+    _STATUS_CODE = status.HTTP_404_NOT_FOUND
+    _DETAIL = 'App not exists'
+
+
 class AuthDAOBaseException(AuthBaseException): ...
 class DeleteAllRowsException(AuthDAOBaseException): ...
 class UpdateAllRowsException(AuthDAOBaseException): ...

@@ -88,7 +88,8 @@ class Token:
             hash=Token.hash_sha256(refresh),
         )
 
-    def create_app() -> dto.AppTokenDTO:
+    @classmethod
+    def create_app(cls) -> dto.AppTokenDTO:
         token_bytes = secrets.token_bytes(32)
         token = base64.urlsafe_b64encode(token_bytes).decode()
         return dto.AppTokenDTO(token=token)
