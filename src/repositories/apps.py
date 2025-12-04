@@ -1,13 +1,14 @@
+from datetime import datetime, timezone
 from uuid import UUID
 
-from asyncpg import UniqueViolationError
+from asyncpg import UniqueViolationError, Connection
 
-from src.enums import AppTypes
 from src.storages import postgres
 from src.dao import AppsDAO
 from src.dto import AppDTO
-from src.exceptions import AppAlreadyExistsException
+from src.exceptions import AppAlreadyExistsException, AppNotExistsException
 from src.specifications import EqualSpecification
+from src.enums import PostgresLocks
 
 
 class AppsRepository:
@@ -16,7 +17,6 @@ class AppsRepository:
         cls,
         account_id: UUID,
         name: str,
-        type: AppTypes,
         description: str = '',
     ) -> UUID:
         async with postgres.pool.acquire() as connection:
@@ -24,7 +24,6 @@ class AppsRepository:
                 'account_id': account_id,
                 'name': name,
                 'description': description,
-                'type': type.value,
             }
             try:
                 app = await AppsDAO.create(connection, app_data, ['id'])
@@ -42,9 +41,45 @@ class AppsRepository:
         async with postgres.pool.acquire() as connection:
             apps = await AppsDAO.get(
                 connection,
-                ['id', 'account_id', 'name', 'description', 'type'],
+                ['id', 'account_id', 'name', 'description', 'created_at', 'deleted_at'],
                 EqualSpecification('account_id', account_id),
                 page=page,
                 page_size=page_size,
             )
         return [AppDTO(**app) for app in apps]
+
+    @classmethod
+    async def get(
+        cls,
+        app_id: UUID,
+    ) -> AppDTO:
+        async with postgres.pool.acquire() as connection:
+            apps = await AppsDAO.get(
+                connection,
+                ['id', 'account_id', 'name', 'description', 'created_at', 'deleted_at'],
+                EqualSpecification('id', app_id),
+            )
+        if len(apps) != 1:
+            raise AppNotExistsException()
+        return AppDTO(**apps[0])
+
+    @classmethod
+    async def delete(cls, app_id: UUID) -> None:
+        async with postgres.pool.acquire() as connection:
+            connection: Connection
+            async with connection.transaction():
+                apps = await AppsDAO.get(
+                    connection,
+                    ['deleted_at'],
+                    EqualSpecification('id', app_id),
+                    lock=PostgresLocks.FOR_NO_KEY_UPDATE,
+                )
+                if len(apps) != 1:
+                    raise AppNotExistsException()
+                if apps[0]['deleted_at'] != None:
+                    raise AppNotExistsException()
+                await AppsDAO.update(
+                    connection,
+                    {'deleted_at': datetime.now(tz=timezone.utc)},
+                    EqualSpecification('id', app_id),
+                )

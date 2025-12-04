@@ -11,18 +11,12 @@ from src.dependencies import get_principal
 from src.enums import PrincipalTypes
 
 
-@router.get('/accounts/{account_id}/apps')
-async def get_apps(
-    account_id: UUID,
-    page: int = 1,
-    page_size: int = 100,
+@router.get('/apps/{app_id}')
+async def get(
+    app_id: UUID,
     token: PrincipalDTO = Depends(get_principal),
-) -> list[AppSchema]:
+) -> AppSchema:
     if token.type == PrincipalTypes.APP:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
-    app_dtos = await AppsService.get_apps(
-        account_id=account_id,
-        page=page,
-        page_size=page_size,
-    )
-    return [AppSchema.model_validate_json(json_encoder.encode(app_dto)) for app_dto in app_dtos]
+    app_dto = await AppsService.get(app_id)
+    return AppSchema.model_validate_json(json_encoder.encode(app_dto))

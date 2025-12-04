@@ -16,7 +16,7 @@ create table if not exists "auth".apps (
     description varchar(255),
     type uuid not null references "auth".app_types(id) on delete cascade,
     created_at timestamptz default now() not null,
-    unique(account_id, name)
+    constraint "uq_apps_account_id_name" unique(account_id, name)
 );
 
 create table "auth".app_tokens (
@@ -25,7 +25,7 @@ create table "auth".app_tokens (
     name varchar(64) not null,
     hash text not null,
     created_at timestamptz default now() not null,
-    unique(app_id, name)
+    constraint "uq_apps_tokens_app_id_name" unique(app_id, name)
 );
 
 create index if not exists idx_app_tokens_app_id on "auth".app_tokens(app_id);

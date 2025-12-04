@@ -66,17 +66,22 @@ class AppAlreadyExistsException(AppBaseException):
     _DETAIL = 'App with that name and account_id already exists'
 
 
-class TokenAlreadyExistsException(AppBaseException):
-    _STATUS_CODE = status.HTTP_409_CONFLICT
-    _DETAIL = 'Token with that name and app_id already exists'
-
-
 class AppNotExistsException(AppBaseException):
     _STATUS_CODE = status.HTTP_404_NOT_FOUND
     _DETAIL = 'App not exists'
 
 
-class AppTokenInvalidException(AppBaseException):
+class TokenAlreadyExistsException(AppBaseException):
+    _STATUS_CODE = status.HTTP_409_CONFLICT
+    _DETAIL = 'Token with that name and app_id already exists'
+
+
+class TokenNotExistsException(AppBaseException):
+    _STATUS_CODE = status.HTTP_404_NOT_FOUND
+    _DETAIL = 'Token not exists'
+
+
+class InvalidTokenException(AppBaseException):
     _STATUS_CODE = status.HTTP_401_UNAUTHORIZED
     _DETAIL = 'Recieved app token invalid'
 

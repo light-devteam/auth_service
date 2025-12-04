@@ -10,7 +10,7 @@ from src.dependencies import get_principal
 from src.enums import PrincipalTypes
 
 
-@router.post('')
+@router.post('/apps/{app_id}/tokens')
 async def create(
     app_id: UUID,
     creation_data: CreateTokenRequestSchema,
@@ -19,8 +19,8 @@ async def create(
     if token.type == PrincipalTypes.APP:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN)
     api_token = await AppTokensService.create_token(
-        account_id=token.id,
         app_id=app_id,
         name=creation_data.name,
+        expires_at=creation_data.expires_at,
     )
     return CreateTokenResponseSchema(token=api_token)

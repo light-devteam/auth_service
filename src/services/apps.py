@@ -1,7 +1,6 @@
 from uuid import UUID
 
 from src.dto import AppDTO
-from src.enums import AppTypes
 from src.repositories import AppsRepository
 
 class AppsService:
@@ -10,10 +9,9 @@ class AppsService:
         cls,
         account_id: UUID,
         name: str,
-        type: AppTypes,
         description: str = '',
     ) -> UUID:
-        return await AppsRepository.create_app(account_id, name, type, description)
+        return await AppsRepository.create_app(account_id, name, description)
 
     @classmethod
     async def get_apps(
@@ -23,3 +21,14 @@ class AppsService:
         page_size: int = 100,
     ) -> list[AppDTO]:
         return await AppsRepository.get_apps(account_id, page, page_size)
+
+    @classmethod
+    async def get(
+        cls,
+        app_id: UUID,
+    ) -> AppDTO:
+        return await AppsRepository.get(app_id)
+
+    @classmethod
+    async def delete(cls, app_id: UUID) -> None:
+        return await AppsRepository.delete(app_id)
