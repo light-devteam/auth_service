@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, List
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import SecretStr, field_validator
@@ -6,6 +6,9 @@ from jwt import PyJWK
 
 
 class Settings(BaseSettings):
+    HOST: str = '127.0.0.1'
+    PORT: int = 8000
+
     POSTGRES_URL: str
     REDIS_URL: str
 
@@ -19,14 +22,15 @@ class Settings(BaseSettings):
 
     VERIFY_INIT_DATA_URLS: str | dict[str, str]
 
-    CORS_ALLOW_ORIGINS: str | list[str] = '*'
+    CORS_ALLOW_ORIGINS: List[str] = ['*']
 
     LOGS_FILE: str = 'logs.log'
-    DEV_MODE: bool = False
+    DEBUG: bool = False
 
     model_config = SettingsConfigDict(
         env_file='config/.env',
         extra='ignore',
+        case_sensitive=True,
     )
 
     @field_validator('VERIFY_INIT_DATA_URLS', mode='before')
@@ -43,20 +47,6 @@ class Settings(BaseSettings):
                     continue
                 pairs[bot_name.strip()] = url.strip()
             return pairs
-        return value
-
-    @field_validator('CORS_ALLOW_ORIGINS', mode='before')
-    def validate_cors_allow_origins(cls, value: Any) -> Any | dict[str, str]:
-        if isinstance(value, str):
-            if value == '*':
-                return value
-            urls = []
-            for url in value.split('\n'):
-                url = url.strip()
-                if not url:
-                    continue
-                urls.append(url)
-            return urls
         return value
 
     def set_private_key(self, new_key: PyJWK) -> None:

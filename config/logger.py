@@ -45,7 +45,7 @@ class Logger:
         return stream_handler
 
     def __get_logger_level(self, default_level: int) -> int:
-        if settings.DEV_MODE:
+        if settings.DEBUG:
             return logging.DEBUG
         return default_level
 
