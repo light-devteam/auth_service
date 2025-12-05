@@ -21,7 +21,8 @@ dependencies = [
     "jwcrypto (>=1.5.6,<2.0.0)",
     "redis (>=7.0.1,<8.0.0)",
     "aiogram (>=3.22.0,<4.0.0)",
-    "bcrypt (>=5.0.0,<6.0.0)"
+    "bcrypt (>=5.0.0,<6.0.0)",
+    "dependency-injector[fastapi] (>=4.48.3,<5.0.0)",
 ]
 
 [tool.poetry]

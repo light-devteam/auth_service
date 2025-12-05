@@ -1,7 +1,3 @@
-from config.settings import settings
-from config.logger import logger
+from config.settings import Settings
 
-__all__ = [
-    'settings',
-    'logger',
-]
+__all__ = ['Settings']
