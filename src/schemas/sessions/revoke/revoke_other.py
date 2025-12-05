@@ -1,8 +1,0 @@
-from uuid import UUID
-
-from pydantic import BaseModel
-
-
-class RevokeOtherSessionsSchema(BaseModel):
-    account_id: UUID
-    keep_session_id: UUID
