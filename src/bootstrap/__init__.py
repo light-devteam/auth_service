@@ -1,3 +1,3 @@
-from .app import create_app
+from src.bootstrap.app import App
 
-__all__ = ['create_app']
+__all__ = ['App']

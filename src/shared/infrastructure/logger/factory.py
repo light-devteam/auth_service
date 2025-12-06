@@ -1,7 +1,7 @@
 import logging
 from functools import cached_property
 
-from src.infrastructure.logger.filters import LoggerFilter
+from src.shared.infrastructure.logger.filters import LoggerFilter
 from config import Settings
 
 class LoggerFactory:
@@ -13,7 +13,7 @@ class LoggerFactory:
     def get_logger(
         self,
         name: str,
-        level: logging._Level = logging.INFO,
+        level: int = logging.INFO,
     ) -> logging.Logger:
         log_level = self.__get_logger_level(level)
         logger = logging.getLogger(name)
@@ -40,7 +40,7 @@ class LoggerFactory:
         stream_handler.setFormatter(logging.Formatter(self._LOG_FORMAT))
         return stream_handler
 
-    def __get_logger_level(self, default_level: logging._Level) -> logging._Level:
+    def __get_logger_level(self, default_level: int) -> int:
         if self.settings.DEBUG:
             return logging.DEBUG
         return default_level
