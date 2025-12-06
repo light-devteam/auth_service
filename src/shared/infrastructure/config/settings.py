@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     DEBUG: bool = False
 
     model_config = SettingsConfigDict(
-        env_file='config/.env',
+        env_file='.env',
         extra='ignore',
         case_sensitive=True,
     )
