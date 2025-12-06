@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from src.bootstrap.lifespan import LifespanManager
 # from src.bootstrap.middleware import register_middlewares
-# from src.bootstrap.exception_handlers import register_exception_handlers
+from src.bootstrap.exception_handler import ExceptionHandler
 
 class App:
     def __init__(self) -> None:
@@ -20,7 +20,7 @@ class App:
         )
         self.__logger = self.lifespan_manager.container.logger_factory().get_logger(__name__)
         # register_middlewares(app)
-        # register_exception_handlers(app)
+        ExceptionHandler(self.__app)
         self.__include_routers()
         self.__logger.info('Application created successfully')
         return self.__app
