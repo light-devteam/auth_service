@@ -1,7 +1,7 @@
 from dependency_injector import containers, providers
 
 from src.shared.infrastructure.logger import LoggerFactory
-from config import Settings
+from src.shared.infrastructure.config import Settings
 
 class DIContainer(containers.DeclarativeContainer):
     settings = providers.Singleton(Settings)
