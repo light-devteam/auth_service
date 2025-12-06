@@ -94,8 +94,8 @@ class ExceptionHandler:
     def _map_exception_to_status(self, exc: exceptions.AppException) -> int:
         mapping = {
             exceptions.ApplicationException: status.HTTP_500_INTERNAL_SERVER_ERROR,
-            exceptions.DomainException: status.HTTP_500_INTERNAL_SERVER_ERROR,
-            exceptions.InfrastructureException: status.HTTP_500_INTERNAL_SERVER_ERROR,
-            exceptions.AppException: status.HTTP_500_INTERNAL_SERVER_ERROR,
+            exceptions.DomainException: status.HTTP_400_BAD_REQUEST,
+            exceptions.InfrastructureException: status.HTTP_503_SERVICE_UNAVAILABLE,
+            exceptions.AppException: status.HTTP_503_SERVICE_UNAVAILABLE,
         }
-        return mapping.get(type(exc), status.HTTP_400_BAD_REQUEST)
+        return mapping.get(type(exc), status.HTTP_500_INTERNAL_SERVER_ERROR)
