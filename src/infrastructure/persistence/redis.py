@@ -16,6 +16,8 @@ class RedisClient(BaseClient):
 
     @property
     def pool(self) -> ConnectionPool:
+        if self._pool is None:
+            raise RuntimeError('Redis pool is not connected')
         return self._pool
 
     @property
