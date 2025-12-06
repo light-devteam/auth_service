@@ -12,7 +12,3 @@ class BaseClient(ABC):
     @abstractmethod
     async def disconnect(self) -> None:
         raise NotImplementedError()
-
-    @abstractmethod
-    async def healthcheck(self) -> None:
-        raise NotImplementedError()
