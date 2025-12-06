@@ -2,21 +2,29 @@ from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 from fastapi import FastAPI
+from dependency_injector.wiring import inject, Provide
 
 from src.infrastructure.di import DIContainer
-# from src.storages import postgres, redis
+from src.shared.infrastructure.logger import LoggerFactory
 
 
 class LifespanManager:
     def __init__(self) -> None:
         self.container = DIContainer()
         self.container.wire(modules=[
+            __name__,
             'src.bootstrap.exception_handler',
+            'src.bootstrap.app',
         ])
 
     @asynccontextmanager
-    async def lifespan(self, app: FastAPI) -> AsyncGenerator[None, None]:
-        logger = self.container.logger_factory().get_logger(__name__)
+    @inject
+    async def lifespan(
+        self,
+        app: FastAPI,
+        logger_factory: LoggerFactory = Provide['logger_factory'],
+    ) -> AsyncGenerator[None, None]:
+        logger = logger_factory.get_logger(__name__)
         logger.info('Starting application...')
 #         try:
 #             await self._connect_storages()

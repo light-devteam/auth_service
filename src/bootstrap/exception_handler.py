@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from dependency_injector.wiring import inject, Provide
 
-from src.shared.domain.exceptions import AppException
+from src.shared.domain import exceptions
 from src.shared.infrastructure.logger import LoggerFactory
 
 class ExceptionHandler:
@@ -15,8 +15,8 @@ class ExceptionHandler:
     ) -> None:
         self.__logger = logger_factory.get_logger(__name__)
         app.add_exception_handler(
-            AppException,
-            self.auth_exception_handler
+            exceptions.AppException,
+            self.app_exception_handler
         )
         app.add_exception_handler(
             RequestValidationError,
@@ -28,24 +28,25 @@ class ExceptionHandler:
         )
         self.__logger.debug('Exception handlers registered')
 
-    async def auth_exception_handler(
+    async def app_exception_handler(
         self,
         request: Request,
-        exc: AppException
+        exc: exceptions.AppException
     ) -> JSONResponse:
+        status_code = self._map_exception_to_status(exc)
         self.__logger.warning(
-            f'Auth exception: {exc.__class__.__name__} - {exc._DETAIL}',
+            f'App exception: {type(exc).__name__} - {exc._DETAIL}',
             extra={
                 'path': request.url.path,
                 'method': request.method,
-                'status_code': exc._STATUS_CODE,
+                'status_code': status_code,
             }
         )
         return JSONResponse(
-            status_code=exc._STATUS_CODE,
+            status_code=status_code,
             content={
                 'detail': exc._DETAIL,
-                'error_type': exc.__class__.__name__,
+                'error_type': type(exc).__name__,
             }
         )
 
@@ -89,3 +90,12 @@ class ExceptionHandler:
                 'error_type': 'InternalServerError',
             }
         )
+
+    def _map_exception_to_status(self, exc: exceptions.AppException) -> int:
+        mapping = {
+            exceptions.ApplicationException: status.HTTP_500_INTERNAL_SERVER_ERROR,
+            exceptions.DomainException: status.HTTP_500_INTERNAL_SERVER_ERROR,
+            exceptions.InfrastructureException: status.HTTP_500_INTERNAL_SERVER_ERROR,
+            exceptions.AppException: status.HTTP_500_INTERNAL_SERVER_ERROR,
+        }
+        return mapping.get(type(exc), status.HTTP_400_BAD_REQUEST)
