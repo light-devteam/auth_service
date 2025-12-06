@@ -10,6 +10,9 @@ from src.infrastructure.di import DIContainer
 class LifespanManager:
     def __init__(self) -> None:
         self.container = DIContainer()
+        self.container.wire(modules=[
+            'src.bootstrap.exception_handler',
+        ])
 
     @asynccontextmanager
     async def lifespan(self, app: FastAPI) -> AsyncGenerator[None, None]:
@@ -33,6 +36,7 @@ class LifespanManager:
 #         except Exception as e:
 #             logger.error(f'Error during shutdown: {e}')
 #        await self.container.shutdown_resources()
+        self.container.unwire()
         logger.info('Application stopped successfully')
 
 #     async def _connect_storages(self) -> None:

@@ -2,7 +2,7 @@ import uvicorn
 from src.bootstrap import App
 
 app = App()
-fastapi_app = app.create()
+fastapi_app = app.create
 
 
 if __name__ == '__main__':
@@ -12,4 +12,5 @@ if __name__ == '__main__':
         port=8000,
         reload=True,
         access_log=True,
+        factory=True,
     )
