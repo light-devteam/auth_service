@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from dependency_injector.wiring import inject, Provide
 
 from src.bootstrap.lifespan import LifespanManager
-# from src.bootstrap.middleware import register_middlewares
-from src.bootstrap.exception_handler import ExceptionHandler
+from src.bootstrap.middlewares_manager import MiddlewaresManager
+from src.bootstrap.exception_handlers_manager import ExceptionHandlersManager
 from src.shared.infrastructure.logger import LoggerFactory
 
 class App:
@@ -26,8 +26,10 @@ class App:
             lifespan=self.lifespan_manager.lifespan,
         )
         self.__logger = logger_factory.get_logger(__name__)
-        # register_middlewares(app)
-        ExceptionHandler(self.__app)
+        middlewares_manager = MiddlewaresManager(self.__app)
+        middlewares_manager.register_middlewares()
+        exception_handlers_manager = ExceptionHandlersManager(self.__app)
+        exception_handlers_manager.register_exception_handlers()
         self.__include_routers()
         self.__logger.info('Application created successfully')
         return self.__app

@@ -6,27 +6,25 @@ from dependency_injector.wiring import inject, Provide
 from src.shared.domain import exceptions
 from src.shared.infrastructure.logger import LoggerFactory
 
-class ExceptionHandler:
+class ExceptionHandlersManager:
     @inject
     def __init__(
         self,
         app: FastAPI,
         logger_factory: LoggerFactory = Provide['logger_factory']
     ) -> None:
+        self.__app = app
         self.__logger = logger_factory.get_logger(__name__)
-        app.add_exception_handler(
-            exceptions.AppException,
-            self.app_exception_handler
-        )
-        app.add_exception_handler(
-            RequestValidationError,
-            self.validation_exception_handler
-        )
-        app.add_exception_handler(
-            Exception,
-            self.general_exception_handler
-        )
-        self.__logger.debug('Exception handlers registered')
+        self.__exception_to_handler = {
+            exceptions.AppException: self.app_exception_handler,
+            RequestValidationError: self.validation_exception_handler,
+            Exception: self.general_exception_handler,
+        }
+
+    def register_exception_handlers(self) -> None:
+        for exception, handler in self.__exception_to_handler.items():
+            self.__app.add_exception_handler(exception, handler)
+        self.__logger.debug('All exception handlers registered')
 
     async def app_exception_handler(
         self,
