@@ -20,6 +20,8 @@ class PostgresClient(BaseClient):
 
     @property
     def pool(self) -> asyncpg.Pool:
+        if self._pool is None:
+            raise RuntimeError('PostgreSQL pool is not connected')
         return self._pool
 
     async def disconnect(self) -> None:
