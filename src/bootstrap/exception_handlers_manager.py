@@ -13,18 +13,18 @@ class ExceptionHandlersManager:
         app: FastAPI,
         logger_factory: LoggerFactory = Provide['logger_factory']
     ) -> None:
-        self.__app = app
-        self.__logger = logger_factory.get_logger(__name__)
-        self.__exception_to_handler = {
+        self._app = app
+        self._logger = logger_factory.get_logger(__name__)
+        self._exception_to_handler = {
             exceptions.AppException: self.app_exception_handler,
             RequestValidationError: self.validation_exception_handler,
             Exception: self.general_exception_handler,
         }
 
     def register_exception_handlers(self) -> None:
-        for exception, handler in self.__exception_to_handler.items():
-            self.__app.add_exception_handler(exception, handler)
-        self.__logger.debug('All exception handlers registered')
+        for exception, handler in self._exception_to_handler.items():
+            self._app.add_exception_handler(exception, handler)
+        self._logger.debug('All exception handlers registered')
 
     async def app_exception_handler(
         self,
@@ -32,7 +32,7 @@ class ExceptionHandlersManager:
         exc: exceptions.AppException
     ) -> JSONResponse:
         status_code = self._map_exception_to_status(exc)
-        self.__logger.warning(
+        self._logger.warning(
             f'App exception: {type(exc).__name__} - {exc._DETAIL}',
             extra={
                 'path': request.url.path,
@@ -54,7 +54,7 @@ class ExceptionHandlersManager:
         exc: RequestValidationError
     ) -> JSONResponse:
         errors = exc.errors()
-        self.__logger.warning(
+        self._logger.warning(
             f'Validation error on {request.url.path}',
             extra={
                 'errors': errors,
@@ -74,7 +74,7 @@ class ExceptionHandlersManager:
         request: Request,
         exc: Exception
     ) -> JSONResponse:
-        self.__logger.exception(
+        self._logger.exception(
             f'Unexpected error: {str(exc)}',
             extra={
                 'path': request.url.path,

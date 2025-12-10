@@ -17,8 +17,9 @@ class LifespanManager:
             'src.bootstrap.exception_handlers_manager',
             'src.bootstrap.middlewares_manager',
             'src.bootstrap.app',
+            'src.system.application.health_check',
         ])
-        self.__logger = None
+        self._logger = None
 
     @asynccontextmanager
     @inject
@@ -27,7 +28,7 @@ class LifespanManager:
         app: FastAPI,
         logger_factory: LoggerFactory = Provide['logger_factory'],
     ) -> AsyncGenerator[None, None]:
-        self.__logger = logger_factory.get_logger(__name__)
+        self._logger = logger_factory.get_logger(__name__)
         try:
             await self._startup()
             yield
@@ -35,22 +36,22 @@ class LifespanManager:
             await self._shutdown()
 
     async def _startup(self) -> None:
-        self.__logger.info('Starting application...')
+        self._logger.info('Starting application...')
         try:
             await self._connect_storages()
         except Exception as e:
-            self.__logger.error(f'Failed to start application when connect storages: {e}')
+            self._logger.error(f'Failed to start application when connect storages: {e}')
             raise
-        self.__logger.info('Application started successfully')
+        self._logger.info('Application started successfully')
 
     async def _shutdown(self) -> None:
-        self.__logger.info('Shutting down application...')
+        self._logger.info('Shutting down application...')
         try:
             await self._disconnect_storages()
         except Exception as e:
-            self.__logger.error(f'Error during shutdown: {e}')
+            self._logger.error(f'Error during shutdown: {e}')
         self.container.unwire()
-        self.__logger.info('Application stopped successfully')
+        self._logger.info('Application stopped successfully')
 
     @inject
     async def _connect_storages(
@@ -58,12 +59,12 @@ class LifespanManager:
         postgres_client: PostgresClient = Provide['postgres_client'],
         redis_client: RedisClient = Provide['redis_client'],
     ) -> None:
-        self.__logger.debug('Connecting to PostgreSQL...')
+        self._logger.debug('Connecting to PostgreSQL...')
         await postgres_client.connect()
-        self.__logger.info('PostgreSQL connected')
-        self.__logger.debug('Connecting to Redis...')
+        self._logger.info('PostgreSQL connected')
+        self._logger.debug('Connecting to Redis...')
         await redis_client.connect()
-        self.__logger.info('Redis connected')
+        self._logger.info('Redis connected')
 
     @inject
     async def _disconnect_storages(
@@ -71,9 +72,9 @@ class LifespanManager:
         postgres_client: PostgresClient = Provide['postgres_client'],
         redis_client: RedisClient = Provide['redis_client'],
     ) -> None:
-        self.__logger.debug('Disconnecting from PostgreSQL...')
+        self._logger.debug('Disconnecting from PostgreSQL...')
         await postgres_client.disconnect()
-        self.__logger.info('PostgreSQL disconnected')
-        self.__logger.debug('Disconnecting from Redis...')
+        self._logger.info('PostgreSQL disconnected')
+        self._logger.debug('Disconnecting from Redis...')
         await redis_client.disconnect()
-        self.__logger.info('Redis disconnected')
+        self._logger.info('Redis disconnected')

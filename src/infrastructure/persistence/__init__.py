@@ -1,10 +1,9 @@
-from src.infrastructure.persistence.base import BaseClient
-from src.infrastructure.persistence.postgres import PostgresClient
-from src.infrastructure.persistence.redis import RedisClient
-
+from src.infrastructure.persistence.postgres import PostgresClient, PostgresUnitOfWork
+from src.infrastructure.persistence.redis import RedisClient, RedisSession
 
 __all__ = [
-    'BaseClient',
     'PostgresClient',
     'RedisClient',
+    'PostgresUnitOfWork',
+    'RedisSession',
 ]

@@ -18,23 +18,23 @@ class App:
         self,
         logger_factory: LoggerFactory = Provide['logger_factory'],
     ) -> FastAPI:
-        self.__app = FastAPI(
+        self._app = FastAPI(
             title='Auth Service',
             version='1.0.0',
             docs_url='/swagger',
             redoc_url='/redoc',
             lifespan=self.lifespan_manager.lifespan,
         )
-        self.__logger = logger_factory.get_logger(__name__)
-        middlewares_manager = MiddlewaresManager(self.__app)
+        self._logger = logger_factory.get_logger(__name__)
+        middlewares_manager = MiddlewaresManager(self._app)
         middlewares_manager.register_middlewares()
-        exception_handlers_manager = ExceptionHandlersManager(self.__app)
+        exception_handlers_manager = ExceptionHandlersManager(self._app)
         exception_handlers_manager.register_exception_handlers()
         self.__include_routers()
-        self.__logger.info('Application created successfully')
-        return self.__app
+        self._logger.info('Application created successfully')
+        return self._app
 
     def __include_routers(self) -> None:
         for router in self._routers:
-            self.__app.include_router(router)
-        self.__logger.debug(f'Included {len(self._routers)} routers')
+            self._app.include_router(router)
+        self._logger.debug(f'Included {len(self._routers)} routers')
