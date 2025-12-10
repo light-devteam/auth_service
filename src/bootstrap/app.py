@@ -5,13 +5,18 @@ from src.bootstrap.lifespan import LifespanManager
 from src.bootstrap.middlewares_manager import MiddlewaresManager
 from src.bootstrap.exception_handlers_manager import ExceptionHandlersManager
 from src.shared.infrastructure.logger import LoggerFactory
+from src.delivery.http import api, healthcheck, well_known
 
 class App:
     def __init__(self) -> None:
         self.lifespan_manager = LifespanManager()
-        self.__app = None
-        self.__logger = None
-        self._routers = []
+        self._app = None
+        self._logger = None
+        self._routers = [
+            api.router,
+            healthcheck.router,
+            well_known.router,
+        ]
 
     @inject
     def create(
