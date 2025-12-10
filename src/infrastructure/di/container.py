@@ -13,6 +13,13 @@ from src.system.application import HealthCheckService
 
 
 class DIContainer(containers.DeclarativeContainer):
+    wiring_config = containers.WiringConfiguration(
+        packages=[
+            'src.bootstrap',
+            'src.system.application',
+        ],
+    )
+
     settings = providers.Singleton(Settings)
     logger_factory = providers.Singleton(LoggerFactory, settings=settings)
 

@@ -12,13 +12,6 @@ from src.infrastructure.persistence import PostgresClient, RedisClient
 class LifespanManager:
     def __init__(self) -> None:
         self.container = DIContainer()
-        self.container.wire(modules=[
-            __name__,
-            'src.bootstrap.exception_handlers_manager',
-            'src.bootstrap.middlewares_manager',
-            'src.bootstrap.app',
-            'src.system.application.health_check',
-        ])
         self._logger = None
 
     @asynccontextmanager
