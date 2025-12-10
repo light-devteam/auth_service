@@ -22,6 +22,6 @@ RUN python3 -m poetry config virtualenvs.create false \
 COPY . ${DIRECTORY}
 
 HEALTHCHECK --interval=5s --timeout=5s --start-period=5s --retries=3 \
-    CMD curl -f http://127.0.0.1:8000/api/v1/health/live || exit 1
+    CMD curl -f http://127.0.0.1:8000/health/live || exit 1
 
 ENTRYPOINT [ "python", "-m", "main" ]

@@ -17,6 +17,7 @@ class DIContainer(containers.DeclarativeContainer):
         packages=[
             'src.bootstrap',
             'src.system.application',
+            'src.system.delivery',
         ],
     )
 
