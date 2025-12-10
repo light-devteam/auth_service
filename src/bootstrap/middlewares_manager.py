@@ -14,12 +14,12 @@ class MiddlewaresManager:
         logger_factory: LoggerFactory = Provide['logger_factory'],
         settings: Settings = Provide['settings'],
     ) -> None:
-        self.__app = app
-        self.__settings = settings
-        self.__logger = logger_factory.get_logger(__name__)
-        self.__middleware_to_kwargs = {
+        self._app = app
+        self._settings = settings
+        self._logger = logger_factory.get_logger(__name__)
+        self._middleware_to_kwargs = {
             CORSMiddleware: {
-                'allow_origins': self.__settings.CORS_ALLOW_ORIGINS,
+                'allow_origins': self._settings.CORS_ALLOW_ORIGINS,
                 'allow_credentials': True,
                 'allow_methods': ['*'],
                 'allow_headers': ['*'],
@@ -27,6 +27,6 @@ class MiddlewaresManager:
         }
 
     def register_middlewares(self) -> None:
-        for middleware, kwargs in self.__middleware_to_kwargs.items():
-            self.__app.add_middleware(middleware, **kwargs)
-        self.__logger.debug('All middlewares registered')
+        for middleware, kwargs in self._middleware_to_kwargs.items():
+            self._app.add_middleware(middleware, **kwargs)
+        self._logger.debug('All middlewares registered')

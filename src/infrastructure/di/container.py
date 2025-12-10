@@ -2,7 +2,15 @@ from dependency_injector import containers, providers
 
 from src.shared.infrastructure.logger import LoggerFactory
 from src.shared.infrastructure.config import Settings
-from src.infrastructure.persistence import PostgresClient, RedisClient
+from src.infrastructure.persistence import (
+    PostgresClient,
+    RedisClient,
+    PostgresUnitOfWork,
+    RedisSession,
+)
+from src.system.infrastructure.repositories import PostgresProbe, RedisProbe
+from src.system.application import HealthCheckService
+
 
 class DIContainer(containers.DeclarativeContainer):
     settings = providers.Singleton(Settings)
@@ -16,3 +24,16 @@ class DIContainer(containers.DeclarativeContainer):
         RedisClient,
         db_url=settings.provided.REDIS_URL,
     )
+
+    postgres_uow = providers.Factory(PostgresUnitOfWork, client=postgres_client)
+    redis_session = providers.Factory(RedisSession, client=redis_client)
+
+    postgres_probe_repository = providers.Singleton(PostgresProbe)
+    redis_probe_repository = providers.Singleton(RedisProbe)
+
+    repository_to_context_factory = providers.Dict({
+        postgres_probe_repository(): postgres_uow,
+        redis_probe_repository(): redis_session,
+    })
+
+    healthcheck_application_service = providers.Singleton(HealthCheckService)

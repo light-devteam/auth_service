@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class BaseClient(ABC):
+class IDatabaseClient(ABC):
     def __init__(self, db_url: str) -> None:
         self._db_url = db_url
 
