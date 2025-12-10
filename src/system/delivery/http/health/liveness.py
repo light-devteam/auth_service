@@ -15,7 +15,7 @@ async def check_liveness(
     healthcheck_service: HealthCheckService = Depends(
         Provide['healthcheck_application_service'],
     ),
-) -> None:
+) -> SystemHealth:
     system_health = await healthcheck_service.probe(ProbeType.LIVENESS)
     if system_health.status == HealthStatus.UNHEALTHY:
         response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
