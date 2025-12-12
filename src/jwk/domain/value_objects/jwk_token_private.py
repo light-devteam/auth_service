@@ -5,7 +5,7 @@ from typing import Self
 
 from dependency_injector.wiring import inject, Provide
 
-from src.shared.infrastructure.config import Settings
+from src.infrastructure.config import Settings
 
 
 class JWKTokenPrivate(bytes):

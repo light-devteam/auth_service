@@ -1,6 +1,6 @@
 import asyncpg
 
-from src.shared.domain import IDatabaseClient
+from src.domain import IDatabaseClient
 
 MIN_POOL_SIZE = 1
 MAX_POOL_SIZE = 15

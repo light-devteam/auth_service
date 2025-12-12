@@ -1,8 +1,7 @@
 from uuid import UUID
 from abc import ABC, abstractmethod
-from typing import Optional
 
-from src.shared.domain import IDatabaseContext
+from src.domain import IDatabaseContext
 from src.jwk.domain.entities import JWKToken
 from src.jwk.domain.value_objects import JWKTokenID
 

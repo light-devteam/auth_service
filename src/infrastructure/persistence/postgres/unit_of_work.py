@@ -3,7 +3,7 @@ from types import TracebackType
 
 from asyncpg import Connection, transaction
 
-from src.shared.domain import IDatabaseContext
+from src.domain import IDatabaseContext
 from src.infrastructure.persistence.postgres.client import PostgresClient
 
 

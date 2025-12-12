@@ -4,7 +4,7 @@ from dependency_injector.wiring import inject, Provide
 from src.bootstrap.lifespan import LifespanManager
 from src.bootstrap.middlewares_manager import MiddlewaresManager
 from src.bootstrap.exception_handlers_manager import ExceptionHandlersManager
-from src.shared.infrastructure.logger import LoggerFactory
+from src.infrastructure.logger import LoggerFactory
 from src.delivery.http import api, healthcheck, well_known
 
 class App:

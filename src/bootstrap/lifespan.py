@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from dependency_injector.wiring import inject, Provide
 
 from src.infrastructure.di import DIContainer
-from src.shared.infrastructure.logger import LoggerFactory
+from src.infrastructure.logger import LoggerFactory
 from src.infrastructure.persistence import PostgresClient, RedisClient
 
 

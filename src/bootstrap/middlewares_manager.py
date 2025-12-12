@@ -2,8 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dependency_injector.wiring import inject, Provide
 
-from src.shared.infrastructure.config import Settings
-from src.shared.infrastructure.logger import LoggerFactory
+from src.infrastructure.config import Settings
+from src.infrastructure.logger import LoggerFactory
 
 
 class MiddlewaresManager:

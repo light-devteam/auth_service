@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.shared.domain import IDatabaseContext
+from src.domain import IDatabaseContext
 
 
 class IHealthProbe(ABC):

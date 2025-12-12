@@ -7,8 +7,8 @@ from dependency_injector.wiring import inject, Provide
 from src.system.domain.repositories import IHealthProbe
 from src.system.domain.value_objects.dtos import SystemHealth, ProbeResult
 from src.system.domain.value_objects.enums import ProbeType, HealthStatus
-from src.shared.domain import IDatabaseContext
-from src.shared.infrastructure.logger import LoggerFactory
+from src.domain import IDatabaseContext
+from src.infrastructure.logger import LoggerFactory
 
 
 class HealthCheckService:

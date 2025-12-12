@@ -1,8 +1,8 @@
 import logging
 from functools import cached_property
 
-from src.shared.infrastructure.logger.filters import LoggerFilter
-from src.shared.infrastructure.config import Settings
+from src.infrastructure.logger.filters import LoggerFilter
+from src.infrastructure.config import Settings
 
 class LoggerFactory:
     _LOG_FORMAT = '%(asctime)s - [%(levelname)s] -  %(name)s - (%(filename)s).%(funcName)s(%(lineno)d) - %(message)s'

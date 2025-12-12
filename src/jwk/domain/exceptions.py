@@ -1,4 +1,4 @@
-from src.shared.domain import exceptions
+from src.domain import exceptions
 
 
 class JWKNotFound(exceptions.DomainException):
