@@ -8,8 +8,8 @@ from src.infrastructure.persistence import (
     PostgresUnitOfWork,
     RedisSession,
 )
-from src.system.infrastructure.repositories import PostgresProbe, RedisProbe
-from src.system.application import HealthCheckService
+from src.contexts.system.infrastructure import PostgresProbe, RedisProbe
+from src.contexts.system.application import HealthCheckService
 
 from src.jwk.domain.mappers import JWKMapper
 from src.jwk.infrastructure.repositories import JWKRepository
@@ -21,8 +21,8 @@ class DIContainer(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         packages=[
             'src.bootstrap',
-            'src.system.application',
-            'src.system.delivery',
+            'src.contexts.system.application',
+            'src.contexts.system.delivery',
             'src.jwk.domain.value_objects',
             'src.jwk.infrastructure.repositories',
             'src.jwk.application',
