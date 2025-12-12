@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from src.system.delivery.http.health import router as health_router
+from src.contexts.system.delivery.http import  health_router
 
 
 router = APIRouter(prefix='/health')
