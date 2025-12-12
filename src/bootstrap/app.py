@@ -13,9 +13,9 @@ class App:
         self._app = None
         self._logger = None
         self._routers = [
-            api.router,
-            healthcheck.router,
             well_known.router,
+            healthcheck.router,
+            api.router,
         ]
 
     @inject

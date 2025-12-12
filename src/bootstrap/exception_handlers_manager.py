@@ -4,6 +4,7 @@ from fastapi.exceptions import RequestValidationError
 from dependency_injector.wiring import inject, Provide
 
 from src.shared.domain import exceptions
+from src.jwk.domain import exceptions as jwk_exceptions
 from src.shared.infrastructure.logger import LoggerFactory
 
 class ExceptionHandlersManager:
@@ -91,6 +92,10 @@ class ExceptionHandlersManager:
 
     def _map_exception_to_status(self, exc: exceptions.AppException) -> int:
         mapping = {
+            jwk_exceptions.JWKCannotDeactivatePrimary: status.HTTP_409_CONFLICT,
+            jwk_exceptions.JWKAlreadyPrimary: status.HTTP_409_CONFLICT,
+            jwk_exceptions.JWKAlreadyExists: status.HTTP_409_CONFLICT,
+            jwk_exceptions.JWKNotFound: status.HTTP_404_NOT_FOUND,
             exceptions.ApplicationException: status.HTTP_500_INTERNAL_SERVER_ERROR,
             exceptions.DomainException: status.HTTP_400_BAD_REQUEST,
             exceptions.InfrastructureException: status.HTTP_503_SERVICE_UNAVAILABLE,

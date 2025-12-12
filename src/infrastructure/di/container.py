@@ -11,6 +11,11 @@ from src.infrastructure.persistence import (
 from src.system.infrastructure.repositories import PostgresProbe, RedisProbe
 from src.system.application import HealthCheckService
 
+from src.jwk.domain.mappers import JWKMapper
+from src.jwk.infrastructure.repositories import JWKRepository
+from src.jwk.application import JWKService
+from src.jwk.domain.services import JWKTokenService
+
 
 class DIContainer(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
@@ -18,6 +23,10 @@ class DIContainer(containers.DeclarativeContainer):
             'src.bootstrap',
             'src.system.application',
             'src.system.delivery',
+            'src.jwk.domain.value_objects',
+            'src.jwk.infrastructure.repositories',
+            'src.jwk.application',
+            'src.jwk.delivery.http',
         ],
     )
 
@@ -36,12 +45,18 @@ class DIContainer(containers.DeclarativeContainer):
     postgres_uow = providers.Factory(PostgresUnitOfWork, client=postgres_client)
     redis_session = providers.Factory(RedisSession, client=redis_client)
 
+    jwk_mapper = providers.Singleton(JWKMapper)
+
     postgres_probe_repository = providers.Singleton(PostgresProbe)
     redis_probe_repository = providers.Singleton(RedisProbe)
+    jwk_repository = providers.Singleton(JWKRepository)
 
     repository_to_context_factory = providers.Dict({
         postgres_probe_repository(): postgres_uow,
         redis_probe_repository(): redis_session,
     })
 
+    jwk_domain_service = providers.Singleton(JWKTokenService)
+
     healthcheck_application_service = providers.Singleton(HealthCheckService)
+    jwk_application_service = providers.Singleton(JWKService)
