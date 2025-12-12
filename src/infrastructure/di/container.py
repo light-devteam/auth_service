@@ -8,13 +8,14 @@ from src.infrastructure.persistence import (
     PostgresUnitOfWork,
     RedisSession,
 )
+
 from src.contexts.system.infrastructure import PostgresProbe, RedisProbe
 from src.contexts.system.application import HealthCheckService
 
-from src.jwk.domain.mappers import JWKMapper
-from src.jwk.infrastructure.repositories import JWKRepository
-from src.jwk.application import JWKService
-from src.jwk.domain.services import JWKTokenService
+from src.contexts.jwk.domain.mappers import JWKMapper
+from src.contexts.jwk.infrastructure import JWKRepository
+from src.contexts.jwk.application import JWKService
+from src.contexts.jwk.domain.services import JWKTokenService
 
 
 class DIContainer(containers.DeclarativeContainer):
@@ -23,10 +24,10 @@ class DIContainer(containers.DeclarativeContainer):
             'src.bootstrap',
             'src.contexts.system.application',
             'src.contexts.system.delivery',
-            'src.jwk.domain.value_objects',
-            'src.jwk.infrastructure.repositories',
-            'src.jwk.application',
-            'src.jwk.delivery.http',
+            'src.contexts.jwk.domain.value_objects',
+            'src.contexts.jwk.infrastructure.repositories',
+            'src.contexts.jwk.application',
+            'src.contexts.jwk.delivery.http',
         ],
     )
 

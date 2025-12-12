@@ -4,7 +4,7 @@ from fastapi.exceptions import RequestValidationError
 from dependency_injector.wiring import inject, Provide
 
 from src.domain import exceptions
-from src.jwk.domain import exceptions as jwk_exceptions
+from src.contexts.jwk.domain import exceptions as jwk_exceptions
 from src.infrastructure.logger import LoggerFactory
 
 class ExceptionHandlersManager:
