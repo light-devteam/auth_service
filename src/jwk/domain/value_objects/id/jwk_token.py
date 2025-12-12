@@ -1,4 +1,4 @@
-from src.shared.domain.value_objects.id import BaseID
+from src.domain.value_objects.id import BaseID
 
 
 class JWKTokenID(BaseID): ...

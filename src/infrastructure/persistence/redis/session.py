@@ -3,7 +3,7 @@ from types import TracebackType
 
 from redis.asyncio import Redis
 
-from src.shared.domain import IDatabaseContext
+from src.domain import IDatabaseContext
 from src.infrastructure.persistence.redis.client import RedisClient
 
 

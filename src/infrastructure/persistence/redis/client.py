@@ -1,6 +1,6 @@
 from redis.asyncio import Redis, ConnectionPool
 
-from src.shared.domain import IDatabaseClient
+from src.domain import IDatabaseClient
 
 
 POOL_SIZE = 64

@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict
 
-from src.shared.domain.value_objects.enums import JWTAlgorithms
+from src.domain.value_objects.enums import JWTAlgorithms
 
 
 class JWKPublic(BaseModel):

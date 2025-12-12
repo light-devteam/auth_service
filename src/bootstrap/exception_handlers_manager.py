@@ -3,9 +3,9 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from dependency_injector.wiring import inject, Provide
 
-from src.shared.domain import exceptions
+from src.domain import exceptions
 from src.jwk.domain import exceptions as jwk_exceptions
-from src.shared.infrastructure.logger import LoggerFactory
+from src.infrastructure.logger import LoggerFactory
 
 class ExceptionHandlersManager:
     @inject

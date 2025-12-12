@@ -1,7 +1,7 @@
 from dependency_injector import containers, providers
 
-from src.shared.infrastructure.logger import LoggerFactory
-from src.shared.infrastructure.config import Settings
+from src.infrastructure.logger import LoggerFactory
+from src.infrastructure.config import Settings
 from src.infrastructure.persistence import (
     PostgresClient,
     RedisClient,
