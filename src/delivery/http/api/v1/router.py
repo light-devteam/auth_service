@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 
-from src.jwk.delivery.http.jwk import router as jwk_router
+from src.contexts.jwk.delivery.http import jwk_router
 
 
 router = APIRouter(prefix='/v1')
