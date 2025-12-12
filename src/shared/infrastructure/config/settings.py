@@ -1,12 +1,14 @@
 from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import field_validator
+from pydantic import field_validator, SecretStr
 
 
 class Settings(BaseSettings):
     POSTGRES_URL: str
     REDIS_URL: str
+
+    JWK_ENCRYPTION_KEY: SecretStr
 
     CORS_ALLOW_ORIGINS: list[str] = ['*']
 

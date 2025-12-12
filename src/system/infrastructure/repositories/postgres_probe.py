@@ -3,9 +3,6 @@ from src.infrastructure.persistence import PostgresUnitOfWork
 
 
 class PostgresProbe(IHealthProbe):
-    def __init__(self) -> None:
-        ...
-
     @property
     def name(self) -> str:
         return 'PostgreSQL'
