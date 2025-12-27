@@ -1,0 +1,3 @@
+class ProviderApplicationService:
+    def __init__(self) -> None:
+        ...
