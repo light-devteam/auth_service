@@ -17,3 +17,7 @@ class ApplicationException(AppException):
 
 class InfrastructureException(AppException):
     _DETAIL: str = 'Infrastructure error occurred'
+
+
+class AccountNotFound(DomainException):
+    _DETAIL: str = 'Account not found'

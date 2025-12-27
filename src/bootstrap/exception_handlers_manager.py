@@ -5,6 +5,7 @@ from dependency_injector.wiring import inject, Provide
 
 from src.domain import exceptions
 from src.contexts.jwk.domain import exceptions as jwk_exceptions
+from src.contexts.authentication.domain import exceptions as auth_exceptions
 from src.infrastructure.logger import LoggerFactory
 
 class ExceptionHandlersManager:
@@ -92,6 +93,7 @@ class ExceptionHandlersManager:
 
     def _map_exception_to_status(self, exc: exceptions.AppException) -> int:
         mapping = {
+            auth_exceptions.ProviderNotActive: status.HTTP_403_FORBIDDEN,
             jwk_exceptions.JWKCannotDeactivatePrimary: status.HTTP_409_CONFLICT,
             jwk_exceptions.JWKAlreadyPrimary: status.HTTP_409_CONFLICT,
             jwk_exceptions.JWKAlreadyExists: status.HTTP_409_CONFLICT,

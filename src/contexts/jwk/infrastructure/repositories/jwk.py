@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from dependency_injector.wiring import inject, Provide
 from asyncpg import UniqueViolationError
 
@@ -21,10 +19,8 @@ class JWKRepository(IJWKRepository):
     async def get_by_id(
         self,
         ctx: PostgresUnitOfWork,
-        id: UUID | value_objects.JWKTokenID,
+        id: value_objects.JWKTokenID,
     ) -> entities.JWKToken:
-        if isinstance(id, value_objects.JWKTokenID):
-            id = id.value
         jwk_token = await ctx.connection.fetchrow(
             f'select * from {self._table_name} where id = $1',
             id,
