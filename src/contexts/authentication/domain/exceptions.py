@@ -5,6 +5,14 @@ class ProviderNotActive(DomainException):
     _DETAIL = 'Provider not active'
 
 
+class ProviderNotFound(DomainException):
+    _DETAIL = 'Provider not found'
+
+
+class ProviderAlreadyExists(DomainException):
+    _DETAIL = 'Provider with that name already exists'
+
+
 class IdentityAlreadyMain(DomainException):
     _DETAIL = 'Identity already set as main for this account'
 

@@ -93,11 +93,14 @@ class ExceptionHandlersManager:
 
     def _map_exception_to_status(self, exc: exceptions.AppException) -> int:
         mapping = {
+            auth_exceptions.ProviderAlreadyExists: status.HTTP_409_CONFLICT,
+            auth_exceptions.ProviderNotFound: status.HTTP_404_NOT_FOUND,
             auth_exceptions.ProviderNotActive: status.HTTP_403_FORBIDDEN,
             jwk_exceptions.JWKCannotDeactivatePrimary: status.HTTP_409_CONFLICT,
             jwk_exceptions.JWKAlreadyPrimary: status.HTTP_409_CONFLICT,
             jwk_exceptions.JWKAlreadyExists: status.HTTP_409_CONFLICT,
             jwk_exceptions.JWKNotFound: status.HTTP_404_NOT_FOUND,
+            exceptions.AccountNotFound: status.HTTP_404_NOT_FOUND,
             exceptions.ApplicationException: status.HTTP_500_INTERNAL_SERVER_ERROR,
             exceptions.DomainException: status.HTTP_400_BAD_REQUEST,
             exceptions.InfrastructureException: status.HTTP_503_SERVICE_UNAVAILABLE,
