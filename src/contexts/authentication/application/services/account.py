@@ -3,6 +3,7 @@ from dependency_injector.wiring import inject, Provide
 from src.contexts.authentication.domain.repositories import IAccountRepository
 from src.contexts.authentication.domain.entities import Account
 from src.contexts.authentication.domain.services import IdentityDomainService
+from src.domain.value_objects import AccountID
 from src.infrastructure.persistence import PostgresUnitOfWork
 
 class AccountApplicationService:
@@ -22,3 +23,8 @@ class AccountApplicationService:
         async with self._db_ctx as ctx:
             await self._repository.create(ctx, account)
         return account
+
+    async def get_by_id(self, id: AccountID) -> Account:
+        async with self._db_ctx as ctx:
+            account = await self._repository.get_by_id_with_identities(ctx, id)
+            return account

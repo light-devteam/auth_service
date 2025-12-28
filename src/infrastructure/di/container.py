@@ -24,6 +24,10 @@ from src.contexts.authentication.domain.mappers import AccountMapper as AccountA
 from src.contexts.authentication.infrastructure import AccountRepository as AccountAuthRepository
 from src.contexts.authentication.application import AccountApplicationService
 
+from src.contexts.authentication.domain.mappers import ProviderMapper as ProviderAuthMapper
+from src.contexts.authentication.infrastructure import ProviderRepository as ProviderAuthRepository
+from src.contexts.authentication.application import ProviderApplicationService
+
 from src.contexts.authentication.domain.services import IdentityDomainService
 
 
@@ -31,6 +35,7 @@ class DIContainer(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         packages=[
             'src.bootstrap',
+            'src.infrastructure.repositories',
             'src.contexts.system.application',
             'src.contexts.system.delivery',
             'src.contexts.jwk.domain.value_objects',
@@ -74,11 +79,15 @@ class DIContainer(containers.DeclarativeContainer):
     healthcheck_application_service = providers.Singleton(HealthCheckService)
     jwk_application_service = providers.Singleton(JWKService)
 
-    account_mapper = providers.Singleton(AccountMapper)
-    account_repository = providers.Singleton(AccountRepository)
+    accounts_mapper = providers.Singleton(AccountMapper)
+    accounts_repository = providers.Singleton(AccountRepository)
 
     accounts_auth_mapper = providers.Singleton(AccountAuthMapper)
     accounts_auth_repository = providers.Singleton(AccountAuthRepository)
     accounts_application_service = providers.Singleton(AccountApplicationService)
+
+    provider_auth_mapper = providers.Singleton(ProviderAuthMapper)
+    provider_auth_repository = providers.Singleton(ProviderAuthRepository)
+    provider_application_service = providers.Singleton(ProviderApplicationService)
 
     identity_domain_service = providers.Singleton(IdentityDomainService)

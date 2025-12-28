@@ -11,7 +11,7 @@ class AccountRepository(IAccountRepository):
     @inject
     def __init__(
         self,
-        mapper: mappers.AccountMapper = Provide['account_mapper'],
+        mapper: mappers.AccountMapper = Provide['accounts_mapper'],
     ) -> None:
         self._mapper = mapper
 
