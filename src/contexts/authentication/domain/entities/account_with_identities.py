@@ -1,4 +1,4 @@
-from src.domain.entities import Account as AccountWithoutIdentities
+from src.domain.entities import Account
 from src.contexts.authentication.domain.entities.identity import Identity
 from src.contexts.authentication.domain.exceptions import (
     MainIdentityAlreadySet,
@@ -6,8 +6,9 @@ from src.contexts.authentication.domain.exceptions import (
 )
 
 
-class Account(AccountWithoutIdentities):
-    identities: list[Identity] | None = None
+class AccountWithIdentities:
+    account: Account
+    identities: list[Identity] = []
 
     def add_identity(self, identity: Identity) -> None:
         if any(i.provider_id == identity.provider_id for i in self.identities):

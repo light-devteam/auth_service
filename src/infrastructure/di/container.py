@@ -17,9 +17,6 @@ from src.contexts.jwk.infrastructure import JWKRepository
 from src.contexts.jwk.application.services import JWKApplicationService
 from src.contexts.jwk.domain.services import JWKTokenService
 
-from src.domain.mappers import AccountMapper
-from src.infrastructure.repositories import AccountRepository
-
 from src.contexts.authentication.domain.mappers import AccountMapper as AccountAuthMapper
 from src.contexts.authentication.infrastructure import AccountRepository as AccountAuthRepository
 from src.contexts.authentication.application.services import AccountApplicationService
@@ -35,7 +32,6 @@ class DIContainer(containers.DeclarativeContainer):
     wiring_config = containers.WiringConfiguration(
         packages=[
             'src.bootstrap',
-            'src.infrastructure.repositories',
             'src.contexts.system.application',
             'src.contexts.system.delivery',
             'src.contexts.jwk.domain.value_objects',
@@ -78,9 +74,6 @@ class DIContainer(containers.DeclarativeContainer):
 
     healthcheck_application_service = providers.Singleton(HealthCheckApplicationService)
     jwk_application_service = providers.Singleton(JWKApplicationService)
-
-    accounts_mapper = providers.Singleton(AccountMapper)
-    accounts_repository = providers.Singleton(AccountRepository)
 
     accounts_auth_mapper = providers.Singleton(AccountAuthMapper)
     accounts_auth_repository = providers.Singleton(AccountAuthRepository)
