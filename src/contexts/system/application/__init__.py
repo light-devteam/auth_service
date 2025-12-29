@@ -1,3 +1,6 @@
-from src.contexts.system.application.health_check import HealthCheckService
+from src.contexts.system.application.interfaces import IHealthCheckService
 
-__all__ = ['HealthCheckService']
+
+__all__ = [
+    'IHealthCheckService',
+]
