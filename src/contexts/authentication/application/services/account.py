@@ -5,8 +5,9 @@ from src.contexts.authentication.domain.entities import Account
 from src.contexts.authentication.domain.services import IdentityDomainService
 from src.domain.value_objects import AccountID
 from src.infrastructure.persistence import PostgresUnitOfWork
+from src.contexts.authentication.application.interfaces import IAccountService
 
-class AccountApplicationService:
+class AccountApplicationService(IAccountService):
     @inject
     def __init__(
         self,

@@ -3,7 +3,7 @@ from dependency_injector.wiring import inject, Provide
 
 from src.contexts.jwk.delivery.http.jwks.router import router
 from src.contexts.jwk.delivery.http.jwks.schemas import JWKS
-from src.contexts.jwk.application import JWKService
+from src.contexts.jwk.application.interfaces import IJWKService
 
 
 @router.get('/jwks.json')
@@ -11,7 +11,7 @@ from src.contexts.jwk.application import JWKService
 async def jwks(
     page: int = 1,
     page_size: int = 100,
-    service: JWKService = Depends(Provide['jwk_application_service']),
+    service: IJWKService = Depends(Provide['jwk_application_service']),
 ) -> JWKS:
     jwk_tokens = await service.get_all(page, page_size, only_active=True)
     keyset = []

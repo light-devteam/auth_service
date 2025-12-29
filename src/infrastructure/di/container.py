@@ -10,11 +10,11 @@ from src.infrastructure.persistence import (
 )
 
 from src.contexts.system.infrastructure import PostgresProbe, RedisProbe
-from src.contexts.system.application import HealthCheckService
+from src.contexts.system.application.services import HealthCheckApplicationService
 
 from src.contexts.jwk.domain.mappers import JWKMapper
 from src.contexts.jwk.infrastructure import JWKRepository
-from src.contexts.jwk.application import JWKService
+from src.contexts.jwk.application.services import JWKApplicationService
 from src.contexts.jwk.domain.services import JWKTokenService
 
 from src.domain.mappers import AccountMapper
@@ -22,11 +22,11 @@ from src.infrastructure.repositories import AccountRepository
 
 from src.contexts.authentication.domain.mappers import AccountMapper as AccountAuthMapper
 from src.contexts.authentication.infrastructure import AccountRepository as AccountAuthRepository
-from src.contexts.authentication.application import AccountApplicationService
+from src.contexts.authentication.application.services import AccountApplicationService
 
 from src.contexts.authentication.domain.mappers import ProviderMapper as ProviderAuthMapper
 from src.contexts.authentication.infrastructure import ProviderRepository as ProviderAuthRepository
-from src.contexts.authentication.application import ProviderApplicationService
+from src.contexts.authentication.application.services import ProviderApplicationService
 
 from src.contexts.authentication.domain.services import IdentityDomainService
 
@@ -76,8 +76,8 @@ class DIContainer(containers.DeclarativeContainer):
 
     jwk_domain_service = providers.Singleton(JWKTokenService)
 
-    healthcheck_application_service = providers.Singleton(HealthCheckService)
-    jwk_application_service = providers.Singleton(JWKService)
+    healthcheck_application_service = providers.Singleton(HealthCheckApplicationService)
+    jwk_application_service = providers.Singleton(JWKApplicationService)
 
     accounts_mapper = providers.Singleton(AccountMapper)
     accounts_repository = providers.Singleton(AccountRepository)

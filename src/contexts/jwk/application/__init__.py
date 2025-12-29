@@ -1,6 +1,6 @@
-from src.contexts.jwk.application.jwk_service import JWKService
+from src.contexts.jwk.application.interfaces import IJWKService
 
 
 __all__ = [
-    'JWKService',
+    'IJWKService',
 ]

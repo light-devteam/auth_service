@@ -4,9 +4,10 @@ from dependency_injector.wiring import inject, Provide
 
 from src.contexts.jwk.domain import repositories, entities, exceptions, services
 from src.infrastructure.persistence.postgres import PostgresUnitOfWork
+from src.contexts.jwk.application.interfaces import IJWKService
 
 
-class JWKService:
+class JWKApplicationService(IJWKService):
     @inject
     def __init__(
         self,

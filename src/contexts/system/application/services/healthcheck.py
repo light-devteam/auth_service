@@ -9,9 +9,10 @@ from src.contexts.system.domain.value_objects import SystemHealth, ProbeResult
 from src.contexts.system.domain.value_objects import ProbeType, HealthStatus
 from src.domain import IDatabaseContext
 from src.infrastructure.logger import LoggerFactory
+from src.contexts.system.application.interfaces import IHealthCheckService
 
 
-class HealthCheckService:
+class HealthCheckApplicationService(IHealthCheckService):
     @inject
     def __init__(
         self,

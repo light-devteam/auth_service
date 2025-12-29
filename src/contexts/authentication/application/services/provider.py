@@ -6,9 +6,10 @@ from src.contexts.authentication.domain.repositories import IProviderRepository
 from src.contexts.authentication.domain.entities import Provider
 from src.contexts.authentication.domain.value_objects import ProviderID, ProviderName, ProviderType
 from src.infrastructure.persistence import PostgresUnitOfWork
+from src.contexts.authentication.application.interfaces import IProviderService
 
 
-class ProviderApplicationService:
+class ProviderApplicationService(IProviderService):
     @inject
     def __init__(
         self,

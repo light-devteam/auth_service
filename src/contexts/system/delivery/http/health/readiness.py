@@ -4,7 +4,7 @@ from msgspec import json
 
 from src.contexts.system.delivery.http.health.router import router
 from src.contexts.system.delivery.http.health.schemas import SystemHealth
-from src.contexts.system.application import HealthCheckService
+from src.contexts.system.application import IHealthCheckService
 from src.contexts.system.domain.value_objects import ProbeType, HealthStatus
 
 
@@ -12,7 +12,7 @@ from src.contexts.system.domain.value_objects import ProbeType, HealthStatus
 @inject
 async def check_readiness(
     response: Response,
-    healthcheck_service: HealthCheckService = Depends(
+    healthcheck_service: IHealthCheckService = Depends(
         Provide['healthcheck_application_service'],
     ),
 ) -> SystemHealth:

@@ -1,7 +1,7 @@
 from dependency_injector.wiring import inject, Provide
 from fastapi import Depends
 
-from src.contexts.authentication.application.services import AccountApplicationService
+from src.contexts.authentication.application import IAccountService
 from src.contexts.authentication.delivery.http.accounts.router import router
 from src.contexts.authentication.delivery.http.accounts.schemas import CreateAccountResponse
 
@@ -9,7 +9,7 @@ from src.contexts.authentication.delivery.http.accounts.schemas import CreateAcc
 @router.post('')
 @inject
 async def create_account(
-    service: AccountApplicationService = Depends(Provide['accounts_application_service']),
+    service: IAccountService = Depends(Provide['accounts_application_service']),
 ) -> CreateAccountResponse:
     account = await service.create()
     return CreateAccountResponse(id=account.id)
