@@ -1,9 +1,7 @@
-from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class Account(BaseModel):
     id: UUID
-    identities: Optional[list] = Field(None)

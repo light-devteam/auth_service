@@ -8,10 +8,7 @@ from src.contexts.authentication.delivery.http.accounts.router import router
 from src.contexts.authentication.delivery.http.accounts.schemas import Account
 
 
-@router.get(
-    '/{account_id}',
-    response_model_exclude_unset=True,
-)
+@router.get('/{account_id}')
 @inject
 async def get_account(
     account_id: UUID,

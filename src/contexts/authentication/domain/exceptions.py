@@ -31,3 +31,7 @@ class SessionAlreadyRevoked(DomainException):
 
 class TokenAlreadyRevoked(DomainException):
     _DETAIL = 'Session refresh token already has been revoked'
+
+
+class AccountNotFound(DomainException):
+    _DETAIL: str = 'Account not found'

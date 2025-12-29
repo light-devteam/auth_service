@@ -1,13 +1,14 @@
 from dependency_injector.wiring import inject, Provide
 
 from src.contexts.authentication.domain.repositories import IAccountRepository
-from src.infrastructure.repositories import AccountRepository as AccountWithoutIdentitiesRepo
 from src.infrastructure.persistence.postgres import PostgresUnitOfWork
-from src.contexts.authentication.domain import entities, mappers
-from src.domain import exceptions, value_objects
+from src.contexts.authentication.domain import exceptions, mappers
+from src.domain import value_objects, entities
 
 
-class AccountRepository(AccountWithoutIdentitiesRepo, IAccountRepository):
+class AccountRepository(IAccountRepository):
+    _table_name = 'auth.accounts'
+
     @inject
     def __init__(
         self,
@@ -15,7 +16,19 @@ class AccountRepository(AccountWithoutIdentitiesRepo, IAccountRepository):
     ) -> None:
         self._mapper = mapper
 
-    async def get_by_id_with_identities(
+    async def create(
+        self,
+        ctx: PostgresUnitOfWork,
+        account: entities.Account,
+    ) -> None:
+        query = f"""
+        insert into {self._table_name} (
+            id
+        ) values ($1)
+        """
+        await ctx.connection.execute(query, account.id)
+
+    async def get_by_id(
         self,
         ctx: PostgresUnitOfWork,
         id: value_objects.AccountID,
