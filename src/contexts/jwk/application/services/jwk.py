@@ -2,7 +2,13 @@ from uuid import UUID
 
 from dependency_injector.wiring import inject, Provide
 
-from src.contexts.jwk.domain import repositories, entities, exceptions, services
+from src.contexts.jwk.domain import (
+    repositories,
+    entities,
+    exceptions,
+    services,
+    value_objects,
+)
 from src.domain import IDatabaseContext
 from src.contexts.jwk.application.interfaces import IJWKService
 
@@ -20,6 +26,7 @@ class JWKApplicationService(IJWKService):
         self._domain_service = domain_service
 
     async def get_by_id(self, id: UUID) -> entities.JWKToken:
+        id = value_objects.JWKTokenID(id)
         async with self._db_ctx as ctx:
             return await self._repository.get_by_id(ctx, id)
 
@@ -39,6 +46,7 @@ class JWKApplicationService(IJWKService):
         return token
 
     async def toggle_active(self, id: UUID) -> entities.JWKToken:
+        id = value_objects.JWKTokenID(id)
         async with self._db_ctx as ctx:
             await ctx.use_transaction()
             token = await self._repository.get_by_id(ctx, id)
@@ -47,6 +55,7 @@ class JWKApplicationService(IJWKService):
             return token
 
     async def set_primary(self, id: UUID) -> tuple[entities.JWKToken, entities.JWKToken]:
+        id = value_objects.JWKTokenID(id)
         async with self._db_ctx as ctx:
             await ctx.use_transaction()
             new_token = await self._repository.get_by_id(ctx, id)

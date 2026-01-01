@@ -11,7 +11,7 @@ class IJWKRepository(ABC):
     async def get_by_id(
         self,
         ctx: IDatabaseContext,
-        id: UUID | JWKTokenID,
+        id: JWKTokenID,
     ) -> JWKToken:
         ...
 
