@@ -13,7 +13,7 @@ async def get_all_providers(
     page: int = 1,
     page_size: int = 100,
     only_active: bool = True,
-    service: IProviderService = Depends(Provide['provider_application_service']),
+    service: IProviderService = Depends(Provide['auth.provider_service']),
 ) -> list[Provider]:
     if page < 1:
         page = 1

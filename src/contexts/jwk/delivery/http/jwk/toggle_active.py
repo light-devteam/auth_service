@@ -12,7 +12,7 @@ from src.contexts.jwk.delivery.http.jwk.schemas import JWKIsActive
 @inject
 async def toggle_active(
     jwk_id: UUID,
-    service: IJWKService = Depends(Provide['jwk_application_service']),
+    service: IJWKService = Depends(Provide['jwk.service']),
 ) -> JWKIsActive:
     jwk = await service.toggle_active(jwk_id)
     return JWKIsActive(id=jwk_id, is_active=jwk.is_active)

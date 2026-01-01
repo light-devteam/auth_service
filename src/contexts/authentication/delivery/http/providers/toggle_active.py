@@ -12,7 +12,7 @@ from src.contexts.authentication.delivery.http.providers.schemas import ToggleAc
 @inject
 async def toggle_active_state(
     provider_id: UUID,
-    service: IProviderService = Depends(Provide['provider_application_service']),
+    service: IProviderService = Depends(Provide['auth.provider_service']),
 ) -> ToggleActiveResponse:
     current_state = await service.toggle_active(provider_id)
     return ToggleActiveResponse(is_active=current_state)

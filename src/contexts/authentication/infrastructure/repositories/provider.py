@@ -18,7 +18,7 @@ class ProviderRepository(repositories.IProviderRepository):
     @inject
     def __init__(
         self,
-        mapper: mappers.ProviderMapper = Provide['provider_auth_mapper'],
+        mapper: mappers.ProviderMapper = Provide['auth.provider_mapper'],
     ) -> None:
         self._mapper = mapper
 

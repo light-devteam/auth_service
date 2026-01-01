@@ -15,7 +15,7 @@ async def get_account_identities(
     account_id: UUID,
     page: int = 1,
     page_size: int = 100,
-    service: IIdentityService = Depends(Provide['identity_application_service']),
+    service: IIdentityService = Depends(Provide['auth.identity_service']),
 ) -> list[Identity]:
     if page < 1:
         page = 1

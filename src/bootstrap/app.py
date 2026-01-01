@@ -21,7 +21,7 @@ class App:
     @inject
     def create(
         self,
-        logger_factory: LoggerFactory = Provide['logger_factory'],
+        logger_factory: LoggerFactory = Provide['infrastructure.logger_factory'],
     ) -> FastAPI:
         self._app = FastAPI(
             title='Auth Service',

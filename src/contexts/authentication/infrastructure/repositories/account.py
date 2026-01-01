@@ -12,7 +12,7 @@ class AccountRepository(IAccountRepository):
     @inject
     def __init__(
         self,
-        mapper: mappers.AccountMapper = Provide['accounts_auth_mapper'],
+        mapper: mappers.AccountMapper = Provide['auth.accounts_mapper'],
     ) -> None:
         self._mapper = mapper
 

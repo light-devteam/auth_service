@@ -12,7 +12,7 @@ from src.contexts.jwk.delivery.http.jwk.schemas import NewPrimaryJWK, JWKIsPrima
 @inject
 async def set_primary(
     jwk_id: UUID,
-    service: IJWKService = Depends(Provide['jwk_application_service']),
+    service: IJWKService = Depends(Provide['jwk.service']),
 ) -> NewPrimaryJWK:
     new, old = await service.set_primary(jwk_id)
     new_schema = JWKIsPrimary(id=new.id, is_primary=new.is_primary)

@@ -13,7 +13,7 @@ from src.contexts.system.domain.value_objects import ProbeType, HealthStatus
 async def check_liveness(
     response: Response,
     healthcheck_service: IHealthCheckService = Depends(
-        Provide['healthcheck_application_service'],
+        Provide['system.healthcheck_service'],
     ),
 ) -> SystemHealth:
     system_health = await healthcheck_service.probe(ProbeType.LIVENESS)

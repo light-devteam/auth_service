@@ -13,7 +13,7 @@ from src.contexts.authentication.delivery.http.identities.schemas import Identit
 @inject
 async def get_identity(
     identity_id: UUID,
-    service: IIdentityService = Depends(Provide['identity_application_service']),
+    service: IIdentityService = Depends(Provide['auth.identity_service']),
 ) -> Identity:
     identity = await service.get_by_id(identity_id)
     return Identity(**structs.asdict(identity))

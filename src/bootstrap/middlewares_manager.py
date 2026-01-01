@@ -11,8 +11,8 @@ class MiddlewaresManager:
     def __init__(
         self,
         app: FastAPI,
-        logger_factory: LoggerFactory = Provide['logger_factory'],
-        settings: Settings = Provide['settings'],
+        logger_factory: LoggerFactory = Provide['infrastructure.logger_factory'],
+        settings: Settings = Provide['infrastructure.settings'],
     ) -> None:
         self._app = app
         self._settings = settings

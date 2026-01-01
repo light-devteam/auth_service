@@ -9,7 +9,7 @@ from src.contexts.authentication.delivery.http.accounts.schemas import CreateAcc
 @router.post('')
 @inject
 async def create_account(
-    service: IAccountService = Depends(Provide['accounts_application_service']),
+    service: IAccountService = Depends(Provide['auth.accounts_service']),
 ) -> CreateAccountResponse:
     account = await service.create()
     return CreateAccountResponse(id=account.id)

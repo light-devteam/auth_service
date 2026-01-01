@@ -12,7 +12,7 @@ class JWKRepository(IJWKRepository):
     @inject
     def __init__(
         self,
-        mapper: mappers.JWKMapper = Provide['jwk_mapper'],
+        mapper: mappers.JWKMapper = Provide['jwk.mapper'],
     ) -> None:
         self._mapper = mapper
 

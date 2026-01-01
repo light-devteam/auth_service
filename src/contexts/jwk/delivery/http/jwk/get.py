@@ -13,7 +13,7 @@ from src.contexts.jwk.delivery.http.jwk.schemas import JWKInfo
 @inject
 async def get(
     jwk_id: UUID,
-    service: IJWKService = Depends(Provide['jwk_application_service']),
+    service: IJWKService = Depends(Provide['jwk.service']),
 ) -> JWKInfo:
     jwk = await service.get_by_id(jwk_id)
     return JWKInfo.model_validate(structs.asdict(jwk))

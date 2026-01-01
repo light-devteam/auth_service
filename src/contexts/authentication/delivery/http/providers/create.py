@@ -13,7 +13,7 @@ from src.contexts.authentication.delivery.http.providers.schemas import (
 @inject
 async def create_provider(
     payload: CreateProviderRequest,
-    service: IProviderService = Depends(Provide['provider_application_service']),
+    service: IProviderService = Depends(Provide['auth.provider_service']),
 ) -> CreateProviderResponse:
     provider = await service.create(
         payload.name,

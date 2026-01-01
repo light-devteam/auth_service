@@ -19,7 +19,7 @@ class LifespanManager:
     async def lifespan(
         self,
         app: FastAPI,
-        logger_factory: LoggerFactory = Provide['logger_factory'],
+        logger_factory: LoggerFactory = Provide['infrastructure.logger_factory'],
     ) -> AsyncGenerator[None, None]:
         self._logger = logger_factory.get_logger(__name__)
         try:
@@ -49,8 +49,8 @@ class LifespanManager:
     @inject
     async def _connect_storages(
         self,
-        postgres_client: PostgresClient = Provide['postgres_client'],
-        redis_client: RedisClient = Provide['redis_client'],
+        postgres_client: PostgresClient = Provide['infrastructure.postgres_client'],
+        redis_client: RedisClient = Provide['infrastructure.redis_client'],
     ) -> None:
         self._logger.debug('Connecting to PostgreSQL...')
         await postgres_client.connect()
@@ -62,8 +62,8 @@ class LifespanManager:
     @inject
     async def _disconnect_storages(
         self,
-        postgres_client: PostgresClient = Provide['postgres_client'],
-        redis_client: RedisClient = Provide['redis_client'],
+        postgres_client: PostgresClient = Provide['infrastructure.postgres_client'],
+        redis_client: RedisClient = Provide['infrastructure.redis_client'],
     ) -> None:
         self._logger.debug('Disconnecting from PostgreSQL...')
         await postgres_client.disconnect()

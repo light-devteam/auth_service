@@ -19,7 +19,7 @@ class IdentityRepository(repositories.IIdentityRepository):
     @inject
     def __init__(
         self,
-        mapper: mappers.IdentityMapper = Provide['identity_auth_mapper'],
+        mapper: mappers.IdentityMapper = Provide['auth.identity_mapper'],
     ) -> None:
         self._mapper = mapper
 

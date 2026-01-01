@@ -12,7 +12,7 @@ from src.contexts.authentication.delivery.http.accounts.schemas import Account
 @inject
 async def get_account(
     account_id: UUID,
-    service: IAccountService = Depends(Provide['accounts_application_service']),
+    service: IAccountService = Depends(Provide['auth.accounts_service']),
 ) -> Account:
     account = await service.get_by_id(account_id)
     return Account(id=account.id)
