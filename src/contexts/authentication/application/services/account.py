@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from dependency_injector.wiring import inject, Provide
 
 from src.contexts.authentication.domain.repositories import IAccountRepository
@@ -22,7 +24,8 @@ class AccountApplicationService(IAccountService):
             await self._repository.create(ctx, account)
         return account
 
-    async def get_by_id(self, id: AccountID) -> Account:
+    async def get_by_id(self, id: UUID) -> Account:
+        id = AccountID(id)
         async with self._db_ctx as ctx:
             account = await self._repository.get_by_id(ctx, id)
             return account

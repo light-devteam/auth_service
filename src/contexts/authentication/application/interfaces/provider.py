@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Any
+from uuid import UUID
 
 from src.contexts.authentication.domain.entities import Provider
-from src.contexts.authentication.domain.value_objects import ProviderID
 
 
 class IProviderService(ABC):
@@ -24,9 +24,9 @@ class IProviderService(ABC):
         ...
 
     @abstractmethod
-    async def get_by_id(self, id: ProviderID) -> Provider:
+    async def get_by_id(self, id: UUID) -> Provider:
         ...
 
     @abstractmethod
-    async def toggle_active(self, id: ProviderID) -> bool:
+    async def toggle_active(self, id: UUID) -> bool:
         ...

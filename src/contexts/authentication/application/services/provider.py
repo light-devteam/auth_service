@@ -1,4 +1,5 @@
 from typing import Any
+from uuid import UUID
 
 from dependency_injector.wiring import inject, Provide
 
@@ -39,12 +40,14 @@ class ProviderApplicationService(IProviderService):
         async with self._db_ctx as ctx:
             return await self._repository.get_all(ctx, page, page_size, only_active)
 
-    async def get_by_id(self, id: ProviderID) -> Provider:
+    async def get_by_id(self, id: UUID) -> Provider:
+        id = ProviderID(id)
         async with self._db_ctx as ctx:
             provider = await self._repository.get_by_id(ctx, id)
             return provider
 
-    async def toggle_active(self, id: ProviderID) -> bool:
+    async def toggle_active(self, id: UUID) -> bool:
+        id = ProviderID(id)
         async with self._db_ctx as ctx:
             await ctx.use_transaction()
             provider = await self._repository.get_by_id(ctx, id)

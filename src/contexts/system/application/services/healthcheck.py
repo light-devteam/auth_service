@@ -1,5 +1,6 @@
 import asyncio
 from datetime import datetime, timezone
+from typing import Literal
 
 import asyncpg
 from dependency_injector.wiring import inject, Provide
@@ -26,7 +27,7 @@ class HealthCheckApplicationService(IHealthCheckService):
 
     async def probe(
         self,
-        probe_type: ProbeType = ProbeType.READINESS,
+        probe_type: Literal['Liveness', 'Readiness'] = 'Readiness',
     ) -> SystemHealth:
         results = []
         if probe_type == ProbeType.READINESS:
