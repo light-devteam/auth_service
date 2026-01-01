@@ -3,7 +3,7 @@ from uuid import UUID
 from dependency_injector.wiring import inject, Provide
 
 from src.contexts.jwk.domain import repositories, entities, exceptions, services
-from src.infrastructure.persistence.postgres import PostgresUnitOfWork
+from src.domain import IDatabaseContext
 from src.contexts.jwk.application.interfaces import IJWKService
 
 
@@ -12,7 +12,7 @@ class JWKApplicationService(IJWKService):
     def __init__(
         self,
         repository: repositories.IJWKRepository = Provide['jwk_repository'],
-        database_context: PostgresUnitOfWork = Provide['postgres_uow'],
+        database_context: IDatabaseContext = Provide['postgres_uow'],
         domain_service: services.JWKTokenService = Provide['jwk_domain_service'],
     ) -> None:
         self._repository = repository
