@@ -5,7 +5,7 @@ from dependency_injector.wiring import inject, Provide
 from src.contexts.authentication.domain.repositories import IProviderRepository
 from src.contexts.authentication.domain.entities import Provider
 from src.contexts.authentication.domain.value_objects import ProviderID, ProviderName, ProviderType
-from src.infrastructure.persistence import PostgresUnitOfWork
+from src.domain import IDatabaseContext
 from src.contexts.authentication.application.interfaces import IProviderService
 
 
@@ -14,7 +14,7 @@ class ProviderApplicationService(IProviderService):
     def __init__(
         self,
         repository: IProviderRepository = Provide['provider_auth_repository'],
-        database_context: PostgresUnitOfWork = Provide['postgres_uow'],
+        database_context: IDatabaseContext = Provide['postgres_uow'],
     ) -> None:
         self._repository = repository
         self._db_ctx = database_context
