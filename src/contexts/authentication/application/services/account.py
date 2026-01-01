@@ -3,7 +3,7 @@ from dependency_injector.wiring import inject, Provide
 from src.contexts.authentication.domain.repositories import IAccountRepository
 from src.domain.entities import Account
 from src.domain.value_objects import AccountID
-from src.infrastructure.persistence import PostgresUnitOfWork
+from src.domain import IDatabaseContext
 from src.contexts.authentication.application.interfaces import IAccountService
 
 class AccountApplicationService(IAccountService):
@@ -11,7 +11,7 @@ class AccountApplicationService(IAccountService):
     def __init__(
         self,
         repository: IAccountRepository = Provide['accounts_auth_repository'],
-        database_context: PostgresUnitOfWork = Provide['postgres_uow'],
+        database_context: IDatabaseContext = Provide['postgres_uow'],
     ) -> None:
         self._repository = repository
         self._db_ctx = database_context
