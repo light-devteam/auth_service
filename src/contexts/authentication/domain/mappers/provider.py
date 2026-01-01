@@ -3,7 +3,7 @@ from typing import Mapping, Any
 import json
 
 from src.contexts.authentication.domain.entities import Provider
-from src.contexts.authentication.domain.value_objects import ProviderID, ProviderName, ProviderType
+from src.contexts.authentication.domain.value_objects import ProviderID, ProviderName
 
 
 class ProviderMapper:
@@ -14,7 +14,6 @@ class ProviderMapper:
         return Provider(
             id=ProviderID(raw['id']),
             name=ProviderName(raw['name']),
-            type=ProviderType(raw['type']),
             is_active=raw.get('is_active', False),
             created_at=raw['created_at'],
             config=config,

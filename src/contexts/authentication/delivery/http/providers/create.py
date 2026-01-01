@@ -17,7 +17,6 @@ async def create_provider(
 ) -> CreateProviderResponse:
     provider = await service.create(
         payload.name,
-        payload.type,
         payload.config,
     )
     return CreateProviderResponse(id=provider.id)

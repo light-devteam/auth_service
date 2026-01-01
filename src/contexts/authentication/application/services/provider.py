@@ -4,7 +4,7 @@ from dependency_injector.wiring import inject, Provide
 
 from src.contexts.authentication.domain.repositories import IProviderRepository
 from src.contexts.authentication.domain.entities import Provider
-from src.contexts.authentication.domain.value_objects import ProviderID, ProviderName, ProviderType
+from src.contexts.authentication.domain.value_objects import ProviderID, ProviderName
 from src.domain import IDatabaseContext
 from src.contexts.authentication.application.interfaces import IProviderService
 
@@ -22,12 +22,10 @@ class ProviderApplicationService(IProviderService):
     async def create(
         self,
         name: str,
-        type: str,
         config: dict[str, Any] | None = None,
     ) -> Provider:
         name = ProviderName(name)
-        type = ProviderType(type)
-        provider = Provider.create(name, type, config)
+        provider = Provider.create(name, config)
         async with self._db_ctx as ctx:
             await self._repository.create(ctx, provider)
         return provider

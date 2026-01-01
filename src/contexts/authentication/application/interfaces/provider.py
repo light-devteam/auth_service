@@ -10,7 +10,6 @@ class IProviderService(ABC):
     async def create(
         self,
         name: str,
-        type: str,
         config: dict[str, Any] | None = None,
     ) -> Provider:
         ...

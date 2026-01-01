@@ -6,7 +6,6 @@ from src.contexts.authentication.domain.value_objects.id import (
     IpID,
 )
 from src.contexts.authentication.domain.value_objects.provider_name import ProviderName
-from src.contexts.authentication.domain.value_objects.enums import ProviderType
 
 
 __all__ = [
@@ -14,7 +13,6 @@ __all__ = [
     'ProviderID',
     'RefreshTokenID',
     'ProviderName',
-    'ProviderType',
     'IdentityID',
     'IpID',
 ]
