@@ -13,7 +13,7 @@ from src.contexts.authentication.delivery.http.providers.schemas import Provider
 @inject
 async def get_provider(
     provider_id: UUID,
-    service: IProviderService = Depends(Provide['provider_application_service']),
+    service: IProviderService = Depends(Provide['auth.provider_service']),
 ) -> Provider:
     provider = await service.get_by_id(provider_id)
     return Provider(**structs.asdict(provider))

@@ -13,7 +13,7 @@ async def get_all(
     page: int = 1,
     page_size: int = 100,
     only_active: bool = True,
-    service: IJWKService = Depends(Provide['jwk_application_service']),
+    service: IJWKService = Depends(Provide['jwk.service']),
 ) -> list[JWKInfo]:
     if page < 1:
         page = 1

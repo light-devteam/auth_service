@@ -10,7 +10,7 @@ from src.contexts.jwk.delivery.http.jwk.schemas import CreateJWKRequest, CreateJ
 @inject
 async def create(
     creation_data: CreateJWKRequest,
-    service: IJWKService = Depends(Provide['jwk_application_service']),
+    service: IJWKService = Depends(Provide['jwk.service']),
 ) -> CreateJWKResponse:
     jwk = await service.create(creation_data.name)
     return CreateJWKResponse(id=jwk.id)

@@ -11,9 +11,9 @@ class JWKApplicationService(IJWKService):
     @inject
     def __init__(
         self,
-        repository: repositories.IJWKRepository = Provide['jwk_repository'],
-        database_context: IDatabaseContext = Provide['postgres_uow'],
-        domain_service: services.JWKTokenService = Provide['jwk_domain_service'],
+        repository: repositories.IJWKRepository = Provide['jwk.repository'],
+        database_context: IDatabaseContext = Provide['infrastructure.postgres_uow'],
+        domain_service: services.JWKTokenService = Provide['jwk.domain_service'],
     ) -> None:
         self._repository = repository
         self._db_ctx = database_context

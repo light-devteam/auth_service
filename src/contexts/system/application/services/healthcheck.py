@@ -16,8 +16,10 @@ class HealthCheckApplicationService(IHealthCheckService):
     @inject
     def __init__(
         self,
-        repository_to_context: dict[IHealthProbe, IDatabaseContext] = Provide['repository_to_context_factory'],
-        logger_factory: LoggerFactory = Provide['logger_factory'],
+        repository_to_context: dict[IHealthProbe, IDatabaseContext] = Provide[
+            'system.repository_to_context_factory',
+        ],
+        logger_factory: LoggerFactory = Provide['infrastructure.logger_factory'],
     ) -> None:
         self._logger = logger_factory.get_logger(__name__)
         self._repo2ctx = repository_to_context

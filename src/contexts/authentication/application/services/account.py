@@ -10,8 +10,8 @@ class AccountApplicationService(IAccountService):
     @inject
     def __init__(
         self,
-        repository: IAccountRepository = Provide['accounts_auth_repository'],
-        database_context: IDatabaseContext = Provide['postgres_uow'],
+        repository: IAccountRepository = Provide['auth.accounts_repository'],
+        database_context: IDatabaseContext = Provide['infrastructure.postgres_uow'],
     ) -> None:
         self._repository = repository
         self._db_ctx = database_context

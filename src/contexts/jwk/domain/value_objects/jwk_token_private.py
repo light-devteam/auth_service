@@ -43,7 +43,11 @@ class JWKTokenPrivate(bytes):
 
     @classmethod
     @inject
-    def __encrypt(cls, value: bytes, settings: Settings = Provide['settings']) -> bytes:
+    def __encrypt(
+        cls,
+        value: bytes,
+        settings: Settings = Provide['infrastructure.settings'],
+    ) -> bytes:
         encrypted = Fernet(settings.JWK_ENCRYPTION_KEY.get_secret_value()).encrypt(value)
         return b64encode(encrypted)
 

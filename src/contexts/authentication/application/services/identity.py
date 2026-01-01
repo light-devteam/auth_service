@@ -12,8 +12,8 @@ class IdentityApplicationService(IIdentityService):
     @inject
     def __init__(
         self,
-        repository: repositories.IIdentityRepository = Provide['identity_auth_repository'],
-        database_context: IDatabaseContext = Provide['postgres_uow'],
+        repository: repositories.IIdentityRepository = Provide['auth.identity_repository'],
+        database_context: IDatabaseContext = Provide['infrastructure.postgres_uow'],
     ) -> None:
         self._repository = repository
         self._db_ctx = database_context

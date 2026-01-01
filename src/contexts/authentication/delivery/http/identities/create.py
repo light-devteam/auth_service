@@ -16,7 +16,7 @@ from src.contexts.authentication.application import IIdentityService
 @inject
 async def create_identity(
     payload: CreateIdentityRequest,
-    service: IIdentityService = Depends(Provide['identity_application_service'])
+    service: IIdentityService = Depends(Provide['auth.identity_service'])
 ) -> CreateIdentityResponse:
     identity = await service.create(
         payload.account_id,

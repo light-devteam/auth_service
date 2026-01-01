@@ -13,7 +13,7 @@ class ExceptionHandlersManager:
     def __init__(
         self,
         app: FastAPI,
-        logger_factory: LoggerFactory = Provide['logger_factory']
+        logger_factory: LoggerFactory = Provide['infrastructure.logger_factory']
     ) -> None:
         self._app = app
         self._logger = logger_factory.get_logger(__name__)
