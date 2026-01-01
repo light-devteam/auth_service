@@ -1,7 +1,12 @@
-from src.contexts.authentication.application.interfaces import IAccountService, IProviderService
+from src.contexts.authentication.application.interfaces import (
+    IAccountService,
+    IProviderService,
+    IIdentityService,
+)
 
 
 __all__ = [
     'IAccountService',
     'IProviderService',
+    'IIdentityService',
 ]
