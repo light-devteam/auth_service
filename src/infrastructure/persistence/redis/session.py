@@ -32,3 +32,6 @@ class RedisSession(IDatabaseContext[Redis]):
     def __check_connection(self) -> None:
         if not hasattr(self, '_connection') or self._connection is None:
             raise RuntimeError('Connection not exists')
+
+    async def use_transaction(self) -> None:
+        raise NotImplementedError()

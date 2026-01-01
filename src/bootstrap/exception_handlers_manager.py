@@ -93,6 +93,9 @@ class ExceptionHandlersManager:
 
     def _map_exception_to_status(self, exc: exceptions.AppException) -> int:
         mapping = {
+            auth_exceptions.IdentityForProviderAlreadyExists: status.HTTP_409_CONFLICT,
+            auth_exceptions.IdentityAlreadyMain: status.HTTP_409_CONFLICT,
+            auth_exceptions.IdentityNotFound: status.HTTP_404_NOT_FOUND,
             auth_exceptions.ProviderAlreadyExists: status.HTTP_409_CONFLICT,
             auth_exceptions.ProviderNotFound: status.HTTP_404_NOT_FOUND,
             auth_exceptions.ProviderNotActive: status.HTTP_403_FORBIDDEN,

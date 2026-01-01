@@ -19,5 +19,5 @@ async def get_all_providers(
         page = 1
     if page_size < 1:
         page_size = 1
-    jwk_tokens = await service.get_all(page, page_size, only_active)
-    return [Provider(**structs.asdict(jwk)) for jwk in jwk_tokens]
+    providers = await service.get_all(page, page_size, only_active)
+    return [Provider(**structs.asdict(provider)) for provider in providers]

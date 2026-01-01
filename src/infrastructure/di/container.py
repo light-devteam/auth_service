@@ -25,7 +25,9 @@ from src.contexts.authentication.domain.mappers import ProviderMapper as Provide
 from src.contexts.authentication.infrastructure import ProviderRepository as ProviderAuthRepository
 from src.contexts.authentication.application.services import ProviderApplicationService
 
-from src.contexts.authentication.domain.services import IdentityDomainService
+from src.contexts.authentication.domain.mappers import IdentityMapper as IdentityAuthMapper
+from src.contexts.authentication.infrastructure import IdentityRepository as IdentityAuthRepository
+from src.contexts.authentication.application.services import IdentityApplicationService
 
 
 class DIContainer(containers.DeclarativeContainer):
@@ -83,4 +85,6 @@ class DIContainer(containers.DeclarativeContainer):
     provider_auth_repository = providers.Singleton(ProviderAuthRepository)
     provider_application_service = providers.Singleton(ProviderApplicationService)
 
-    identity_domain_service = providers.Singleton(IdentityDomainService)
+    identity_auth_mapper = providers.Singleton(IdentityAuthMapper)
+    identity_auth_repository = providers.Singleton(IdentityAuthRepository)
+    identity_application_service = providers.Singleton(IdentityApplicationService)

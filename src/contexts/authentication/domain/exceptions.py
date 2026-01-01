@@ -35,3 +35,7 @@ class TokenAlreadyRevoked(DomainException):
 
 class AccountNotFound(DomainException):
     _DETAIL: str = 'Account not found'
+
+
+class IdentityNotFound(DomainException):
+    _DETAIL: str = 'Account identity not found'

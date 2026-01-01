@@ -23,3 +23,6 @@ class IDatabaseContext(Protocol[TConnection]):
     @property
     def connection(self) -> TConnection:
         raise NotImplementedError()
+
+    async def use_transaction(self) -> None:
+        raise NotImplementedError()
