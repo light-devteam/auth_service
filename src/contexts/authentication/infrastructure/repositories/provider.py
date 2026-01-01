@@ -31,18 +31,16 @@ class ProviderRepository(repositories.IProviderRepository):
         insert into {self._table_name} (
             id,
             name,
-            type,
             is_active,
             created_at,
             config
-        ) values ($1, $2, $3, $4, $5, $6)
+        ) values ($1, $2, $3, $4, $5)
         """
         try:
             await ctx.connection.execute(
                 query,
                 provider.id,
                 provider.name,
-                provider.type,
                 provider.is_active,
                 provider.created_at,
                 json.dumps(provider.config),
@@ -99,16 +97,14 @@ class ProviderRepository(repositories.IProviderRepository):
         update {self._table_name}
         set 
             name = $2,
-            type = $3,
-            is_active = $4,
-            created_at = $5,
-            config = $6
+            is_active = $3,
+            created_at = $4,
+            config = $5
         where id = $1
         """
         values = [(
             provider.id,
             provider.name,
-            provider.type,
             provider.is_active,
             provider.created_at,
             json.dumps(provider.config),
