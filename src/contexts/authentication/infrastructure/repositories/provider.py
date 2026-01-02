@@ -10,10 +10,13 @@ from src.contexts.authentication.domain import (
     mappers,
     exceptions,
 )
+from src.infrastructure.persistence.postgres import get_constraint_name
 
 
 class ProviderRepository(repositories.IProviderRepository):
     _table_name = 'auth.providers'
+
+    __name_uq_constraint = 'uq_providers_name'
 
     @inject
     def __init__(
@@ -45,8 +48,10 @@ class ProviderRepository(repositories.IProviderRepository):
                 provider.created_at,
                 json.dumps(provider.config),
             )
-        except UniqueViolationError:
-            raise exceptions.ProviderAlreadyExists()
+        except UniqueViolationError as exc:
+            constraint_name = get_constraint_name(exc)
+            if constraint_name == self.__name_uq_constraint:
+                raise exceptions.ProviderAlreadyExists()
 
     async def get_all(
         self,
@@ -111,5 +116,7 @@ class ProviderRepository(repositories.IProviderRepository):
         ) for provider in providers]
         try:
             await ctx.connection.executemany(query, values)
-        except UniqueViolationError:
-            raise exceptions.ProviderAlreadyExists()
+        except UniqueViolationError as exc:
+            constraint_name = get_constraint_name(exc)
+            if constraint_name == self.__name_uq_constraint:
+                raise exceptions.ProviderAlreadyExists()

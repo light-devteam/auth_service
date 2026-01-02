@@ -2,12 +2,14 @@ from dependency_injector.wiring import inject, Provide
 from asyncpg import UniqueViolationError
 
 from src.contexts.jwk.domain.repositories import IJWKRepository
-from src.infrastructure.persistence.postgres import PostgresUnitOfWork
+from src.infrastructure.persistence.postgres import PostgresUnitOfWork, get_constraint_name
 from src.contexts.jwk.domain import entities, value_objects, mappers, exceptions
 
 
 class JWKRepository(IJWKRepository):
     _table_name = 'auth.jwks'
+
+    __name_uq_constraint = 'uq_jwks_name'
 
     @inject
     def __init__(
@@ -88,8 +90,10 @@ class JWKRepository(IJWKRepository):
                 jwk.is_primary,
                 jwk.created_at,
             )
-        except UniqueViolationError:
-            raise exceptions.JWKAlreadyExists()
+        except UniqueViolationError as exc:
+            constraint_name = get_constraint_name(exc)
+            if constraint_name == self.__name_uq_constraint:
+                raise exceptions.JWKAlreadyExists()
 
     async def update(
         self,
@@ -120,6 +124,8 @@ class JWKRepository(IJWKRepository):
         ) for jwk in jwk_tokens]
         try:
             await ctx.connection.executemany(query, values)
-        except UniqueViolationError:
-            raise exceptions.JWKAlreadyExists()
+        except UniqueViolationError as exc:
+            constraint_name = get_constraint_name(exc)
+            if constraint_name == self.__name_uq_constraint:
+                raise exceptions.JWKAlreadyExists()
 

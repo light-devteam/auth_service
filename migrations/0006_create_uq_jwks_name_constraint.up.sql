@@ -1,0 +1,1 @@
+alter table "auth"."jwks" add constraint "uq_jwks_name" unique (name);

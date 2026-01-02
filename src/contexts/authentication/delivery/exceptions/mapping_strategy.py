@@ -12,7 +12,6 @@ class AuthenticationExceptionMapping(ExceptionMappingStrategy):
     def get_mappings(cls) -> dict[Type[AppException], int]:
         return {
             exceptions.IdentityForProviderAlreadyExists: status.HTTP_409_CONFLICT,
-            exceptions.IdentityAlreadyMain: status.HTTP_409_CONFLICT,
             exceptions.IdentityNotFound: status.HTTP_404_NOT_FOUND,
             exceptions.ProviderAlreadyExists: status.HTTP_409_CONFLICT,
             exceptions.ProviderNotFound: status.HTTP_404_NOT_FOUND,
