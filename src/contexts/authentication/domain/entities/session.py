@@ -14,7 +14,6 @@ class Session(Struct, kw_only=True):
     account_id: AccountID
     provider_id: ProviderID
     created_at: datetime
-    expires_at: datetime
     revoked_at: Optional[datetime] = None
 
     refresh_token: RefreshToken
@@ -28,8 +27,6 @@ class Session(Struct, kw_only=True):
         raise SessionAlreadyRevoked()
 
     def is_active(self) -> bool:
-        now = datetime.now(tz=timezone.utc)
         not_revoked = self.revoked_at is None
-        not_expired = self.expires_at > now
         token_active = self.refresh_token.is_active()
-        return not_revoked and not_expired and token_active
+        return not_revoked and token_active

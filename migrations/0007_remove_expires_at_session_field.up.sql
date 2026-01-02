@@ -1,0 +1,1 @@
+alter table "auth"."sessions" drop column if exists expires_at;
