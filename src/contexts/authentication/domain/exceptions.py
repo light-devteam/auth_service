@@ -13,14 +13,6 @@ class ProviderAlreadyExists(DomainException):
     _DETAIL = 'Provider with that name already exists'
 
 
-class IdentityAlreadyMain(DomainException):
-    _DETAIL = 'Identity already set as main for this account'
-
-
-class MainIdentityAlreadySet(DomainException):
-    _DETAIL = 'Account must be have only one main identity'
-
-
 class IdentityForProviderAlreadyExists(DomainException):
     _DETAIL = 'Identity for this provider already exists'
 

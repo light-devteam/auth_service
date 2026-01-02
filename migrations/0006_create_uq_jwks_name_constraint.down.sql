@@ -1,0 +1,1 @@
+alter table "auth"."jwks" drop constraint if exists "uq_jwks_name";

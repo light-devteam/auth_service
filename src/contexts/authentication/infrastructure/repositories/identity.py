@@ -11,10 +11,13 @@ from src.contexts.authentication.domain import (
     exceptions,
 )
 from src.domain.value_objects import AccountID
+from src.infrastructure.persistence.postgres import get_constraint_name
 
 
 class IdentityRepository(repositories.IIdentityRepository):
     _table_name = 'auth.identities'
+
+    __only_one_provider_on_account_uq_constraint = 'uq_identities_account_main_true'
 
     @inject
     def __init__(
@@ -48,8 +51,10 @@ class IdentityRepository(repositories.IIdentityRepository):
                 identity.created_at,
                 identity.last_used_at,
             )
-        except UniqueViolationError:
-            raise exceptions.IdentityForProviderAlreadyExists()
+        except UniqueViolationError as exc:
+            constraint_name = get_constraint_name(exc)
+            if constraint_name == self.__only_one_provider_on_account_uq_constraint:
+                raise exceptions.IdentityForProviderAlreadyExists()
 
     async def get_by_account_id(
         self,
@@ -137,5 +142,7 @@ class IdentityRepository(repositories.IIdentityRepository):
         ) for identity in identities]
         try:
             await ctx.connection.executemany(query, values)
-        except UniqueViolationError:
-            raise exceptions.MainIdentityAlreadySet()
+        except UniqueViolationError as exc:
+            constraint_name = get_constraint_name(exc)
+            if constraint_name == self.__only_one_provider_on_account_uq_constraint:
+                raise exceptions.IdentityForProviderAlreadyExists()
