@@ -59,7 +59,7 @@ class IdentityRepository(repositories.IIdentityRepository):
     async def get_by_account_id(
         self,
         ctx: PostgresUnitOfWork,
-        id: AccountID,
+        account_id: AccountID,
         page: int = 1,
         page_size: int = 100,
     ) -> list[entities.Identity]:
@@ -74,7 +74,7 @@ class IdentityRepository(repositories.IIdentityRepository):
             query,
             offset,
             page_size,
-            id,
+            account_id,
         )
         identities = []
         for raw_identity in raw_identities:
