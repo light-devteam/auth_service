@@ -31,3 +31,7 @@ class AccountNotFound(DomainException):
 
 class IdentityNotFound(DomainException):
     _DETAIL: str = 'Account identity not found'
+
+
+class SessionNotFound(DomainException):
+    _DETAIL: str = 'Account session not found'

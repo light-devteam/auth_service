@@ -1,12 +1,11 @@
 from datetime import datetime, timezone
-from typing import Optional
+from typing import Optional, Self
 
 from msgspec import Struct
 
 from src.domain.value_objects.id import AccountID
 from src.contexts.authentication.domain.value_objects import SessionID, ProviderID
 from src.contexts.authentication.domain.exceptions import SessionAlreadyRevoked
-from src.contexts.authentication.domain.entities.refresh_token import RefreshToken
 
 
 class Session(Struct, kw_only=True):
@@ -16,17 +15,21 @@ class Session(Struct, kw_only=True):
     created_at: datetime
     revoked_at: Optional[datetime] = None
 
-    refresh_token: RefreshToken
+    @classmethod
+    def create(cls, account_id: AccountID, provider_id: ProviderID) -> 'Session':
+        return Session(
+            id=SessionID.generate(),
+            account_id=account_id,
+            provider_id=provider_id,
+            created_at=datetime.now(tz=timezone.utc),
+            revoked_at=None,
+        )
 
     def revoke(self) -> None:
-        if self.revoked_at is None:
-            try:
-                self.refresh_token.revoke()
-            finally:
-                self.revoked_at = self.refresh_token.revoked_at
+        if not self.revoked_at:
+            self.revoked_at = True
         raise SessionAlreadyRevoked()
 
     def is_active(self) -> bool:
-        not_revoked = self.revoked_at is None
-        token_active = self.refresh_token.is_active()
-        return not_revoked and token_active
+        not_revoked = not self.revoked_at
+        return not_revoked
