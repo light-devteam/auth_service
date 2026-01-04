@@ -1,4 +1,4 @@
-from src.domain.exceptions import DomainException
+from src.domain.exceptions import DomainException, InfrastructureException
 
 
 class ProviderNotActive(DomainException):

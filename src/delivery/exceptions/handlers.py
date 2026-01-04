@@ -46,7 +46,7 @@ class ExceptionHandlersManager:
     ) -> JSONResponse:
         status_code = self._get_status_code(exc)
         self._logger.warning(
-            f'App exception: {type(exc).__name__} - {exc._DETAIL}',
+            f'App exception: {type(exc).__name__} - {exc.detail}',
             extra={
                 'path': request.url.path,
                 'method': request.method,
@@ -56,7 +56,7 @@ class ExceptionHandlersManager:
         return JSONResponse(
             status_code=status_code,
             content={
-                'detail': exc._DETAIL,
+                'detail': exc.detail,
                 'error_type': type(exc).__name__,
             }
         )
