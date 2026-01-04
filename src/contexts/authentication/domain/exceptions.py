@@ -39,3 +39,7 @@ class SessionNotFound(DomainException):
 
 class ProviderAlreadyActive(DomainException):
     _DETAIL = 'Provider already active'
+
+
+class ProviderConfigInvalid(DomainException):
+    _DETAIL = 'Provider config invalid.'

@@ -4,6 +4,7 @@ from src.contexts.authentication.domain.value_objects.id import (
     RefreshTokenID,
     IdentityID,
     IpID,
+    TelegramAccountID,
 )
 from src.contexts.authentication.domain.value_objects.provider_name import ProviderName
 from src.contexts.authentication.domain.value_objects.credential_fields import (
@@ -13,8 +14,14 @@ from src.contexts.authentication.domain.value_objects.credential_fields import (
 from src.contexts.authentication.domain.value_objects.provider_credentials import (
     ProviderCredentials,
     PasswordProviderCredentials,
+    TelegramProviderCredentials,
 )
 from src.contexts.authentication.domain.value_objects.enums import ProviderType
+from src.contexts.authentication.domain.value_objects.provider_configs import (
+    ProviderConfig,
+    PasswordProviderConfig,
+    TelegramProviderConfig,
+)
 
 
 __all__ = [
@@ -26,9 +33,14 @@ __all__ = [
     'IpID',
     'ProviderType',
 
-    'ProviderCredentials',
-
     'Login',
     'Password',
+
+    'ProviderCredentials',
     'PasswordProviderCredentials',
+    'TelegramProviderCredentials',
+
+    'ProviderConfig',
+    'PasswordProviderConfig',
+    'TelegramProviderConfig',
 ]

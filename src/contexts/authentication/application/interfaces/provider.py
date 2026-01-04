@@ -11,7 +11,7 @@ class IProviderService(ABC):
         self,
         name: str,
         type: str,
-        config: dict[str, Any] | None = None,
+        config: dict[str, Any],
     ) -> Provider:
         ...
 

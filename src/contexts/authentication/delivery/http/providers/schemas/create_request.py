@@ -1,16 +1,32 @@
 from collections import deque
-from typing import Any
+from typing import Any, Union
 import json
 
-from pydantic import BaseModel, Field, field_validator, ValidationError
+from pydantic import BaseModel, Field, field_validator
 
 from src.contexts.authentication.domain.value_objects.enums import ProviderType
+from src.contexts.authentication.delivery.http.providers.schemas.provider_configs import (
+    PasswordProviderConfig,
+    TelegramProviderConfig,
+)
+
 
 
 class CreateProviderRequest(BaseModel):
     name: str = Field(min_length=1, max_length=255)
     type: ProviderType
-    config: dict[str, Any] = '{}'
+    config: Union[
+        dict[str, Any],
+        PasswordProviderConfig,
+        TelegramProviderConfig,
+    ] = {}
+
+    @field_validator('type')
+    @classmethod
+    def validate_provider_type(cls, value: ProviderType) -> ProviderType:
+        if value == ProviderType.UNKNOWN:
+            raise ValueError('Provider type `unknown` not allowed for create')
+        return value
 
     @field_validator('config')
     @classmethod
