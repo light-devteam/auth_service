@@ -47,3 +47,7 @@ class IProviderService(ABC):
     @abstractmethod
     async def activate(self, id: UUID) -> tuple[Provider, Provider | None]:
         ...
+
+    @abstractmethod
+    async def get_types(self) -> list[str]:
+        ...

@@ -81,3 +81,6 @@ class ProviderApplicationService(IProviderService):
             new, old = self._domain_service.activate(new_provider, old_provider)
             await self._repository.update(ctx, old_provider, new_provider)
             return [new, old]
+
+    async def get_types(self) -> list[str]:
+        return [p_type.value for p_type in ProviderType]
