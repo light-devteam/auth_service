@@ -17,6 +17,7 @@ class ProviderRepository(repositories.IProviderRepository):
     _table_name = 'auth.providers'
 
     __name_uq_constraint = 'uq_providers_name'
+    __type_active_uq_constraint = 'uidx_providers_type_active'
 
     @inject
     def __init__(
@@ -158,5 +159,22 @@ class ProviderRepository(repositories.IProviderRepository):
             await ctx.connection.executemany(query, values)
         except UniqueViolationError as exc:
             constraint_name = get_constraint_name(exc)
-            if constraint_name == self.__name_uq_constraint:
-                raise exceptions.ProviderAlreadyExists()
+            match constraint_name:
+                case self.__name_uq_constraint:
+                    raise exceptions.ProviderAlreadyExists()
+                case self.__type_active_uq_constraint:
+                    exc_detail: str = exc.as_dict().get('detail', '')
+                    try:
+                        value_part = exc_detail.split('=', 1)[1]
+                    except:
+                        value_part = ''
+                    start = value_part.find('(')
+                    end = value_part.rfind(')', start)
+                    if start == -1 or end == -1:
+                        provider_type = '?'
+                    provider_type = value_part[start + 1 : end].strip()
+                    raise exceptions.ProviderAlreadyExists(
+                        f'Active provider for type `{provider_type}` already exists',
+                    )
+                case _:
+                    raise exceptions.InfrastructureException()
