@@ -14,6 +14,7 @@ from src.contexts.authentication.domain.value_objects.provider_credentials impor
     ProviderCredentials,
     PasswordProviderCredentials,
 )
+from src.contexts.authentication.domain.value_objects.enums import ProviderType
 
 
 __all__ = [
@@ -23,6 +24,7 @@ __all__ = [
     'ProviderName',
     'IdentityID',
     'IpID',
+    'ProviderType',
 
     'ProviderCredentials',
 
