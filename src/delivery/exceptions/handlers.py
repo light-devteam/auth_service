@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Type, Any
 
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
@@ -10,6 +10,7 @@ from src.delivery.exceptions.base_mapping_strategy import ExceptionMappingStrate
 from src.infrastructure.logger import LoggerFactory
 from src.contexts.authentication.delivery.exceptions import AuthenticationExceptionMapping
 from src.contexts.jwk.delivery.exceptions import JWKExceptionMapping
+
 
 class ExceptionHandlersManager:
     @inject
@@ -66,7 +67,17 @@ class ExceptionHandlersManager:
         request: Request,
         exc: RequestValidationError
     ) -> JSONResponse:
-        errors = exc.errors()
+
+        def clean_errors(errors: dict[str, Any]) -> list[str]:
+            cleaned = []
+            for e in errors:
+                ctx = e.get('ctx', {})
+                if isinstance(ctx.get('error'), Exception):
+                    e['ctx'] = {'error': str(ctx['error'])}
+                cleaned.append(e)
+            return cleaned
+
+        errors = clean_errors(exc.errors())
         self._logger.warning(
             f'Validation error on {request.url.path}',
             extra={
