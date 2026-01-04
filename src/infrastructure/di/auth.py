@@ -14,6 +14,7 @@ from src.contexts.authentication.application.services import IdentityApplication
 
 from src.contexts.authentication.domain.mappers import SessionMapper
 from src.contexts.authentication.infrastructure import SessionRepository
+from src.contexts.authentication.application.services import SessionApplicationService
 
 
 class AuthContainer(containers.DeclarativeContainer):
@@ -31,3 +32,4 @@ class AuthContainer(containers.DeclarativeContainer):
 
     session_mapper = providers.Singleton(SessionMapper)
     session_repository = providers.Singleton(SessionRepository)
+    session_service = providers.Singleton(SessionApplicationService)

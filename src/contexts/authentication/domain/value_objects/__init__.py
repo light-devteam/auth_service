@@ -6,6 +6,14 @@ from src.contexts.authentication.domain.value_objects.id import (
     IpID,
 )
 from src.contexts.authentication.domain.value_objects.provider_name import ProviderName
+from src.contexts.authentication.domain.value_objects.credential_fields import (
+    Login,
+    Password,
+)
+from src.contexts.authentication.domain.value_objects.provider_credentials import (
+    ProviderCredentials,
+    PasswordProviderCredentials,
+)
 
 
 __all__ = [
@@ -15,4 +23,10 @@ __all__ = [
     'ProviderName',
     'IdentityID',
     'IpID',
+
+    'ProviderCredentials',
+
+    'Login',
+    'Password',
+    'PasswordProviderCredentials',
 ]
