@@ -4,6 +4,7 @@ from src.contexts.authentication.domain.mappers import AccountMapper
 from src.contexts.authentication.infrastructure import AccountRepository
 from src.contexts.authentication.application.services import AccountApplicationService
 
+from src.contexts.authentication.domain.services import ProviderService
 from src.contexts.authentication.domain.mappers import ProviderMapper
 from src.contexts.authentication.infrastructure import ProviderRepository
 from src.contexts.authentication.application.services import ProviderApplicationService
@@ -22,6 +23,7 @@ class AuthContainer(containers.DeclarativeContainer):
     accounts_repository = providers.Singleton(AccountRepository)
     accounts_service = providers.Singleton(AccountApplicationService)
 
+    provider_domain_service = providers.Singleton(ProviderService)
     provider_mapper = providers.Singleton(ProviderMapper)
     provider_repository = providers.Singleton(ProviderRepository)
     provider_service = providers.Singleton(ProviderApplicationService)

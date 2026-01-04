@@ -45,5 +45,5 @@ class IProviderService(ABC):
         ...
 
     @abstractmethod
-    async def toggle_active(self, id: UUID) -> bool:
+    async def activate(self, id: UUID) -> tuple[Provider, Provider | None]:
         ...
