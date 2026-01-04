@@ -4,6 +4,7 @@ from src.infrastructure.di.infrastructure import InfrastructureContainer
 from src.infrastructure.di.system import SystemContainer
 from src.infrastructure.di.jwk import JWKContainer
 from src.infrastructure.di.auth import AuthContainer
+from src.infrastructure.di.providers import ProvidersContainer
 
 
 class DIContainer(containers.DeclarativeContainer):
@@ -33,3 +34,4 @@ class DIContainer(containers.DeclarativeContainer):
     )
     jwk = providers.Container(JWKContainer)
     auth = providers.Container(AuthContainer)
+    auth_providers = providers.Container(ProvidersContainer)

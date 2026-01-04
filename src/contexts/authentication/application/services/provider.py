@@ -10,6 +10,8 @@ from src.domain import IDatabaseContext
 from src.contexts.authentication.application.interfaces import IProviderService
 from src.contexts.authentication.domain.services import ProviderService
 from src.contexts.authentication.domain.exceptions import ProviderNotFound
+from src.contexts.authentication.infrastructure.providers import PasswordProvider
+from src.contexts.authentication.domain.providers import IProviderFactory
 
 
 class ProviderApplicationService(IProviderService):
@@ -18,20 +20,23 @@ class ProviderApplicationService(IProviderService):
         self,
         repository: IProviderRepository = Provide['auth.provider_repository'],
         database_context: IDatabaseContext = Provide['infrastructure.postgres_uow'],
-        domain_service: ProviderService = Provide['auth.provider_domain_service']
+        domain_service: ProviderService = Provide['auth.provider_domain_service'],
+        provider_registry: IProviderFactory = Provide['auth_providers.registry'],
     ) -> None:
         self._repository = repository
         self._db_ctx = database_context
         self._domain_service = domain_service
+        self._provider_registry = provider_registry
 
     async def create(
         self,
         name: str,
         type: str,
-        config: dict[str, Any] | None = None,
+        config: dict[str, Any],
     ) -> Provider:
         name = ProviderName(name)
         type = ProviderType(type)
+        self._provider_registry.get(type).validate_config(config)
         provider = Provider.create(name, type, config)
         async with self._db_ctx as ctx:
             await self._repository.create(ctx, provider)

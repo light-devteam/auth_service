@@ -4,6 +4,11 @@ from src.contexts.authentication.delivery.http.providers.schemas.provider import
 from src.contexts.authentication.delivery.http.providers.schemas.active_state import ActiveState
 from src.contexts.authentication.delivery.http.providers.schemas.activate_response import ActivateResponse
 
+from src.contexts.authentication.delivery.http.providers.schemas.provider_configs import (
+    PasswordProviderConfig,
+    TelegramProviderConfig,
+)
+
 
 __all__ = [
     'CreateProviderRequest',
@@ -11,4 +16,7 @@ __all__ = [
     'Provider',
     'ActiveState',
     'ActivateResponse',
+
+    'PasswordProviderConfig',
+    'TelegramProviderConfig',
 ]
