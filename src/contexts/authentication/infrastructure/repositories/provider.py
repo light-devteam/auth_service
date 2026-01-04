@@ -41,6 +41,9 @@ class ProviderRepository(repositories.IProviderRepository):
             config
         ) values ($1, $2, $3, $4, $5, $6)
         """
+        config = provider.config
+        if config is not None:
+            config = json.dumps(provider.config)
         try:
             await ctx.connection.execute(
                 query,
@@ -49,7 +52,7 @@ class ProviderRepository(repositories.IProviderRepository):
                 provider.type.value,
                 provider.is_active,
                 provider.created_at,
-                json.dumps(provider.config),
+                config,
             )
         except UniqueViolationError as exc:
             constraint_name = get_constraint_name(exc)
@@ -147,14 +150,19 @@ class ProviderRepository(repositories.IProviderRepository):
             config = $6
         where id = $1
         """
-        values = [(
-            provider.id,
-            provider.name,
-            provider.type.value,
-            provider.is_active,
-            provider.created_at,
-            json.dumps(provider.config),
-        ) for provider in providers]
+        values = []
+        for provider in providers:
+            config = provider.config
+            if config is not None:
+                config = json.dumps(provider.config)
+            values.append(
+                provider.id,
+                provider.name,
+                provider.type.value,
+                provider.is_active,
+                provider.created_at,
+                config,
+            )
         try:
             await ctx.connection.executemany(query, values)
         except UniqueViolationError as exc:
