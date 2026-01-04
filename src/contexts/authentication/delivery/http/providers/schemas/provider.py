@@ -13,7 +13,7 @@ class Provider(BaseModel):
     type: ProviderType
     is_active: bool
     created_at: datetime
-    config: Optional[dict[str, Any]] = None
+    config: dict[str, Any] = '{}'
 
     @field_serializer('created_at', when_used='json')
     def serialize_datetime(self, value: datetime) -> float:
