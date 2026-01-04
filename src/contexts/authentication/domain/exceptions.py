@@ -26,12 +26,16 @@ class TokenAlreadyRevoked(DomainException):
 
 
 class AccountNotFound(DomainException):
-    _DETAIL: str = 'Account not found'
+    _DETAIL = 'Account not found'
 
 
 class IdentityNotFound(DomainException):
-    _DETAIL: str = 'Account identity not found'
+    _DETAIL = 'Account identity not found'
 
 
 class SessionNotFound(DomainException):
-    _DETAIL: str = 'Account session not found'
+    _DETAIL = 'Account session not found'
+
+
+class ProviderAlreadyActive(DomainException):
+    _DETAIL = 'Provider already active'

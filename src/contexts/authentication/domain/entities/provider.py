@@ -42,3 +42,6 @@ class Provider(Struct):
     def toggle_active(self) -> bool:
         self.is_active = not self.is_active
         return self.is_active
+
+    def activate(self) -> None:
+        self.is_active = True

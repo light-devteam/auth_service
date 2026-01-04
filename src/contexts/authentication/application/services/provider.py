@@ -8,6 +8,8 @@ from src.contexts.authentication.domain.entities import Provider
 from src.contexts.authentication.domain.value_objects import ProviderID, ProviderName, ProviderType
 from src.domain import IDatabaseContext
 from src.contexts.authentication.application.interfaces import IProviderService
+from src.contexts.authentication.domain.services import ProviderService
+from src.contexts.authentication.domain.exceptions import ProviderNotFound
 
 
 class ProviderApplicationService(IProviderService):
@@ -16,9 +18,11 @@ class ProviderApplicationService(IProviderService):
         self,
         repository: IProviderRepository = Provide['auth.provider_repository'],
         database_context: IDatabaseContext = Provide['infrastructure.postgres_uow'],
+        domain_service: ProviderService = Provide['auth.provider_domain_service']
     ) -> None:
         self._repository = repository
         self._db_ctx = database_context
+        self._domain_service = domain_service
 
     async def create(
         self,
@@ -65,11 +69,15 @@ class ProviderApplicationService(IProviderService):
         async with self._db_ctx as ctx:
             return await self._repository.get_active_by_type(ctx, type)
 
-    async def toggle_active(self, id: UUID) -> bool:
+    async def activate(self, id: UUID) -> tuple[Provider, Provider | None]:
         id = ProviderID(id)
         async with self._db_ctx as ctx:
             await ctx.use_transaction()
-            provider = await self._repository.get_by_id(ctx, id)
-            current_state = provider.toggle_active()
-            await self._repository.update(ctx, provider)
-            return current_state
+            new_provider = await self._repository.get_by_id(ctx, id)
+            try:
+                old_provider = await self._repository.get_active_by_type(ctx, new_provider.type)
+            except ProviderNotFound:
+                old_provider = None
+            new, old = self._domain_service.activate(new_provider, old_provider)
+            await self._repository.update(ctx, old_provider, new_provider)
+            return [new, old]
