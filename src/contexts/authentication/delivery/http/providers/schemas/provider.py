@@ -4,10 +4,13 @@ from datetime import datetime
 
 from pydantic import BaseModel, Field, field_serializer
 
+from src.contexts.authentication.domain.value_objects.enums import ProviderType
+
 
 class Provider(BaseModel):
     id: UUID
     name: str = Field(min_length=1, max_length=255)
+    type: ProviderType
     is_active: bool
     created_at: datetime
     config: Optional[dict[str, Any]] = None

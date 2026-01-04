@@ -1,0 +1,1 @@
+drop index concurrently if exists "auth".uidx_providers_type_active;

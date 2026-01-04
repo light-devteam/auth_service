@@ -6,6 +6,7 @@ from msgspec import Struct
 from src.contexts.authentication.domain.value_objects import (
     ProviderID,
     ProviderName,
+    enums,
 )
 from src.contexts.authentication.domain.exceptions import ProviderNotActive
 
@@ -13,6 +14,7 @@ from src.contexts.authentication.domain.exceptions import ProviderNotActive
 class Provider(Struct):
     id: ProviderID
     name: ProviderName
+    type: enums.ProviderType
     is_active: bool
     created_at: datetime
     config: Optional[dict[str, Any]] = None
@@ -21,11 +23,13 @@ class Provider(Struct):
     def create(
         cls,
         name: ProviderName,
+        type: enums.ProviderType,
         config: Optional[dict] = None,
     ) -> Self:
         return Provider(
             id=ProviderID.generate(),
             name=name,
+            type=type,
             is_active=False,
             created_at=datetime.now(tz=timezone.utc),
             config=config,

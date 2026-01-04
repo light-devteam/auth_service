@@ -34,16 +34,18 @@ class ProviderRepository(repositories.IProviderRepository):
         insert into {self._table_name} (
             id,
             name,
+            type,
             is_active,
             created_at,
             config
-        ) values ($1, $2, $3, $4, $5)
+        ) values ($1, $2, $3, $4, $5, $6)
         """
         try:
             await ctx.connection.execute(
                 query,
                 provider.id,
                 provider.name,
+                provider.type.value,
                 provider.is_active,
                 provider.created_at,
                 json.dumps(provider.config),
@@ -67,10 +69,10 @@ class ProviderRepository(repositories.IProviderRepository):
             where_clause = 'where is_active = $3'
             params.append(only_active)
         query = f"""
-        select * from {self._table_name}
-        {where_clause}
-        order by is_active desc, created_at desc
-        offset $1 limit $2
+            select * from {self._table_name}
+            {where_clause}
+            order by is_active desc, created_at desc
+            offset $1 limit $2
         """
         raw_providers = await ctx.connection.fetch(query, *params)
         providers = []
@@ -102,14 +104,16 @@ class ProviderRepository(repositories.IProviderRepository):
         update {self._table_name}
         set 
             name = $2,
-            is_active = $3,
-            created_at = $4,
-            config = $5
+            type= $3,
+            is_active = $4,
+            created_at = $5,
+            config = $6
         where id = $1
         """
         values = [(
             provider.id,
             provider.name,
+            provider.type.value,
             provider.is_active,
             provider.created_at,
             json.dumps(provider.config),
