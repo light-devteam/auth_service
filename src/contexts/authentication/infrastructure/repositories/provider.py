@@ -93,6 +93,42 @@ class ProviderRepository(repositories.IProviderRepository):
             raise exceptions.ProviderNotFound()
         return self._mapper.to_entity(provider)
 
+    async def get_by_type(
+        self,
+        ctx: PostgresUnitOfWork,
+        type: value_objects.ProviderType,
+        page: int = 1,
+        page_size: int = 100,
+    ) -> list[entities.Provider]:
+        offset = (page - 1) * page_size
+        query = f"""
+            select * from {self._table_name}
+            where type = $3
+            order by is_active desc, created_at desc
+            offset $1 limit $2
+        """
+        raw_providers = await ctx.connection.fetch(query, offset, page_size, type)
+        providers = []
+        for raw_provider in raw_providers:
+            providers.append(self._mapper.to_entity(raw_provider))
+        return providers
+
+    async def get_active_by_type(
+        self,
+        ctx: PostgresUnitOfWork,
+        type: value_objects.ProviderType,
+    ) -> entities.Provider:
+        query = f"""
+            select * from {self._table_name}
+            where
+                type = $1 and
+                is_active = true
+        """
+        provider = await ctx.connection.fetchrow(query, type)
+        if not provider:
+            raise exceptions.ProviderNotFound()
+        return self._mapper.to_entity(provider)
+
     async def update(
         self,
         ctx: PostgresUnitOfWork,

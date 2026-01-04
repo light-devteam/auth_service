@@ -29,5 +29,21 @@ class IProviderService(ABC):
         ...
 
     @abstractmethod
+    async def get_by_type(
+        self,
+        type: str,
+        page: int = 1,
+        page_size: int = 100,
+    ) -> list[Provider]:
+        ...
+
+    @abstractmethod
+    async def get_active_by_type(
+        self,
+        type: str,
+    ) -> Provider:
+        ...
+
+    @abstractmethod
     async def toggle_active(self, id: UUID) -> bool:
         ...

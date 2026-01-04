@@ -22,6 +22,24 @@ class IProviderRepository(ABC):
         ...
 
     @abstractmethod
+    async def get_by_type(
+        self,
+        ctx: IDatabaseContext,
+        type: value_objects.ProviderType,
+        page: int = 1,
+        page_size: int = 100,
+    ) -> list[entities.Provider]:
+        ...
+
+    @abstractmethod
+    async def get_active_by_type(
+        self,
+        ctx: IDatabaseContext,
+        type: value_objects.ProviderType,
+    ) -> entities.Provider:
+        ...
+
+    @abstractmethod
     async def update(
         self,
         ctx: IDatabaseContext,
