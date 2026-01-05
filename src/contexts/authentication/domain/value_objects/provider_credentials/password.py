@@ -3,5 +3,9 @@ from src.contexts.authentication.domain.value_objects.credential_fields import L
 
 
 class PasswordProviderCredentials(ProviderCredentials):
-    login: Login
-    password: Password
+    login: str
+    password: str
+
+    def __post_init__(self) -> None:
+        Login(self.login)
+        Password(self.password)

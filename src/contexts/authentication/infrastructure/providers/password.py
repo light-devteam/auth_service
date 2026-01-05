@@ -29,3 +29,15 @@ class PasswordProvider(IProvider):
             )
         except (msgspec.ValidationError, TypeError) as e:
             raise ProviderConfigInvalid(f'Password provider invalid config: {e}')
+
+    def validate_credentials(
+        self,
+        credentials: dict[str, Any],
+    ) -> PasswordProviderCredentials:
+        try:
+            return msgspec.json.decode(
+                msgspec.json.encode(credentials),
+                type=PasswordProviderCredentials,
+            )
+        except (msgspec.ValidationError, TypeError) as e:
+            raise ProviderConfigInvalid(f'Password provider invalid credentials: {e}')

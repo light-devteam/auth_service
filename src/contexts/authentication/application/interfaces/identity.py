@@ -10,8 +10,8 @@ class IIdentityService(ABC):
     async def create(
         self,
         account_id: UUID,
-        provider_id: UUID,
-        provider_data: dict[str, Any],
+        provider_type: str,
+        credentials: dict[str, Any],
     ) -> Identity:
         ...
 

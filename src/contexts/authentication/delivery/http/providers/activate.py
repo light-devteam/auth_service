@@ -15,7 +15,11 @@ async def activate_provider(
     service: IProviderService = Depends(Provide['auth.provider_service']),
 ) -> ActivateResponse:
     new, old = await service.activate(provider_id)
+    if old:
+        old_state = ActiveState(id=old.id, is_active=old.is_active)
+    else:
+        old_state = None
     return ActivateResponse(
         new=ActiveState(id=new.id, is_active=new.is_active),
-        old=ActiveState(id=old.id, is_active=old.is_active),
+        old=old_state,
     )

@@ -22,3 +22,10 @@ class IProvider(ABC):
         config: dict[str, Any],
     ) -> ProviderConfig:
         ...
+
+    @abstractmethod
+    def validate_credentials(
+        self,
+        credentials: dict[str, Any],
+    ) -> ProviderCredentials:
+        ...

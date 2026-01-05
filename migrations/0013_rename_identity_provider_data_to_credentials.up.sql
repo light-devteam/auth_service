@@ -1,0 +1,1 @@
+alter table "auth".identities rename column provider_data to credentials;

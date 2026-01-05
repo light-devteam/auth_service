@@ -11,7 +11,7 @@ class Identity(Struct):
     id: IdentityID
     account_id: AccountID
     provider_id: ProviderID
-    provider_data: dict[str, Any]
+    credentials: dict[str, Any]
     created_at: datetime
     last_used_at: datetime
 
@@ -20,14 +20,14 @@ class Identity(Struct):
         cls,
         account_id: AccountID,
         provider_id: ProviderID,
-        provider_data: dict[str, Any],
+        credentials: dict[str, Any],
     ) -> Self:
         now = datetime.now(tz=timezone.utc)
         return Identity(
             id=IdentityID.generate(),
             account_id=account_id,
             provider_id=provider_id,
-            provider_data=provider_data,
+            credentials=credentials,
             created_at=now,
             last_used_at=now,
         )

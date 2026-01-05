@@ -9,7 +9,7 @@ class Identity(BaseModel):
     id: UUID
     account_id: UUID
     provider_id: UUID
-    provider_data: dict[str, Any]
+    credentials: dict[str, Any]
     is_main: bool
     created_at: datetime
     last_used_at: datetime
