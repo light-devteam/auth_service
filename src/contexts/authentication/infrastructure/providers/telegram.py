@@ -29,3 +29,15 @@ class TelegramProvider(IProvider):
             )
         except (msgspec.ValidationError, TypeError) as e:
             raise ProviderConfigInvalid(f'Telegram provider invalid config: {e}')
+
+    def validate_credentials(
+        self,
+        credentials: dict[str, Any],
+    ) -> TelegramProviderCredentials:
+        try:
+            return msgspec.json.decode(
+                msgspec.json.encode(credentials),
+                type=TelegramProviderCredentials,
+            )
+        except (msgspec.ValidationError, TypeError) as e:
+            raise ProviderConfigInvalid(f'Telegram provider invalid credentials: {e}')

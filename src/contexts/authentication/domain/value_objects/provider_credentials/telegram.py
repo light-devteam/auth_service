@@ -6,4 +6,4 @@ class TelegramProviderCredentials(ProviderCredentials):
     account_id: int
 
     def __post_init__(self) -> None:
-        TelegramAccountID(self.bot_id)
+        TelegramAccountID(self.account_id)

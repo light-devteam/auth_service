@@ -20,7 +20,7 @@ async def create_identity(
 ) -> CreateIdentityResponse:
     identity = await service.create(
         payload.account_id,
-        payload.provider_id,
-        payload.provider_data,
+        payload.provider_type,
+        payload.credentials,
     )
     return CreateIdentityResponse(id=identity.id)

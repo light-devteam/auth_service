@@ -17,7 +17,7 @@ from src.infrastructure.persistence.postgres import get_constraint_name
 class IdentityRepository(repositories.IIdentityRepository):
     _table_name = 'auth.identities'
 
-    __only_one_provider_on_account_uq_constraint = 'uq_identities_account_main_true'
+    __only_one_provider_on_account_uq_constraint = 'uq_identities_account_provider'
 
     @inject
     def __init__(
@@ -36,7 +36,7 @@ class IdentityRepository(repositories.IIdentityRepository):
             id,
             account_id,
             provider_id,
-            provider_data,
+            credentials,
             created_at,
             last_used_at
         ) values ($1, $2, $3, $4, $5, $6)
@@ -47,7 +47,7 @@ class IdentityRepository(repositories.IIdentityRepository):
                 identity.id,
                 identity.account_id,
                 identity.provider_id,
-                json.dumps(identity.provider_data),
+                json.dumps(identity.credentials),
                 identity.created_at,
                 identity.last_used_at,
             )
@@ -127,7 +127,7 @@ class IdentityRepository(repositories.IIdentityRepository):
         set 
             account_id = $2,
             provider_id = $3,
-            provider_data = $4,
+            credentials = $4,
             created_at = $5,
             last_used_at = $6
         where id = $1
@@ -136,7 +136,7 @@ class IdentityRepository(repositories.IIdentityRepository):
             identity.id,
             identity.account_id,
             identity.provider_id,
-            json.dumps(identity.provider_data),
+            json.dumps(identity.credentials),
             identity.created_at,
             identity.last_used_at,
         ) for identity in identities]

@@ -84,7 +84,10 @@ class ProviderApplicationService(IProviderService):
             except ProviderNotFound:
                 old_provider = None
             new, old = self._domain_service.activate(new_provider, old_provider)
-            await self._repository.update(ctx, old_provider, new_provider)
+            if old_provider:
+                await self._repository.update(ctx, old_provider, new_provider)
+            else:
+                await self._repository.update(ctx, new_provider)
             return [new, old]
 
     async def get_types(self) -> list[str]:

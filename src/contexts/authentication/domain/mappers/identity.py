@@ -12,7 +12,7 @@ class IdentityMapper:
             id=value_objects.IdentityID(raw['id']),
             account_id=AccountID(raw['account_id']),
             provider_id=value_objects.ProviderID(raw['provider_id']),
-            provider_data=json.loads(raw['provider_data']),
+            credentials=json.loads(raw['credentials']),
             created_at=raw['created_at'],
             last_used_at=raw['last_used_at'],
         )

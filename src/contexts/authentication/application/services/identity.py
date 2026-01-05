@@ -3,7 +3,7 @@ from uuid import UUID
 
 from dependency_injector.wiring import inject, Provide
 
-from src.contexts.authentication.domain import value_objects, entities, repositories
+from src.contexts.authentication.domain import value_objects, entities, repositories, providers
 from src.domain.database_context import IDatabaseContext
 from src.domain.value_objects import AccountID
 from src.contexts.authentication.application.interfaces import IIdentityService
@@ -15,24 +15,31 @@ class IdentityApplicationService(IIdentityService):
         self,
         repository: repositories.IIdentityRepository = Provide['auth.identity_repository'],
         database_context: IDatabaseContext = Provide['infrastructure.postgres_uow'],
+        provider_registry: providers.IProviderFactory = Provide['auth_providers.registry'],
+        provider_repository: repositories.IProviderRepository = Provide['auth.provider_repository'],
     ) -> None:
         self._repository = repository
         self._db_ctx = database_context
+        self._provider_registry = provider_registry
+        self._provider_repository = provider_repository
 
     async def create(
         self,
         account_id: UUID,
-        provider_id: UUID,
-        provider_data: dict[str, Any],
+        provider_type: UUID,
+        credentials: dict[str, Any],
     ) -> entities.Identity:
         account_id = AccountID(account_id)
-        provider_id = value_objects.ProviderID(provider_id)
-        identity = entities.Identity.create(
-            account_id,
-            provider_id,
-            provider_data,
-        )
+        provider_type = value_objects.ProviderType(provider_type)
+        self._provider_registry.get(provider_type).validate_credentials(credentials)
         async with self._db_ctx as ctx:
+            await ctx.use_transaction()
+            provider = await self._provider_repository.get_active_by_type(ctx, provider_type)
+            identity = entities.Identity.create(
+                account_id,
+                provider.id,
+                credentials,
+            )
             await self._repository.create(ctx, identity)
         return identity
 
