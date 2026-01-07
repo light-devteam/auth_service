@@ -54,7 +54,7 @@ class TelegramProvider(IProvider):
         credentials: TelegramProviderPlainCredentials,
     ) -> TelegramProviderSecureCredentials:
         return TelegramProviderSecureCredentials(
-            account_id=credentials.account_id,
+            login=credentials.account_id,
         )
 
     def __decode_credentials_hook(self, type_: Type[Any], obj: Any) -> Any:

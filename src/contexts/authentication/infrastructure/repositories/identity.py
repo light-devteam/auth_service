@@ -18,6 +18,7 @@ class IdentityRepository(repositories.IIdentityRepository):
     _table_name = 'auth.identities'
 
     __only_one_provider_on_account_uq_constraint = 'uq_identities_account_provider'
+    __only_one_login_on_type_uq_constraint = 'uq_search_provider_type_login'
 
     @inject
     def __init__(
@@ -53,8 +54,13 @@ class IdentityRepository(repositories.IIdentityRepository):
             )
         except UniqueViolationError as exc:
             constraint_name = get_constraint_name(exc)
-            if constraint_name == self.__only_one_provider_on_account_uq_constraint:
-                raise exceptions.IdentityForProviderAlreadyExists()
+            match constraint_name:
+                case self.__only_one_provider_on_account_uq_constraint:
+                    raise exceptions.IdentityForProviderAlreadyExists()
+                case self.__only_one_login_on_type_uq_constraint:
+                    raise exceptions.IdentityLoginAlreadyExists()
+                case _:
+                    raise exceptions.InfrastructureException()
 
     async def get_by_account_id(
         self,
@@ -144,5 +150,10 @@ class IdentityRepository(repositories.IIdentityRepository):
             await ctx.connection.executemany(query, values)
         except UniqueViolationError as exc:
             constraint_name = get_constraint_name(exc)
-            if constraint_name == self.__only_one_provider_on_account_uq_constraint:
-                raise exceptions.IdentityForProviderAlreadyExists()
+            match constraint_name:
+                case self.__only_one_provider_on_account_uq_constraint:
+                    raise exceptions.IdentityForProviderAlreadyExists()
+                case self.__only_one_login_on_type_uq_constraint:
+                    raise exceptions.IdentityLoginAlreadyExists()
+                case _:
+                    raise exceptions.InfrastructureException()

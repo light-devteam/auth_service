@@ -1,0 +1,1 @@
+DROP INDEX IF EXISTS "auth".uq_search_provider_type_login;
