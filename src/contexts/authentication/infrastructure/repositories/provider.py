@@ -147,21 +147,16 @@ class ProviderRepository(repositories.IProviderRepository):
             type= $3,
             is_active = $4,
             created_at = $5,
-            config = $6
         where id = $1
         """
         values = []
         for provider in providers:
-            config = provider.config
-            if config is not None:
-                config = json.dumps(provider.config)
             values.append((
                 provider.id,
                 provider.name,
                 provider.type.value,
                 provider.is_active,
                 provider.created_at,
-                config,
             ))
         try:
             await ctx.connection.executemany(query, values)
