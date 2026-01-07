@@ -1,10 +1,22 @@
-from src.contexts.authentication.domain.value_objects.provider_credentials.base import ProviderCredentials
-from src.contexts.authentication.domain.value_objects.provider_credentials.password import PasswordProviderCredentials
-from src.contexts.authentication.domain.value_objects.provider_credentials.telegram import TelegramProviderCredentials
+from src.contexts.authentication.domain.value_objects.provider_credentials.plain import (
+    ProviderPlainCredentials,
+    PasswordProviderPlainCredentials,
+    TelegramProviderPlainCredentials,
+)
+from src.contexts.authentication.domain.value_objects.provider_credentials.secure import (
+    ProviderSecureCredentials,
+    PasswordProviderSecureCredentials,
+    TelegramProviderSecureCredentials,
+)
+
 
 
 __all__ = [
-    'ProviderCredentials',
-    'PasswordProviderCredentials',
-    'TelegramProviderCredentials',
+    'ProviderPlainCredentials',
+    'PasswordProviderPlainCredentials',
+    'TelegramProviderPlainCredentials',
+
+    'ProviderSecureCredentials',
+    'PasswordProviderSecureCredentials',
+    'TelegramProviderSecureCredentials',
 ]

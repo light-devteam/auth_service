@@ -10,11 +10,15 @@ from src.contexts.authentication.domain.value_objects.provider_name import Provi
 from src.contexts.authentication.domain.value_objects.credential_fields import (
     Login,
     Password,
+    HashedPassword,
 )
 from src.contexts.authentication.domain.value_objects.provider_credentials import (
-    ProviderCredentials,
-    PasswordProviderCredentials,
-    TelegramProviderCredentials,
+    ProviderPlainCredentials,
+    PasswordProviderPlainCredentials,
+    TelegramProviderPlainCredentials,
+    ProviderSecureCredentials,
+    PasswordProviderSecureCredentials,
+    TelegramProviderSecureCredentials,
 )
 from src.contexts.authentication.domain.value_objects.enums import ProviderType
 from src.contexts.authentication.domain.value_objects.provider_configs import (
@@ -31,14 +35,20 @@ __all__ = [
     'ProviderName',
     'IdentityID',
     'IpID',
+    'TelegramAccountID',
+
     'ProviderType',
 
     'Login',
     'Password',
+    'HashedPassword',
 
-    'ProviderCredentials',
-    'PasswordProviderCredentials',
-    'TelegramProviderCredentials',
+    'ProviderPlainCredentials',
+    'PasswordProviderPlainCredentials',
+    'TelegramProviderPlainCredentials',
+    'ProviderSecureCredentials',
+    'PasswordProviderSecureCredentials',
+    'TelegramProviderSecureCredentials',
 
     'ProviderConfig',
     'PasswordProviderConfig',
