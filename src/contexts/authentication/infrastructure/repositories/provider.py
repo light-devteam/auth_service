@@ -56,8 +56,11 @@ class ProviderRepository(repositories.IProviderRepository):
             )
         except UniqueViolationError as exc:
             constraint_name = get_constraint_name(exc)
-            if constraint_name == self.__name_uq_constraint:
-                raise exceptions.ProviderAlreadyExists()
+            match constraint_name:
+                case self.__name_uq_constraint:
+                    raise exceptions.ProviderAlreadyExists()
+                case _:
+                    raise exceptions.InfrastructureException()
 
     async def get_all(
         self,

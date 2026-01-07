@@ -43,3 +43,7 @@ class ProviderAlreadyActive(DomainException):
 
 class ProviderConfigInvalid(DomainException):
     _DETAIL = 'Provider config invalid.'
+
+
+class IdentityLoginAlreadyExists(DomainException):
+    _DETAIL = 'Identity login already exists'

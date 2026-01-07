@@ -3,4 +3,4 @@ from src.contexts.authentication.domain.value_objects.id import TelegramAccountI
 
 
 class TelegramProviderSecureCredentials(ProviderSecureCredentials):
-    account_id: TelegramAccountID
+    login: TelegramAccountID
