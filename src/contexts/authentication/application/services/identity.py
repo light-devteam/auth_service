@@ -1,6 +1,7 @@
 from typing import Any
 from uuid import UUID
 
+import msgspec
 from dependency_injector.wiring import inject, Provide
 
 from src.contexts.authentication.domain import value_objects, entities, repositories, providers
@@ -31,14 +32,16 @@ class IdentityApplicationService(IIdentityService):
     ) -> entities.Identity:
         account_id = AccountID(account_id)
         provider_type = value_objects.ProviderType(provider_type)
-        self._provider_registry.get(provider_type).validate_credentials(credentials)
+        provider = self._provider_registry.get(provider_type)
+        valid_creds = provider.validate_credentials(credentials)
+        secure_credentials = provider.secure_credentials(valid_creds)
         async with self._db_ctx as ctx:
             await ctx.use_transaction()
             provider = await self._provider_repository.get_active_by_type(ctx, provider_type)
             identity = entities.Identity.create(
                 account_id,
                 provider.id,
-                credentials,
+                msgspec.structs.asdict(secure_credentials),
             )
             await self._repository.create(ctx, identity)
         return identity

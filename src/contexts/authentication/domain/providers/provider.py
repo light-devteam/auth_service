@@ -3,8 +3,11 @@ from typing import Any
 
 from src.domain.value_objects import AccountID
 from src.contexts.authentication.domain.entities import Session
-from src.contexts.authentication.domain.value_objects import ProviderCredentials
-from src.contexts.authentication.domain.value_objects import ProviderConfig
+from src.contexts.authentication.domain.value_objects import (
+    ProviderConfig,
+    ProviderPlainCredentials,
+    ProviderSecureCredentials,
+)
 
 
 class IProvider(ABC):
@@ -12,7 +15,7 @@ class IProvider(ABC):
     async def authenticate(
         self,
         account_id: AccountID,
-        credentials: ProviderCredentials,
+        credentials: ProviderPlainCredentials,
     ) -> Session:
         ...
 
@@ -27,5 +30,12 @@ class IProvider(ABC):
     def validate_credentials(
         self,
         credentials: dict[str, Any],
-    ) -> ProviderCredentials:
+    ) -> ProviderPlainCredentials:
+        ...
+
+    @abstractmethod
+    def secure_credentials(
+        self,
+        credentials: ProviderPlainCredentials,
+    ) -> ProviderSecureCredentials:
         ...

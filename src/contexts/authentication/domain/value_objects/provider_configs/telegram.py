@@ -3,7 +3,4 @@ from src.contexts.authentication.domain.value_objects.id import TelegramAccountI
 
 
 class TelegramProviderConfig(ProviderConfig, forbid_unknown_fields=True):
-    bot_id: int
-
-    def __post_init__(self) -> None:
-        TelegramAccountID(self.bot_id)
+    bot_id: TelegramAccountID
