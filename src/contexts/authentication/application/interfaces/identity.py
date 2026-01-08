@@ -3,6 +3,7 @@ from typing import Any
 from uuid import UUID
 
 from src.contexts.authentication.domain.entities import Identity
+from src.contexts.authentication.domain.value_objects import ProviderType
 
 
 class IIdentityService(ABC):
@@ -10,7 +11,7 @@ class IIdentityService(ABC):
     async def create(
         self,
         account_id: UUID,
-        provider_type: str,
+        provider_type: ProviderType,
         credentials: dict[str, Any],
     ) -> Identity:
         ...
@@ -29,9 +30,9 @@ class IIdentityService(ABC):
         ...
 
     @abstractmethod
-    async def get_by_account_id_and_provider_id(
+    async def get_by_account_and_provider(
         self,
         account_id: UUID,
-        provider_id: UUID,
+        provider_type: ProviderType,
     ) -> Identity:
         ...

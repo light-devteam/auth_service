@@ -3,14 +3,22 @@ from typing import Any
 from uuid import UUID
 
 from src.contexts.authentication.domain.entities import Session
+from src.contexts.authentication.domain.value_objects import ProviderType
 
 
 class ISessionService(ABC):
     @abstractmethod
+    async def authenticate(
+        self,
+        provider_type: ProviderType,
+        credentials: dict[str, Any],
+    ) -> Session:
+        ...
+
+    @abstractmethod
     async def create(
         self,
-        account_id: UUID,
-        provider_id: UUID,
+        provider_type: ProviderType,
         credentials: dict[str, Any],
     ) -> Session:
         ...

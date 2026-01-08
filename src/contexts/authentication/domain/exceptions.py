@@ -47,3 +47,7 @@ class ProviderConfigInvalid(DomainException):
 
 class IdentityLoginAlreadyExists(DomainException):
     _DETAIL = 'Identity login already exists'
+
+
+class InvalidCredentials(InfrastructureException):
+    _DETAIL = 'Inalid credentials'

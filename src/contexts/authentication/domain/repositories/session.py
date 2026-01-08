@@ -33,11 +33,11 @@ class ISessionRepository(ABC):
         ...
 
     @abstractmethod
-    async def get_by_account_id_and_provider_id(
+    async def get_by_account_and_provider(
         self,
         ctx: IDatabaseContext,
         account_id: AccountID,
-        provider_id: value_objects.ProviderID,
+        provider_type: value_objects.ProviderType,
     ) -> entities.Session:
         ...
 

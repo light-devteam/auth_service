@@ -147,9 +147,9 @@ class ProviderRepository(repositories.IProviderRepository):
         update {self._table_name}
         set 
             name = $2,
-            type= $3,
+            type = $3,
             is_active = $4,
-            created_at = $5,
+            created_at = $5
         where id = $1
         """
         values = []

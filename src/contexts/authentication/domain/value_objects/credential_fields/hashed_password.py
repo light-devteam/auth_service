@@ -12,6 +12,15 @@ class HashedPassword(str):
         hashed_value = bcrypt.hashpw(value, bcrypt.gensalt())
         return super().__new__(cls, hashed_value.decode('utf-8'))
 
+    @classmethod
+    def load(cls, value: str | bytes) -> Self:
+        if isinstance(value, bytes):
+            value = value.decode('utf-8')
+        return super().__new__(cls, value)
+
+    def check(self, value: Password | bytes) -> bool:
+        return bcrypt.checkpw(value, self.encode('utf-8'))
+
     def __str__(self) -> str:
         return 'hashed'
 

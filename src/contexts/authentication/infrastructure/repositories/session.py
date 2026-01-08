@@ -82,22 +82,22 @@ class SessionRepository(repositories.ISessionRepository):
             sessions.append(self._mapper.to_entity(raw_session))
         return sessions
 
-    async def get_by_account_id_and_provider_id(
+    async def get_by_account_and_provider(
         self,
         ctx: IDatabaseContext,
         account_id: AccountID,
-        provider_id: value_objects.ProviderID,
+        provider_type: value_objects.ProviderType,
     ) -> entities.Session:
         query =f"""
         select * from {self._table_name}
         where
             account_id = $1 and
-            provider_id = $2
+            provider_type = $2
         """
         session = await ctx.connection.fetchrow(
             query,
             account_id,
-            provider_id,
+            provider_type.value,
         )
         if not session:
             raise exceptions.SessionNotFound()

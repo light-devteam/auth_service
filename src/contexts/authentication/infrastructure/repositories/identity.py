@@ -87,22 +87,22 @@ class IdentityRepository(repositories.IIdentityRepository):
             identities.append(self._mapper.to_entity(raw_identity))
         return identities
 
-    async def get_by_account_id_and_provider_id(
+    async def get_by_account_and_provider(
         self,
         ctx: PostgresUnitOfWork,
         account_id: AccountID,
-        provider_id: value_objects.ProviderID,
+        provider_type: value_objects.ProviderType,
     ) -> entities.Identity:
         query =f"""
         select * from {self._table_name}
         where
-            account_id = $1 and
-            provider_id = $2
+            account_id = $1
+            and provider_type = $2
         """
         identity = await ctx.connection.fetchrow(
             query,
             account_id,
-            provider_id,
+            provider_type.value,
         )
         if not identity:
             raise exceptions.IdentityNotFound()
@@ -116,6 +116,27 @@ class IdentityRepository(repositories.IIdentityRepository):
         identity = await ctx.connection.fetchrow(
             f'select * from {self._table_name} where id = $1',
             id,
+        )
+        if not identity:
+            raise exceptions.IdentityNotFound()
+        return self._mapper.to_entity(identity)
+
+    async def get_by_provider_and_login(
+        self,
+        ctx: PostgresUnitOfWork,
+        provider_type: value_objects.ProviderType,
+        login: str,
+    ) -> entities.Identity:
+        query =f"""
+        select * from {self._table_name}
+        where
+            provider_type = $1
+            and (credentials ->> 'login') = $2
+        """
+        identity = await ctx.connection.fetchrow(
+            query,
+            provider_type.value,
+            login,
         )
         if not identity:
             raise exceptions.IdentityNotFound()
