@@ -27,20 +27,19 @@ class IdentityApplicationService(IIdentityService):
     async def create(
         self,
         account_id: UUID,
-        provider_type: UUID,
+        provider_type: value_objects.ProviderType,
         credentials: dict[str, Any],
     ) -> entities.Identity:
         account_id = AccountID(account_id)
-        provider_type = value_objects.ProviderType(provider_type)
         provider = self._provider_registry.get(provider_type)
         valid_creds = provider.validate_credentials(credentials)
         secure_credentials = provider.secure_credentials(valid_creds)
         async with self._db_ctx as ctx:
             await ctx.use_transaction()
-            provider = await self._provider_repository.get_active_by_type(ctx, provider_type)
+            provider_entity = await self._provider_repository.get_active_by_type(ctx, provider_type)
             identity = entities.Identity.create(
                 account_id,
-                provider.id,
+                provider_entity.id,
                 msgspec.structs.asdict(secure_credentials),
             )
             await self._repository.create(ctx, identity)
@@ -66,16 +65,15 @@ class IdentityApplicationService(IIdentityService):
                 page_size,
             )
 
-    async def get_by_account_id_and_provider_id(
+    async def get_by_account_and_provider(
         self,
         account_id: UUID,
-        provider_id: UUID,
+        provider_type: value_objects.ProviderType,
     ) -> entities.Identity:
         account_id = AccountID(account_id)
-        provider_id = value_objects.ProviderID(provider_id)
         async with self._db_ctx as ctx:
-            return await self._repository.get_by_account_id_and_provider_id(
+            return await self._repository.get_by_account_and_provider(
                 ctx,
                 account_id,
-                provider_id,
+                provider_type,
             )
