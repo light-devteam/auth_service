@@ -17,6 +17,13 @@ from src.contexts.authentication.domain.mappers import SessionMapper
 from src.contexts.authentication.infrastructure import SessionRepository
 from src.contexts.authentication.application.services import SessionApplicationService
 
+from src.contexts.authentication.infrastructure import (
+    JWTAccessTokenIssuer,
+    Base64RefreshTokenIssuer,
+)
+
+from src.contexts.authentication import AuthenticationContext
+
 
 class AuthContainer(containers.DeclarativeContainer):
     accounts_mapper = providers.Singleton(AccountMapper)
@@ -35,3 +42,8 @@ class AuthContainer(containers.DeclarativeContainer):
     session_mapper = providers.Singleton(SessionMapper)
     session_repository = providers.Singleton(SessionRepository)
     session_service = providers.Singleton(SessionApplicationService)
+
+    access_token_jwt_issuer = providers.Singleton(JWTAccessTokenIssuer)
+    refresh_token_b64_issuer = providers.Singleton(Base64RefreshTokenIssuer)
+
+    context = providers.Singleton(AuthenticationContext)

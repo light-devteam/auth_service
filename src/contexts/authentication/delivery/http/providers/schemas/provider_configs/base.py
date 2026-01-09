@@ -1,6 +1,6 @@
-from msgspec import Struct
+from pydantic import BaseModel
 
 
-class ProviderConfig(Struct, frozen=True):
+class BaseProviderConfig(BaseModel):
     access_token_expire_minutes: int
     refresh_token_expire_days: int
