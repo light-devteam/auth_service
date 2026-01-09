@@ -15,7 +15,7 @@ class IProvider(ABC):
         self,
         input_credentials: ProviderPlainCredentials,
         identity_credentials: dict[str, Any],
-    ) -> bool:
+    ) -> None:
         ...
 
     @abstractmethod

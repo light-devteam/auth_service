@@ -23,7 +23,7 @@ class PasswordProvider(providers.IProvider):
         self,
         input_credentials: value_objects.PasswordProviderPlainCredentials,
         identity_credentials: dict[str, Any],
-    ) -> bool:  # TODO: jwk pair
+    ) -> None:
         password_hash = value_objects.HashedPassword.load(identity_credentials['password'])
         if not password_hash.check(input_credentials.password):
             raise exceptions.InvalidCredentials()

@@ -24,7 +24,8 @@ class TelegramProvider(providers.IProvider):
         self,
         input_credentials: value_objects.TelegramProviderPlainCredentials,
         identity_credentials: dict[str, Any],
-    ) -> bool:
+    ) -> None:
+        # TODO: logic
         raise exceptions.InvalidCredentials()
 
     def validate_config(

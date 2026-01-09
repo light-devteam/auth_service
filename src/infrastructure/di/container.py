@@ -21,9 +21,14 @@ class DIContainer(containers.DeclarativeContainer):
             'src.contexts.jwk.delivery.http',
 
             'src.contexts.authentication.infrastructure.repositories',
+            'src.contexts.authentication.infrastructure.token_issuers',
             'src.contexts.authentication.application',
             'src.contexts.authentication.delivery.http',
         ],
+        modules=[
+            'src.contexts.jwk.context',
+            'src.contexts.authentication.context',
+        ]
     )
 
     infrastructure = providers.Container(InfrastructureContainer)

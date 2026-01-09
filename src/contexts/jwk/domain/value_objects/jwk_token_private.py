@@ -52,6 +52,6 @@ class JWKTokenPrivate(bytes):
         return b64encode(encrypted)
 
     @inject
-    def __decrypt(self, settings: Settings = Provide['settings']) -> bytes:
+    def __decrypt(self, settings: Settings = Provide['infrastructure.settings']) -> bytes:
         token = b64decode(self)
         return Fernet(settings.JWK_ENCRYPTION_KEY.get_secret_value()).decrypt(token)
