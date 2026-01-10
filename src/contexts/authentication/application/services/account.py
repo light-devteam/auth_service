@@ -30,6 +30,7 @@ class AccountApplicationService(IAccountService):
         identity_repository: repositories.IIdentityRepository = Provide['auth.identity_repository'],
         access_token_issuer: token_issuers.IAccessTokenIssuer = Provide['auth.access_token_jwt_issuer'],
         refresh_token_issuer: token_issuers.IRefreshTokenIssuer = Provide['auth.refresh_token_b64_issuer'],
+        refresh_token_repository: repositories.IRefreshTokenRepository = Provide['auth.refresh_token_repository'],
     ) -> None:
         self._repository = repository
         self._db_ctx = database_context
@@ -39,6 +40,7 @@ class AccountApplicationService(IAccountService):
         self._identity_repository = identity_repository
         self._access_token_issuer = access_token_issuer
         self._refresh_token_issuer = refresh_token_issuer
+        self._refresh_token_repository = refresh_token_repository
 
     async def create(self) -> Account:
         account = Account.create()
@@ -92,7 +94,13 @@ class AccountApplicationService(IAccountService):
                 identity.account_id,
                 provider_entity.id,
             )
+            refresh_token_entity = entities.RefreshToken.create(session.id, refresh_token)
+            refresh_token.token = '{id}:{token}'.format(
+                id=refresh_token_entity.id,
+                token=refresh_token.token,
+            )
             await self._session_repository.create(ctx, session)
+            await self._refresh_token_repository.create(ctx, refresh_token_entity)
         return access_token, refresh_token
 
     async def get_by_id(self, id: UUID) -> Account:
