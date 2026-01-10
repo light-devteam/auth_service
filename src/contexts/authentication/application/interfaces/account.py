@@ -3,7 +3,7 @@ from typing import Any
 from uuid import UUID
 
 from src.domain.entities import Account
-from src.contexts.authentication.domain.value_objects import ProviderType
+from src.contexts.authentication.domain.value_objects import ProviderType, AccessToken, RefreshToken
 
 
 class IAccountService(ABC):
@@ -16,7 +16,7 @@ class IAccountService(ABC):
         self,
         provider_type: ProviderType,
         credentials: dict[str, Any],
-    ) -> dict:
+    ) -> tuple[AccessToken, RefreshToken]:
         ...
 
     @abstractmethod

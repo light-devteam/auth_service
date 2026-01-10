@@ -50,7 +50,7 @@ class AccountApplicationService(IAccountService):
         self,
         provider_type: value_objects.ProviderType,
         credentials: dict[str, Any],
-    ) -> dict:
+    ) -> tuple[value_objects.AccessToken, value_objects.RefreshToken]:
         provider = self._provider_registry.get(provider_type)
         input_credentials = provider.validate_credentials(credentials)
         async with self._db_ctx as ctx:
@@ -93,10 +93,7 @@ class AccountApplicationService(IAccountService):
                 provider_entity.id,
             )
             await self._session_repository.create(ctx, session)
-        return {
-            'refresh': msgspec.structs.asdict(refresh_token),
-            'access': msgspec.structs.asdict(access_token),
-        }
+        return access_token, refresh_token
 
     async def get_by_id(self, id: UUID) -> Account:
         id = AccountID(id)
