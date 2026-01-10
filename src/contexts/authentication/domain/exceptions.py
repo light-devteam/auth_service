@@ -51,3 +51,11 @@ class IdentityLoginAlreadyExists(DomainException):
 
 class InvalidCredentials(InfrastructureException):
     _DETAIL = 'Inalid credentials'
+
+
+class ActiveRefreshTokenAlreadyExists(DomainException):
+    _DETAIL = 'Active refresh token for session already exists'
+
+
+class RefreshTokenNotFound(DomainException):
+    _DETAIL = 'Refresh token not found'

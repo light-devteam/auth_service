@@ -17,14 +17,14 @@ class Provider(Struct):
     type: enums.ProviderType
     is_active: bool
     created_at: datetime
-    config: dict[str, Any] = '{}'
+    config: dict[str, Any]
 
     @classmethod
     def create(
         cls,
         name: ProviderName,
         type: enums.ProviderType,
-        config: dict[str, Any] = '{}',
+        config: dict[str, Any],
     ) -> Self:
         return Provider(
             id=ProviderID.generate(),

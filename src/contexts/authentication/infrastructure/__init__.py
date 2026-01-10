@@ -3,6 +3,7 @@ from src.contexts.authentication.infrastructure.repositories import (
     ProviderRepository,
     IdentityRepository,
     SessionRepository,
+    RefreshTokenRepository,
 )
 from src.contexts.authentication.infrastructure.providers import (
     PasswordProvider,
@@ -19,6 +20,7 @@ __all__ = [
     'ProviderRepository',
     'IdentityRepository',
     'SessionRepository',
+    'RefreshTokenRepository',
 
     'PasswordProvider',
     'TelegramProvider',
