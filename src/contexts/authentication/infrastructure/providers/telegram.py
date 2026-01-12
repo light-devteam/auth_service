@@ -1,16 +1,23 @@
 from typing import Any, Type
 
 import msgspec
+from dependency_injector.wiring import inject, Provide
 
 from src.contexts.authentication.domain import (
     exceptions,
     providers,
     value_objects,
+    token_managers,
 )
 
 
 class TelegramProvider(providers.IProvider):
-    def __init__(self) -> None:
+    @inject
+    def __init__(
+        self,
+        access_token_manager: token_managers.IAccessTokenManager = Provide['auth.access_token_jwt_manager'],
+        refresh_token_manager: token_managers.IRefreshTokenManager = Provide['auth.refresh_token_b64_manager'],
+    ) -> None:
         self._credentials_decoder = msgspec.json.Decoder(
             value_objects.TelegramProviderPlainCredentials,
             dec_hook=self.__decode_credentials_hook,
@@ -19,6 +26,8 @@ class TelegramProvider(providers.IProvider):
             value_objects.TelegramProviderConfig,
             dec_hook=self.__decode_config_hook,
         )
+        self._access_token_manager = access_token_manager
+        self._refresh_token_manager = refresh_token_manager
 
     async def authenticate(
         self,
@@ -56,6 +65,14 @@ class TelegramProvider(providers.IProvider):
 
     def get_login_field(self, credentials: value_objects.TelegramProviderPlainCredentials) -> str:
         return credentials.account_id
+
+    @property
+    def access_token_manager(self) -> token_managers.IAccessTokenManager:
+        return self._access_token_manager
+
+    @property
+    def refresh_token_manager(self) -> token_managers.IRefreshTokenManager:
+        return self._refresh_token_manager
 
     def __decode_credentials_hook(self, type_: Type[Any], obj: Any) -> Any:
         if type_ is value_objects.TelegramAccountID:

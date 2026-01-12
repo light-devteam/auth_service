@@ -24,7 +24,7 @@ class RefreshToken(Struct):
         return RefreshToken(
             id=RefreshTokenID.generate(),
             session_id=session_id,
-            hash=token.token.encode('utf-8'),
+            hash=token.hash,
             created_at=token.issued_at,
             expires_at=token.expires_at,
             revoked_at=None,

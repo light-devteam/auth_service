@@ -3,7 +3,6 @@ from datetime import datetime, timezone
 from uuid import UUID
 
 from dependency_injector.wiring import inject, Provide
-import msgspec
 
 from src.domain.entities import Account
 from src.domain.value_objects import AccountID
@@ -15,7 +14,6 @@ from src.contexts.authentication.domain import (
     value_objects,
     exceptions,
     entities,
-    token_issuers,
 )
 
 class AccountApplicationService(IAccountService):
@@ -28,8 +26,6 @@ class AccountApplicationService(IAccountService):
         session_repository: repositories.ISessionRepository = Provide['auth.session_repository'],
         provider_repository: repositories.IProviderRepository = Provide['auth.provider_repository'],
         identity_repository: repositories.IIdentityRepository = Provide['auth.identity_repository'],
-        access_token_issuer: token_issuers.IAccessTokenIssuer = Provide['auth.access_token_jwt_issuer'],
-        refresh_token_issuer: token_issuers.IRefreshTokenIssuer = Provide['auth.refresh_token_b64_issuer'],
         refresh_token_repository: repositories.IRefreshTokenRepository = Provide['auth.refresh_token_repository'],
     ) -> None:
         self._repository = repository
@@ -38,8 +34,6 @@ class AccountApplicationService(IAccountService):
         self._session_repository = session_repository
         self._provider_repository = provider_repository
         self._identity_repository = identity_repository
-        self._access_token_issuer = access_token_issuer
-        self._refresh_token_issuer = refresh_token_issuer
         self._refresh_token_repository = refresh_token_repository
 
     async def create(self) -> Account:
@@ -80,12 +74,12 @@ class AccountApplicationService(IAccountService):
 
             provider_config = provider.validate_config(provider_entity.config)
             now = datetime.now(tz=timezone.utc)
-            access_token = await self._access_token_issuer.issue(
+            access_token = await provider.access_token_manager.issue(
                 issued_at=now,
                 identity=identity,
                 provider_config=provider_config,
             )
-            refresh_token = await self._refresh_token_issuer.issue(
+            refresh_token = await provider.refresh_token_manager.issue(
                 issued_at=now,
                 identity=identity,
                 provider_config=provider_config,

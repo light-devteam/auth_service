@@ -27,7 +27,9 @@ class AuthContainer(containers.DeclarativeContainer):
     refresh_token_mapper = providers.Singleton(mappers.RefreshTokenMapper)
     refresh_token_repository = providers.Singleton(infrastructure.RefreshTokenRepository)
 
-    access_token_jwt_issuer = providers.Singleton(infrastructure.JWTAccessTokenIssuer)
-    refresh_token_b64_issuer = providers.Singleton(infrastructure.Base64RefreshTokenIssuer)
+    sha256_hasher = providers.Singleton(infrastructure.SHA256Hasher)
+
+    access_token_jwt_manager = providers.Singleton(infrastructure.JWTAccessTokenManager)
+    refresh_token_b64_manager = providers.Singleton(infrastructure.Base64RefreshTokenManager)
 
     context = providers.Singleton(AuthenticationContext)

@@ -21,7 +21,7 @@ class DIContainer(containers.DeclarativeContainer):
             'src.contexts.jwk.delivery.http',
 
             'src.contexts.authentication.infrastructure.repositories',
-            'src.contexts.authentication.infrastructure.token_issuers',
+            'src.contexts.authentication.infrastructure.token_managers',
             'src.contexts.authentication.application',
             'src.contexts.authentication.delivery.http',
         ],
