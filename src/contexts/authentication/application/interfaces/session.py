@@ -28,9 +28,16 @@ class ISessionService(ABC):
         ...
 
     @abstractmethod
-    async def get_by_account_id_and_provider_id(
+    async def get_by_account_and_provider(
         self,
         account_id: UUID,
-        provider_id: UUID,
+        provider_type: ProviderType,
     ) -> Session:
+        ...
+
+    @abstractmethod
+    async def revoke(
+        self,
+        session_id: UUID,
+    ) -> None:
         ...

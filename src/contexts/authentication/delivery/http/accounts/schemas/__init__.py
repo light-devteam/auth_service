@@ -4,6 +4,7 @@ from src.contexts.authentication.delivery.http.accounts.schemas.authenticate imp
 from src.contexts.authentication.delivery.http.accounts.schemas.access_token import AccessToken
 from src.contexts.authentication.delivery.http.accounts.schemas.refresh_token import RefreshToken
 from src.contexts.authentication.delivery.http.accounts.schemas.token_pair import TokenPair
+from src.contexts.authentication.delivery.http.accounts.schemas.session import Session
 
 
 __all__ = [
@@ -13,4 +14,5 @@ __all__ = [
     'AccessToken',
     'RefreshToken',
     'TokenPair',
+    'Session',
 ]

@@ -25,10 +25,14 @@ class Session(Struct, kw_only=True):
             revoked_at=None,
         )
 
-    def revoke(self) -> None:
-        if not self.revoked_at:
-            self.revoked_at = True
-        raise SessionAlreadyRevoked()
+    def revoke(self, revoked_at: datetime | None) -> None:
+        if self.revoked_at is not None:
+            raise SessionAlreadyRevoked()
+        if not revoked_at:
+            revoked_at = datetime.now(tz=timezone.utc)
+        if revoked_at.tzinfo is None:
+            revoked_at = revoked_at.replace(tzinfo=timezone.utc)
+        self.revoked_at = revoked_at
 
     def is_active(self) -> bool:
         not_revoked = not self.revoked_at
