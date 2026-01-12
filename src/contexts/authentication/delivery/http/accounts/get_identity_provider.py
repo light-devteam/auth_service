@@ -12,7 +12,7 @@ from src.contexts.authentication.domain.value_objects import ProviderType
 
 @router.get('/{account_id}/identities/by-provider/{provider_type}')
 @inject
-async def get_account_identity_by_provider_id(
+async def get_account_identity_by_provider(
     account_id: UUID,
     provider_type: ProviderType,
     service: IIdentityService = Depends(Provide['auth.identity_service']),
