@@ -30,10 +30,14 @@ class RefreshToken(Struct):
             revoked_at=None,
         )
 
-    def revoke(self) -> None:
-        if self.revoked_at is None:
-            self.revoked_at = datetime.now(tz=timezone.utc)
-        raise TokenAlreadyRevoked()
+    def revoke(self, revoked_at: datetime | None = None) -> None:
+        if self.revoked_at is not None:
+            raise TokenAlreadyRevoked()
+        if not revoked_at:
+            revoked_at = datetime.now(tz=timezone.utc)
+        if revoked_at.tzinfo is None:
+            revoked_at = revoked_at.replace(tzinfo=timezone.utc)
+        self.revoked_at = revoked_at
 
     def is_active(self) -> bool:
         now = datetime.now(tz=timezone.utc)
