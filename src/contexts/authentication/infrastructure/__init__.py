@@ -9,9 +9,10 @@ from src.contexts.authentication.infrastructure.providers import (
     PasswordProvider,
     TelegramProvider,
 )
-from src.contexts.authentication.infrastructure.token_issuers import (
-    Base64RefreshTokenIssuer,
-    JWTAccessTokenIssuer,
+from src.contexts.authentication.infrastructure.hashers import SHA256Hasher
+from src.contexts.authentication.infrastructure.token_managers import (
+    Base64RefreshTokenManager,
+    JWTAccessTokenManager,
 )
 
 
@@ -25,6 +26,8 @@ __all__ = [
     'PasswordProvider',
     'TelegramProvider',
 
-    'Base64RefreshTokenIssuer',
-    'JWTAccessTokenIssuer',
+    'SHA256Hasher',
+
+    'Base64RefreshTokenManager',
+    'JWTAccessTokenManager',
 ]

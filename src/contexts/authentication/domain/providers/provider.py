@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from src.contexts.authentication.domain.entities import Session
 from src.contexts.authentication.domain.value_objects import (
     ProviderConfig,
     ProviderPlainCredentials,
     ProviderSecureCredentials,
 )
+from src.contexts.authentication.domain import token_managers
 
 
 class IProvider(ABC):
@@ -41,4 +41,14 @@ class IProvider(ABC):
 
     @abstractmethod
     def get_login_field(self, credentials: ProviderPlainCredentials) -> str:
+        ...
+
+    @property
+    @abstractmethod
+    def access_token_manager(self) -> token_managers.IAccessTokenManager:
+        ...
+
+    @property
+    @abstractmethod
+    def refresh_token_manager(self) -> token_managers.IRefreshTokenManager:
         ...
