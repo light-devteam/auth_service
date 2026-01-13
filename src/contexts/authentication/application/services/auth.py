@@ -78,8 +78,9 @@ class AuthApplicationService(IAuthService):
                 provider_entity.id,
             )
             refresh_token_entity = entities.RefreshToken.create(session.id, refresh_token)
-            refresh_token.token = '{id}:{token}'.format(
+            refresh_token.token = '{id}:{prefix}:{token}'.format(
                 id=refresh_token_entity.id,
+                prefix=refresh_token.prefix,
                 token=refresh_token.token,
             )
             await self._session_repository.create(ctx, session)

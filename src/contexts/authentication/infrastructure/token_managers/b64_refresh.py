@@ -16,6 +16,7 @@ class Base64RefreshTokenManager(IRefreshTokenManager):
         hasher: IHasher = Provide['auth.sha256_hasher']
     ) -> None:
         self._hasher = hasher
+        self._prefix = 'b64'
 
     async def issue(
         self,
@@ -29,8 +30,13 @@ class Base64RefreshTokenManager(IRefreshTokenManager):
         hashed_token = self._hasher.hash(token.encode('utf-8'))
         return RefreshToken(
             token=token,
+            prefix=self._prefix,
             hash=hashed_token,
             issued_at=issued_at,
             expires_at=issued_at + timedelta(days=provider_config.refresh_token_expire_days),
             account_id=identity.account_id,
         )
+
+    @property
+    def prefix(self) -> str:
+        return self._prefix
