@@ -11,6 +11,7 @@ from src.contexts.authentication.domain import (
     value_objects,
     exceptions,
     entities,
+    token_managers,
 )
 
 class AuthApplicationService(IAuthService):
@@ -23,6 +24,7 @@ class AuthApplicationService(IAuthService):
         provider_repository: repositories.IProviderRepository = Provide['auth.provider_repository'],
         identity_repository: repositories.IIdentityRepository = Provide['auth.identity_repository'],
         refresh_token_repository: repositories.IRefreshTokenRepository = Provide['auth.refresh_token_repository'],
+        access_token_jwt_manager: token_managers.IAccessTokenManager = Provide['auth.access_token_jwt_manager'],
     ) -> None:
         self._db_ctx = database_context
         self._provider_registry = provider_registry
@@ -30,12 +32,13 @@ class AuthApplicationService(IAuthService):
         self._provider_repository = provider_repository
         self._identity_repository = identity_repository
         self._refresh_token_repository = refresh_token_repository
+        self._access_token_jwt_manager = access_token_jwt_manager
 
     async def get_token(
         self,
         provider_type: value_objects.ProviderType,
         credentials: dict[str, Any],
-    ) -> tuple[value_objects.AccessToken, value_objects.RefreshToken]:
+    ) -> tuple[value_objects.Token, value_objects.Token]:
         provider = self._provider_registry.get(provider_type)
         input_credentials = provider.validate_credentials(credentials)
         async with self._db_ctx as ctx:
@@ -91,7 +94,7 @@ class AuthApplicationService(IAuthService):
     async def refresh(
         self,
         refresh_token: str,
-    ) -> tuple[value_objects.AccessToken, value_objects.RefreshToken]:
+    ) -> tuple[value_objects.Token, value_objects.Token]:
         id, token = refresh_token.split(':', maxsplit=1)
         id = value_objects.RefreshTokenID(id)
         async with self._db_ctx as ctx:
@@ -130,3 +133,17 @@ class AuthApplicationService(IAuthService):
             await self._refresh_token_repository.update(ctx, old_refresh_token)
             await self._refresh_token_repository.create(ctx, new_refresh_token_entity)
         return new_access_token, new_refresh_token
+
+    async def introspect(
+        self,
+        access_token: str,
+    ) -> None:
+        token_type = self.__get_token_type(access_token)
+        if token_type == 'jwt':
+            await self._access_token_jwt_manager.validate(access_token)
+        raise exceptions.InvalidToken('Access token invalid')
+
+    def __get_token_type(self, token: str) -> str:
+        if len(token.split(':')) > 1:
+            return 'opaque'
+        return 'jwt'

@@ -1,11 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from src.contexts.authentication.domain.value_objects import (
-    ProviderType,
-    AccessToken,
-    RefreshToken,
-)
+from src.contexts.authentication.domain.value_objects import ProviderType, Token
 
 
 class IAuthService(ABC):
@@ -14,12 +10,19 @@ class IAuthService(ABC):
         self,
         provider_type: ProviderType,
         credentials: dict[str, Any],
-    ) -> tuple[AccessToken, RefreshToken]:
+    ) -> tuple[Token, Token]:
         ...
 
     @abstractmethod
     async def refresh(
         self,
         refresh_token: str,
-    ) -> tuple[AccessToken, RefreshToken]:
+    ) -> tuple[Token, Token]:
+        ...
+
+    @abstractmethod
+    async def introspect(
+        self,
+        access_token: str,
+    ) -> None:
         ...

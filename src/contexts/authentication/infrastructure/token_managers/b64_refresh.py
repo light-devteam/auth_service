@@ -4,7 +4,7 @@ import secrets
 from dependency_injector.wiring import inject, Provide
 
 from src.contexts.authentication.domain.token_managers import IRefreshTokenManager
-from src.contexts.authentication.domain.value_objects import RefreshToken, ProviderConfig
+from src.contexts.authentication.domain.value_objects import OpaqueToken, ProviderConfig
 from src.contexts.authentication.domain.entities import Identity
 from src.contexts.authentication.domain.hashers import IHasher
 from src.contexts.authentication.domain.exceptions import InvalidToken
@@ -23,12 +23,12 @@ class Base64RefreshTokenManager(IRefreshTokenManager):
         issued_at: datetime,
         identity: Identity,
         provider_config: ProviderConfig,
-    ) -> RefreshToken:
+    ) -> OpaqueToken:
         if issued_at.tzinfo is None:
             issued_at = issued_at.replace(tzinfo=timezone.utc)
         token = secrets.token_urlsafe(32)
         hashed_token = self._hasher.hash(token.encode('utf-8'))
-        return RefreshToken(
+        return OpaqueToken(
             token=token,
             hash=hashed_token,
             issued_at=issued_at,

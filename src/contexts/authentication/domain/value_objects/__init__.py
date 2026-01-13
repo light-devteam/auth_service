@@ -27,8 +27,9 @@ from src.contexts.authentication.domain.value_objects.provider_configs import (
     TelegramProviderConfig,
 )
 from src.contexts.authentication.domain.value_objects.tokens import (
-    AccessToken,
-    RefreshToken,
+    Token,
+    JWTToken,
+    OpaqueToken,
 )
 
 
@@ -58,6 +59,7 @@ __all__ = [
     'PasswordProviderConfig',
     'TelegramProviderConfig',
 
-    'AccessToken',
-    'RefreshToken',
+    'Token',
+    'JWTToken',
+    'OpaqueToken',
 ]

@@ -5,8 +5,9 @@ import jwt
 
 from src.contexts.authentication.domain.token_managers import IAccessTokenManager
 from src.contexts.authentication.domain.entities import Identity
-from src.contexts.authentication.domain.value_objects import AccessToken, ProviderConfig
+from src.contexts.authentication.domain.value_objects import JWTToken, ProviderConfig
 from src.contexts.authentication.context import AuthenticationContext
+from src.contexts.authentication.domain.exceptions import InvalidToken
 
 
 class JWTAccessTokenManager(IAccessTokenManager):
@@ -22,7 +23,7 @@ class JWTAccessTokenManager(IAccessTokenManager):
         issued_at: datetime,
         identity: Identity,
         provider_config: ProviderConfig,
-    ) -> AccessToken:
+    ) -> JWTToken:
         if issued_at.tzinfo is None:
             issued_at = issued_at.replace(tzinfo=timezone.utc)
         expires_at = issued_at + timedelta(minutes=provider_config.access_token_expire_minutes)
@@ -37,8 +38,30 @@ class JWTAccessTokenManager(IAccessTokenManager):
             },
             key=jwt.PyJWK(self._ctx.cache['jwks'][0]['private']),
         )
-        return AccessToken(
+        return JWTToken(
             token=token,
             issued_at=issued_at,
             expires_at=expires_at,
         )
+
+    async def validate(
+        self,
+        token: str,
+    ) -> None:
+        try:
+            jwt.decode_complete(
+                token,
+                key=self._ctx['jwks'][0]['public'],
+                options={
+                    'verify_signature': True,
+                    'verify_exp': True,
+                    # 'verify_nbf': True,
+                    'verify_iat': True,
+                    # 'verify_aud': True,
+                    # 'verify_iss': True,
+                    'verify_sub': True,
+                    # 'verify_jti': True,
+                }
+            )
+        except jwt.PyJWTError:
+            raise InvalidToken('Access token invalid')
