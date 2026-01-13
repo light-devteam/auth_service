@@ -2,6 +2,7 @@ from src.contexts.authentication.application.services.account import AccountAppl
 from src.contexts.authentication.application.services.provider import ProviderApplicationService
 from src.contexts.authentication.application.services.identity import IdentityApplicationService
 from src.contexts.authentication.application.services.session import SessionApplicationService
+from src.contexts.authentication.application.services.auth import AuthApplicationService
 
 
 __all__ = [
@@ -9,4 +10,5 @@ __all__ = [
     'ProviderApplicationService',
     'IdentityApplicationService',
     'SessionApplicationService',
+    'AuthApplicationService',
 ]

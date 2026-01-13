@@ -3,6 +3,7 @@ from src.contexts.authentication.application.interfaces import (
     IProviderService,
     IIdentityService,
     ISessionService,
+    IAuthService,
 )
 
 
@@ -11,4 +12,5 @@ __all__ = [
     'IProviderService',
     'IIdentityService',
     'ISessionService',
+    'IAuthService',
 ]
