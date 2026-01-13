@@ -1,8 +1,10 @@
-from src.contexts.authentication.domain.value_objects.tokens.access import AccessToken
-from src.contexts.authentication.domain.value_objects.tokens.refresh import RefreshToken
+from src.contexts.authentication.domain.value_objects.tokens.token import Token
+from src.contexts.authentication.domain.value_objects.tokens.jwt import JWTToken
+from src.contexts.authentication.domain.value_objects.tokens.opaque import OpaqueToken
 
 
 __all__ = [
-    'AccessToken',
-    'RefreshToken',
+    'Token',
+    'JWTToken',
+    'OpaqueToken',
 ]

@@ -6,7 +6,7 @@ from msgspec import Struct
 from src.contexts.authentication.domain.value_objects import (
     SessionID,
     RefreshTokenID,
-    RefreshToken as RefreshTokenDTO,
+    OpaqueToken,
 )
 from src.contexts.authentication.domain.exceptions import TokenAlreadyRevoked
 
@@ -20,7 +20,7 @@ class RefreshToken(Struct):
     revoked_at: Optional[datetime] = None
 
     @classmethod
-    def create(cls, session_id: SessionID, token: RefreshTokenDTO) -> 'RefreshToken':
+    def create(cls, session_id: SessionID, token: OpaqueToken) -> 'RefreshToken':
         return RefreshToken(
             id=RefreshTokenID.generate(),
             session_id=session_id,
