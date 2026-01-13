@@ -16,7 +16,10 @@ class IRefreshTokenManager(ABC):
     ) -> RefreshToken:
         ...
 
-    @property
     @abstractmethod
-    def prefix(self) -> str:
+    async def validate(
+        self,
+        token: str,
+        token_hash: bytes,
+    ) -> None:
         ...

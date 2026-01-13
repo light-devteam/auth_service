@@ -7,6 +7,7 @@ from src.contexts.authentication.domain.token_managers import IRefreshTokenManag
 from src.contexts.authentication.domain.value_objects import RefreshToken, ProviderConfig
 from src.contexts.authentication.domain.entities import Identity
 from src.contexts.authentication.domain.hashers import IHasher
+from src.contexts.authentication.domain.exceptions import InvalidToken
 
 
 class Base64RefreshTokenManager(IRefreshTokenManager):
@@ -16,7 +17,6 @@ class Base64RefreshTokenManager(IRefreshTokenManager):
         hasher: IHasher = Provide['auth.sha256_hasher']
     ) -> None:
         self._hasher = hasher
-        self._prefix = 'b64'
 
     async def issue(
         self,
@@ -30,13 +30,17 @@ class Base64RefreshTokenManager(IRefreshTokenManager):
         hashed_token = self._hasher.hash(token.encode('utf-8'))
         return RefreshToken(
             token=token,
-            prefix=self._prefix,
             hash=hashed_token,
             issued_at=issued_at,
             expires_at=issued_at + timedelta(days=provider_config.refresh_token_expire_days),
             account_id=identity.account_id,
         )
 
-    @property
-    def prefix(self) -> str:
-        return self._prefix
+    async def validate(
+        self,
+        token: str,
+        token_hash: bytes,
+    ) -> None:
+        hashed_token = self._hasher.hash(token.encode('utf-8'))
+        if hashed_token != token_hash:
+            raise InvalidToken('Refresh token invalid')

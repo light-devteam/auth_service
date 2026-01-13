@@ -2,6 +2,7 @@ from src.contexts.authentication.delivery.http.auth.schemas.get_token import Get
 from src.contexts.authentication.delivery.http.auth.schemas.access_token import AccessToken
 from src.contexts.authentication.delivery.http.auth.schemas.refresh_token import RefreshToken
 from src.contexts.authentication.delivery.http.auth.schemas.token_pair import TokenPair
+from src.contexts.authentication.delivery.http.auth.schemas.refresh import RefreshTokensRequest
 
 
 __all__ = [
@@ -12,4 +13,5 @@ __all__ = [
     'RefreshToken',
     'TokenPair',
     'Session',
+    'RefreshTokensRequest',
 ]

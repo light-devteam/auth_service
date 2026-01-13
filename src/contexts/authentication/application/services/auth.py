@@ -78,11 +78,55 @@ class AuthApplicationService(IAuthService):
                 provider_entity.id,
             )
             refresh_token_entity = entities.RefreshToken.create(session.id, refresh_token)
-            refresh_token.token = '{id}:{prefix}:{token}'.format(
+            refresh_token.token = '{id}:{token}'.format(
                 id=refresh_token_entity.id,
-                prefix=refresh_token.prefix,
                 token=refresh_token.token,
             )
             await self._session_repository.create(ctx, session)
+            identity.update_last_used(now)
+            await self._identity_repository.update(ctx, identity)
             await self._refresh_token_repository.create(ctx, refresh_token_entity)
         return access_token, refresh_token
+
+    async def refresh(
+        self,
+        refresh_token: str,
+    ) -> tuple[value_objects.AccessToken, value_objects.RefreshToken]:
+        id, token = refresh_token.split(':', maxsplit=1)
+        id = value_objects.RefreshTokenID(id)
+        async with self._db_ctx as ctx:
+            await ctx.use_transaction()
+            old_refresh_token = await self._refresh_token_repository.get_by_id(ctx, id)
+            session = await self._session_repository.get_by_id(ctx, old_refresh_token.session_id)
+            provider_entity = await self._provider_repository.get_by_id(ctx, session.provider_id)
+            provider = self._provider_registry.get(provider_entity.type)
+            await provider.refresh_token_manager.validate(token, old_refresh_token.hash)
+            identity = await self._identity_repository.get_by_account_and_provider(
+                ctx,
+                session.account_id,
+                provider_entity.type,
+            )
+            provider_config = provider.validate_config(provider_entity.config)
+            now = datetime.now(tz=timezone.utc)
+            new_access_token = await provider.access_token_manager.issue(
+                issued_at=now,
+                identity=identity,
+                provider_config=provider_config,
+            )
+            new_refresh_token = await provider.refresh_token_manager.issue(
+                issued_at=now,
+                identity=identity,
+                provider_config=provider_config,
+            )
+            new_refresh_token_entity = entities.RefreshToken.create(session.id, new_refresh_token)
+            new_refresh_token.token = '{id}:{token}'.format(
+                id=new_refresh_token_entity.id,
+                token=new_refresh_token.token,
+            )
+            try:
+                old_refresh_token.revoke(now)
+            except exceptions.TokenAlreadyRevoked:
+                raise exceptions.InvalidToken('Refresh token invalid')
+            await self._refresh_token_repository.update(ctx, old_refresh_token)
+            await self._refresh_token_repository.create(ctx, new_refresh_token_entity)
+        return new_access_token, new_refresh_token
