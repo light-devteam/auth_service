@@ -11,6 +11,7 @@ class AuthenticationExceptionMapping(ExceptionMappingStrategy):
     @classmethod
     def get_mappings(cls) -> dict[Type[AppException], int]:
         return {
+            exceptions.InvalidToken: status.HTTP_401_UNAUTHORIZED,
             exceptions.InvalidCredentials: status.HTTP_422_UNPROCESSABLE_CONTENT,  # TODO: должны быть разные ошибки
             exceptions.ProviderConfigInvalid: status.HTTP_422_UNPROCESSABLE_CONTENT,
             exceptions.IdentityForProviderAlreadyExists: status.HTTP_409_CONFLICT,
