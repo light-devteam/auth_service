@@ -15,3 +15,8 @@ class IRefreshTokenManager(ABC):
         provider_config: ProviderConfig,
     ) -> RefreshToken:
         ...
+
+    @property
+    @abstractmethod
+    def prefix(self) -> str:
+        ...
