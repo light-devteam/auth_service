@@ -59,3 +59,7 @@ class ActiveRefreshTokenAlreadyExists(DomainException):
 
 class RefreshTokenNotFound(DomainException):
     _DETAIL = 'Refresh token not found'
+
+
+class InvalidToken(DomainException):
+    _DETAIL = 'Invalid token'

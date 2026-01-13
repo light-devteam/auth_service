@@ -16,3 +16,10 @@ class IAuthService(ABC):
         credentials: dict[str, Any],
     ) -> tuple[AccessToken, RefreshToken]:
         ...
+
+    @abstractmethod
+    async def refresh(
+        self,
+        refresh_token: str,
+    ) -> tuple[AccessToken, RefreshToken]:
+        ...
