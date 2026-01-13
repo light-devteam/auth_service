@@ -6,6 +6,7 @@ from src.contexts.authentication.delivery.http import (
     providers_router,
     identities_router,
     sessions_router,
+    auth_router,
 )
 
 
@@ -15,3 +16,4 @@ router.include_router(accounts_router)
 router.include_router(providers_router)
 router.include_router(identities_router)
 router.include_router(sessions_router)
+router.include_router(auth_router)
