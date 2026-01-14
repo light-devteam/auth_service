@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 
 from src.contexts.authentication.domain.entities import Identity
-from src.contexts.authentication.domain.value_objects import Token, ProviderConfig
+from src.contexts.authentication.domain.value_objects import Token, ProviderConfig, AuthContext
 
 
 class IAccessTokenManager(ABC):
@@ -19,5 +19,5 @@ class IAccessTokenManager(ABC):
     async def validate(
         self,
         token: str,
-    ) -> None:
+    ) -> AuthContext:
         ...

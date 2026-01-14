@@ -6,6 +6,8 @@ from dependency_injector.wiring import inject, Provide
 from src.contexts.jwk.delivery.http.jwk.router import router
 from src.contexts.jwk.application import IJWKService
 from src.contexts.jwk.delivery.http.jwk.schemas import JWKIsActive
+from src.delivery.dependencies import require_auth
+from src.contexts.authentication.domain.value_objects import AuthContext
 
 
 @router.patch('/{jwk_id}/toggle_active')
@@ -13,6 +15,7 @@ from src.contexts.jwk.delivery.http.jwk.schemas import JWKIsActive
 async def toggle_active(
     jwk_id: UUID,
     service: IJWKService = Depends(Provide['jwk.service']),
+    _: AuthContext = Depends(require_auth),
 ) -> JWKIsActive:
     jwk = await service.toggle_active(jwk_id)
     return JWKIsActive(id=jwk_id, is_active=jwk.is_active)

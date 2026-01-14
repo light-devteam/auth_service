@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from src.contexts.authentication.domain.value_objects import ProviderType, Token
+from src.contexts.authentication.domain.value_objects import ProviderType, Token, AuthContext
 
 
 class IAuthService(ABC):
@@ -24,5 +24,5 @@ class IAuthService(ABC):
     async def introspect(
         self,
         access_token: str,
-    ) -> None:
+    ) -> AuthContext:
         ...
