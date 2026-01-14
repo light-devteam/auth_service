@@ -1,4 +1,4 @@
-from fastapi import Depends, Response
+from fastapi import Depends, Response, Cookie
 from dependency_injector.wiring import inject, Provide
 
 import msgspec
@@ -13,11 +13,14 @@ from src.infrastructure.config import Settings
 @inject
 async def refresh_tokens(
     response: Response,
-    payload: RefreshTokensRequest,
+    payload: RefreshTokensRequest | None = None,
+    refresh_token: str = Cookie(''),
     service: IAuthService = Depends(Provide['auth.auth_service']),
     settings: Settings = Depends(Provide['infrastructure.settings']),
 ) -> TokenPair:
-    access, refresh = await service.refresh(payload.refresh_token)
+    if not refresh_token and payload is not None:
+        refresh_token = payload.refresh_token
+    access, refresh = await service.refresh(refresh_token)
     response.set_cookie(
         key='access_token',
         value=access.token,
