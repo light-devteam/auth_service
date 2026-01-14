@@ -65,20 +65,21 @@ class AuthApplicationService(IAuthService):
                 ...
 
             provider_config = provider.validate_config(provider_entity.config)
+            session = entities.Session.create(
+                identity.account_id,
+                provider_entity.id,
+            )
             now = datetime.now(tz=timezone.utc)
             access_token = await provider.access_token_manager.issue(
                 issued_at=now,
                 identity=identity,
                 provider_config=provider_config,
+                session_id=session.id,
             )
             refresh_token = await provider.refresh_token_manager.issue(
                 issued_at=now,
                 identity=identity,
                 provider_config=provider_config,
-            )
-            session = entities.Session.create(
-                identity.account_id,
-                provider_entity.id,
             )
             refresh_token_entity = entities.RefreshToken.create(session.id, refresh_token)
             refresh_token.token = '{id}:{token}'.format(
@@ -115,6 +116,7 @@ class AuthApplicationService(IAuthService):
                 issued_at=now,
                 identity=identity,
                 provider_config=provider_config,
+                session_id=session.id,
             )
             new_refresh_token = await provider.refresh_token_manager.issue(
                 issued_at=now,

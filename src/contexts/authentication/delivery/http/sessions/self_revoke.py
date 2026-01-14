@@ -1,5 +1,3 @@
-from uuid import UUID
-
 from fastapi import Depends, Response
 from dependency_injector.wiring import inject, Provide
 
@@ -10,27 +8,25 @@ from src.contexts.authentication.domain.value_objects import AuthContext
 from src.infrastructure.config import Settings
 
 
-@router.patch('/revoke/{session_id}')
+@router.patch('/revoke')
 @inject
-async def revoke(
-    session_id: UUID,
+async def revoke_self(
     response: Response,
     service: ISessionService = Depends(Provide['auth.session_service']),
     settings: Settings = Depends(Provide['infrastructure.settings']),
     auth: AuthContext = Depends(require_auth),
 ) -> Response:
-    await service.revoke(session_id)
-    if session_id == auth.session_id:
-        response.delete_cookie(
-            key='access_token',
-            domain=settings.COOKIE_DOMAIN,
-            secure=True,
-            samesite='lax',
-        )
-        response.delete_cookie(
-            key='refresh_token',
-            domain=settings.COOKIE_DOMAIN,
-            secure=True,
-            samesite='lax',
-            httponly=True,
-        )
+    await service.revoke(auth.session_id)
+    response.delete_cookie(
+        key='access_token',
+        domain=settings.COOKIE_DOMAIN,
+        secure=True,
+        samesite='lax',
+    )
+    response.delete_cookie(
+        key='refresh_token',
+        domain=settings.COOKIE_DOMAIN,
+        secure=True,
+        samesite='lax',
+        httponly=True,
+    )
