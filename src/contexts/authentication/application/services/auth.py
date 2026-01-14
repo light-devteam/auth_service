@@ -140,7 +140,7 @@ class AuthApplicationService(IAuthService):
     ) -> None:
         token_type = self.__get_token_type(access_token)
         if token_type == 'jwt':
-            await self._access_token_jwt_manager.validate(access_token)
+            return await self._access_token_jwt_manager.validate(access_token)
         raise exceptions.InvalidToken('Access token invalid')
 
     def __get_token_type(self, token: str) -> str:
