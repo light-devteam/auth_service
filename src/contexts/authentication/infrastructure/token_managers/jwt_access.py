@@ -34,9 +34,9 @@ class JWTAccessTokenManager(IAccessTokenManager):
                 'exp': expires_at,
             },
             headers={
-                'kid': self._ctx.cache['jwks'][0]['private']['kid'],
+                'kid': self._ctx.cache['private_jwks'].keys[0].key_id,
             },
-            key=jwt.PyJWK(self._ctx.cache['jwks'][0]['private']),
+            key=self._ctx.cache['private_jwks'].keys[0],
         )
         return JWTToken(
             token=token,
@@ -48,10 +48,11 @@ class JWTAccessTokenManager(IAccessTokenManager):
         self,
         token: str,
     ) -> None:
+        header = jwt.get_unverified_header(token)
         try:
             jwt.decode_complete(
                 token,
-                key=self._ctx['jwks'][0]['public'],
+                key=self._ctx.cache['public_jwks'][header['kid']],
                 options={
                     'verify_signature': True,
                     'verify_exp': True,
