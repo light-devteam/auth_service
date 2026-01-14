@@ -5,6 +5,8 @@ from msgspec import structs
 from src.contexts.jwk.delivery.http.jwk.router import router
 from src.contexts.jwk.application import IJWKService
 from src.contexts.jwk.delivery.http.jwk.schemas import JWKInfo
+from src.delivery.dependencies import require_auth
+from src.contexts.authentication.domain.value_objects import AuthContext
 
 
 @router.get('')
@@ -14,6 +16,7 @@ async def get_all(
     page_size: int = 100,
     only_active: bool = True,
     service: IJWKService = Depends(Provide['jwk.service']),
+    _: AuthContext = Depends(require_auth),
 ) -> list[JWKInfo]:
     if page < 1:
         page = 1

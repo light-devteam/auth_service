@@ -31,6 +31,7 @@ from src.contexts.authentication.domain.value_objects.tokens import (
     JWTToken,
     OpaqueToken,
 )
+from src.contexts.authentication.domain.value_objects.auth_context import AuthContext
 
 
 __all__ = [
@@ -62,4 +63,6 @@ __all__ = [
     'Token',
     'JWTToken',
     'OpaqueToken',
+
+    'AuthContext',
 ]

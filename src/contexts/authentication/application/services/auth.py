@@ -137,7 +137,9 @@ class AuthApplicationService(IAuthService):
     async def introspect(
         self,
         access_token: str,
-    ) -> None:
+    ) -> value_objects.AuthContext:
+        if not access_token:
+            raise exceptions.InvalidToken('Access token invalid')
         token_type = self.__get_token_type(access_token)
         if token_type == 'jwt':
             return await self._access_token_jwt_manager.validate(access_token)

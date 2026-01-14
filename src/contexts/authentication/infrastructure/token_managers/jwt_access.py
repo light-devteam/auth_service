@@ -5,7 +5,7 @@ import jwt
 
 from src.contexts.authentication.domain.token_managers import IAccessTokenManager
 from src.contexts.authentication.domain.entities import Identity
-from src.contexts.authentication.domain.value_objects import JWTToken, ProviderConfig
+from src.contexts.authentication.domain.value_objects import JWTToken, ProviderConfig, AuthContext
 from src.contexts.authentication.context import AuthenticationContext
 from src.contexts.authentication.domain.exceptions import InvalidToken
 
@@ -47,10 +47,13 @@ class JWTAccessTokenManager(IAccessTokenManager):
     async def validate(
         self,
         token: str,
-    ) -> None:
-        header = jwt.get_unverified_header(token)
+    ) -> AuthContext:
         try:
-            jwt.decode_complete(
+            header = jwt.get_unverified_header(token)
+        except jwt.PyJWTError:
+            raise InvalidToken('Access token invalid')
+        try:
+            decoded_token = jwt.decode_complete(
                 token,
                 key=self._ctx.cache['public_jwks'][header['kid']],
                 options={
@@ -66,3 +69,6 @@ class JWTAccessTokenManager(IAccessTokenManager):
             )
         except jwt.PyJWTError:
             raise InvalidToken('Access token invalid')
+        return AuthContext(
+            account_id=decoded_token['payload']['sub'],
+        )

@@ -7,6 +7,8 @@ from msgspec import structs
 from src.contexts.jwk.delivery.http.jwk.router import router
 from src.contexts.jwk.application import IJWKService
 from src.contexts.jwk.delivery.http.jwk.schemas import JWKInfo
+from src.delivery.dependencies import require_auth
+from src.contexts.authentication.domain.value_objects import AuthContext
 
 
 @router.get('/{jwk_id}')
@@ -14,6 +16,7 @@ from src.contexts.jwk.delivery.http.jwk.schemas import JWKInfo
 async def get(
     jwk_id: UUID,
     service: IJWKService = Depends(Provide['jwk.service']),
+    _: AuthContext = Depends(require_auth),
 ) -> JWKInfo:
     jwk = await service.get_by_id(jwk_id)
     return JWKInfo.model_validate(structs.asdict(jwk))

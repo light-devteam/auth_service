@@ -1,9 +1,10 @@
-from fastapi import Depends, HTTPException, status, Request
+from fastapi import Depends, Request
 from fastapi.security import HTTPBearer, APIKeyCookie, HTTPAuthorizationCredentials
 
 from dependency_injector.wiring import inject, Provide
 
 from src.contexts.authentication.application import IAuthService
+from src.contexts.authentication.domain.value_objects import AuthContext
 
 
 bearer_scheme = HTTPBearer(
@@ -26,12 +27,7 @@ async def require_auth(
     bearer: HTTPAuthorizationCredentials = Depends(bearer_scheme),
     cookie_token: str = Depends(cookie_scheme),
     service: IAuthService = Depends(Provide['auth.auth_service']),
-) -> str:
+) -> AuthContext:
     bearer_token = bearer.credentials if bearer is not None else ''
-    token = bearer_token or cookie_token
-    print(token, flush=True)
-    await service.introspect(token)
-    # raise HTTPException(
-    #     status_code=status.HTTP_401_UNAUTHORIZED,
-    #     detail="Not authenticateddddd",
-    # )
+    token = cookie_token or bearer_token
+    return await service.introspect(token)
