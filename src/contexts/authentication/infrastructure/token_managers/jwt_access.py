@@ -1,3 +1,4 @@
+from uuid import UUID
 from datetime import datetime, timezone, timedelta
 
 from dependency_injector.wiring import inject, Provide
@@ -5,7 +6,7 @@ import jwt
 
 from src.contexts.authentication.domain.token_managers import IAccessTokenManager
 from src.contexts.authentication.domain.entities import Identity
-from src.contexts.authentication.domain.value_objects import JWTToken, ProviderConfig, AuthContext
+from src.contexts.authentication.domain import value_objects
 from src.contexts.authentication.context import AuthenticationContext
 from src.contexts.authentication.domain.exceptions import InvalidToken
 
@@ -22,14 +23,16 @@ class JWTAccessTokenManager(IAccessTokenManager):
         self,
         issued_at: datetime,
         identity: Identity,
-        provider_config: ProviderConfig,
-    ) -> JWTToken:
+        provider_config: value_objects.ProviderConfig,
+        session_id: value_objects.SessionID,
+    ) -> value_objects.JWTToken:
         if issued_at.tzinfo is None:
             issued_at = issued_at.replace(tzinfo=timezone.utc)
         expires_at = issued_at + timedelta(minutes=provider_config.access_token_expire_minutes)
         token = jwt.encode(
             payload={
                 'sub': str(identity.account_id),
+                'sid': str(session_id),
                 'iat': issued_at,
                 'exp': expires_at,
             },
@@ -38,7 +41,7 @@ class JWTAccessTokenManager(IAccessTokenManager):
             },
             key=self._ctx.cache['private_jwks'].keys[0],
         )
-        return JWTToken(
+        return value_objects.JWTToken(
             token=token,
             issued_at=issued_at,
             expires_at=expires_at,
@@ -47,7 +50,7 @@ class JWTAccessTokenManager(IAccessTokenManager):
     async def validate(
         self,
         token: str,
-    ) -> AuthContext:
+    ) -> value_objects.AuthContext:
         try:
             header = jwt.get_unverified_header(token)
         except jwt.PyJWTError:
@@ -69,6 +72,7 @@ class JWTAccessTokenManager(IAccessTokenManager):
             )
         except jwt.PyJWTError:
             raise InvalidToken('Access token invalid')
-        return AuthContext(
-            account_id=decoded_token['payload']['sub'],
+        return value_objects.AuthContext(
+            account_id=UUID(decoded_token['payload']['sub']),
+            session_id=UUID(decoded_token['payload']['sid']),
         )

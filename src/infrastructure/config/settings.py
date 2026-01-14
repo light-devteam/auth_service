@@ -10,6 +10,7 @@ class Settings(BaseSettings):
 
     JWK_ENCRYPTION_KEY: SecretStr
 
+    COOKIE_DOMAIN: str
     CORS_ALLOW_ORIGINS: list[str] = ['*']
 
     LOGS_FILE: str = 'logs.log'
