@@ -46,9 +46,10 @@ class PasswordProvider(providers.IProvider):
         except (msgspec.ValidationError, TypeError) as e:
             raise exceptions.ProviderConfigInvalid(f'Password provider invalid config: {e}')
 
-    def validate_credentials(
+    async def validate_credentials(
         self,
         credentials: dict[str, Any],
+        provider_config: value_objects.PasswordProviderConfig,
     ) -> value_objects.PasswordProviderPlainCredentials:
         try:
             return self._credentials_decoder.decode(msgspec.json.encode(credentials))

@@ -40,9 +40,17 @@ class AuthApplicationService(IAuthService):
         credentials: dict[str, Any],
     ) -> tuple[value_objects.Token, value_objects.Token]:
         provider = self._provider_registry.get(provider_type)
-        input_credentials = provider.validate_credentials(credentials)
         async with self._db_ctx as ctx:
             await ctx.use_transaction()
+            try:
+                provider_entity = await self._provider_repository.get_active_by_type(
+                    ctx,
+                    provider_type,
+                )
+            except exceptions.ProviderNotFound:
+                raise exceptions.InvalidCredentials()
+            provider_config = provider.validate_config(provider_entity.config)
+            input_credentials = await provider.validate_credentials(credentials, provider_config)
             try:
                 identity = await self._identity_repository.get_by_provider_and_login(
                     ctx,
@@ -52,13 +60,6 @@ class AuthApplicationService(IAuthService):
             except exceptions.IdentityNotFound:
                 raise exceptions.InvalidCredentials()
             await provider.authenticate(input_credentials, identity.credentials)
-            try:
-                provider_entity = await self._provider_repository.get_active_by_type(
-                    ctx,
-                    provider_type,
-                )
-            except exceptions.ProviderNotFound:
-                raise exceptions.InvalidCredentials()
             if identity.provider_id != provider_entity.id:
 
                 # TODO: rotate identity if needed

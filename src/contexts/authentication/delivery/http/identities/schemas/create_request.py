@@ -31,6 +31,6 @@ class CreateIdentityRequest(BaseModel):
     @classmethod
     def validate_credentials(cls, value: dict[str, Any]) -> dict[str, Any]:
         max_size_bytes = 0.5 * 1024  #  0.5 KB
-        max_top_level_keys = 5
+        max_top_level_keys = 6
         max_depth = 2
         return validate_raw_json(value, max_size_bytes, max_top_level_keys, max_depth)

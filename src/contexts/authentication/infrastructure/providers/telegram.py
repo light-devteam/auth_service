@@ -2,6 +2,7 @@ from typing import Any, Type
 
 import msgspec
 from dependency_injector.wiring import inject, Provide
+import httpx
 
 from src.contexts.authentication.domain import (
     exceptions,
@@ -34,8 +35,8 @@ class TelegramProvider(providers.IProvider):
         input_credentials: value_objects.TelegramProviderPlainCredentials,
         identity_credentials: dict[str, Any],
     ) -> None:
-        # TODO: logic
-        raise exceptions.InvalidCredentials()
+        if input_credentials.id != str(identity_credentials['login']):
+            raise exceptions.InvalidCredentials()
 
     def validate_config(
         self,
@@ -46,25 +47,40 @@ class TelegramProvider(providers.IProvider):
         except (msgspec.ValidationError, TypeError) as e:
             raise exceptions.ProviderConfigInvalid(f'Telegram provider invalid config: {e}')
 
-    def validate_credentials(
+    async def validate_credentials(
         self,
         credentials: dict[str, Any],
+        provider_config: value_objects.TelegramProviderConfig,
     ) -> value_objects.TelegramProviderPlainCredentials:
         try:
-            return self._credentials_decoder.decode(msgspec.json.encode(credentials))
+            decoded_credentials = self._credentials_decoder.decode(msgspec.json.encode(credentials))
         except (msgspec.ValidationError, TypeError) as e:
             raise exceptions.InvalidCredentials(f'Telegram provider invalid credentials: {e}')
+        async with httpx.AsyncClient() as http_client:
+            creds_dict = msgspec.structs.asdict(decoded_credentials)
+            json_payload = {}
+            for key, value in creds_dict.items():
+                if value:
+                    json_payload[key] = str(value)
+            response = await http_client.post(
+                provider_config.data_check_url,
+                json=json_payload,
+            )
+            if response.status_code != 200:
+                print(response.content, flush=True)
+                raise exceptions.InvalidCredentials('Telegram provider invalid credentials')
+        return decoded_credentials
 
     def secure_credentials(
         self,
         credentials: value_objects.TelegramProviderPlainCredentials,
     ) -> value_objects.TelegramProviderSecureCredentials:
         return value_objects.TelegramProviderSecureCredentials(
-            login=credentials.account_id,
+            login=credentials.id,
         )
 
     def get_login_field(self, credentials: value_objects.TelegramProviderPlainCredentials) -> str:
-        return credentials.account_id
+        return credentials.id
 
     @property
     def access_token_manager(self) -> token_managers.IAccessTokenManager:

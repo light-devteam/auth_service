@@ -22,6 +22,7 @@ class DIContainer(containers.DeclarativeContainer):
 
             'src.contexts.authentication.infrastructure.repositories',
             'src.contexts.authentication.infrastructure.token_managers',
+            'src.contexts.authentication.infrastructure.providers',
             'src.contexts.authentication.application',
             'src.contexts.authentication.delivery.http',
         ],
