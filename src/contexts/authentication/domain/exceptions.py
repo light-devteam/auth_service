@@ -50,7 +50,7 @@ class IdentityLoginAlreadyExists(DomainException):
 
 
 class InvalidCredentials(InfrastructureException):
-    _DETAIL = 'Inalid credentials'
+    _DETAIL = 'Invalid credentials'
 
 
 class ActiveRefreshTokenAlreadyExists(DomainException):

@@ -32,11 +32,12 @@ class IdentityApplicationService(IIdentityService):
     ) -> entities.Identity:
         account_id = AccountID(account_id)
         provider = self._provider_registry.get(provider_type)
-        valid_creds = provider.validate_credentials(credentials)
-        secure_credentials = provider.secure_credentials(valid_creds)
         async with self._db_ctx as ctx:
             await ctx.use_transaction()
             provider_entity = await self._provider_repository.get_active_by_type(ctx, provider_type)
+            provider_config = provider.validate_config(provider_entity.config)
+            valid_creds = await provider.validate_credentials(credentials, provider_config)
+            secure_credentials = provider.secure_credentials(valid_creds)
             identity = entities.Identity.create(
                 account_id,
                 provider_entity.id,

@@ -2,4 +2,4 @@ from src.contexts.authentication.delivery.http.providers.schemas.provider_config
 
 
 class TelegramProviderConfig(BaseProviderConfig):
-    bot_id: int
+    data_check_url: str

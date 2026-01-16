@@ -26,9 +26,10 @@ class IProvider(ABC):
         ...
 
     @abstractmethod
-    def validate_credentials(
+    async def validate_credentials(
         self,
         credentials: dict[str, Any],
+        provider_config: ProviderConfig,
     ) -> ProviderPlainCredentials:
         ...
 
