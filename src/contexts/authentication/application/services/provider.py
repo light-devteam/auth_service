@@ -18,12 +18,12 @@ class ProviderApplicationService(IProviderService):
     @inject
     def __init__(
         self,
-        repository: IProviderRepository = Provide['auth.provider_repository'],
+        provider_repository: IProviderRepository = Provide['auth.provider_repository'],
         database_context: IDatabaseContext = Provide['infrastructure.postgres_uow'],
         domain_service: ProviderService = Provide['auth.provider_domain_service'],
         provider_registry: IProviderFactory = Provide['auth_providers.registry'],
     ) -> None:
-        self._repository = repository
+        self._repository = provider_repository
         self._db_ctx = database_context
         self._domain_service = domain_service
         self._provider_registry = provider_registry

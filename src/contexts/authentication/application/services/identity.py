@@ -14,12 +14,12 @@ class IdentityApplicationService(IIdentityService):
     @inject
     def __init__(
         self,
-        repository: repositories.IIdentityRepository = Provide['auth.identity_repository'],
+        identity_repository: repositories.IIdentityRepository = Provide['auth.identity_repository'],
         database_context: IDatabaseContext = Provide['infrastructure.postgres_uow'],
         provider_registry: providers.IProviderFactory = Provide['auth_providers.registry'],
         provider_repository: repositories.IProviderRepository = Provide['auth.provider_repository'],
     ) -> None:
-        self._repository = repository
+        self._repository = identity_repository
         self._db_ctx = database_context
         self._provider_registry = provider_registry
         self._provider_repository = provider_repository
