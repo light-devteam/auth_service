@@ -12,10 +12,10 @@ class AccountApplicationService(IAccountService):
     @inject
     def __init__(
         self,
-        repository: repositories.IAccountRepository = Provide['auth.accounts_repository'],
+        account_repository: repositories.IAccountRepository = Provide['auth.accounts_repository'],
         database_context: IDatabaseContext = Provide['infrastructure.postgres_uow'],
     ) -> None:
-        self._repository = repository
+        self._repository = account_repository
         self._db_ctx = database_context
 
     async def create(self) -> Account:
