@@ -17,12 +17,12 @@ class SessionApplicationService(ISessionService):
     @inject
     def __init__(
         self,
-        repository: repositories.ISessionRepository = Provide['auth.session_repository'],
+        session_repository: repositories.ISessionRepository = Provide['auth.session_repository'],
         provider_repository: repositories.IProviderRepository = Provide['auth.provider_repository'],
         refresh_token_repository: repositories.IRefreshTokenRepository = Provide['auth.refresh_token_repository'],
         database_context: IDatabaseContext = Provide['infrastructure.postgres_uow'],
     ) -> None:
-        self._repository = repository
+        self._repository = session_repository
         self._provider_repository = provider_repository
         self._refresh_token_repository = refresh_token_repository
         self._db_ctx = database_context
